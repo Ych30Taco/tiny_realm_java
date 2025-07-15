@@ -1,0 +1,10 @@
+
+server:
+  port: 1026
+
+
+spring:
+  application:
+    name: tiny_realm
+  
+
