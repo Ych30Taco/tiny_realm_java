@@ -8,3 +8,7 @@ spring:
     name: TinyRealm
   
 
+data:
+  path: ${../data}
+
+
