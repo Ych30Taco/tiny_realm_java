@@ -8,7 +8,7 @@ public class TinyRealmApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TinyRealmApplication.class, args);
-		System.out.println("OK");
+		System.out.println("System startup successful");
 	}
 
 }

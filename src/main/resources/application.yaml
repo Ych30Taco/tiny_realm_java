@@ -5,6 +5,6 @@ server:
 
 spring:
   application:
-    name: tiny_realm
+    name: TinyRealm
   
 
