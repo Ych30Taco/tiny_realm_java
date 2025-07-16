@@ -1,4 +1,4 @@
-package com.taco.tiny_realm;
+package com.taco.TinyRealm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

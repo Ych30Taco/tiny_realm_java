@@ -1,4 +1,4 @@
-package com.taco.tiny_realm.controller;
+package com.taco.TinyRealm.controller;
 
 import java.util.Map;
 
