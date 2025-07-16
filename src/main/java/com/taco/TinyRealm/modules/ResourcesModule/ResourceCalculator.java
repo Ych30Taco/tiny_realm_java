@@ -1,4 +1,4 @@
-package com.taco.tiny_realm.modules.ResourcesModule;
+package com.taco.TinyRealm.modules.ResourcesModule;
 
 /**
  * ResourceCalculator 專門負責資源相關的運算，例如產量、消耗、資源轉換等。

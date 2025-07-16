@@ -1,4 +1,4 @@
-package com.taco.tiny_realm.modules.ResourcesModule;
+package com.taco.TinyRealm.modules.ResourcesModule;
 
 /**
  * ResourceData 用於儲存單一資源的相關資料。

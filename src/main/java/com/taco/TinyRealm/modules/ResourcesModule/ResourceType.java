@@ -1,4 +1,4 @@
-package com.taco.tiny_realm.modules.ResourcesModule;
+package com.taco.TinyRealm.modules.ResourcesModule;
 
 public enum ResourceType {
     FOOD,      // 糧食

@@ -1,12 +1,13 @@
-package com.taco.tiny_realm.controller;
+package com.taco.TinyRealm.controller;
 
 import java.util.Map;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.taco.tiny_realm.modules.ResourcesModule.ResourceData;
-import com.taco.tiny_realm.modules.ResourcesModule.ResourceType;
-import com.taco.tiny_realm.service.resourcesService;
+
+import com.taco.TinyRealm.modules.ResourcesModule.ResourceData;
+import com.taco.TinyRealm.modules.ResourcesModule.ResourceType;
+import com.taco.TinyRealm.service.resourcesService;
 
 @RestController
 public class resourcesController {

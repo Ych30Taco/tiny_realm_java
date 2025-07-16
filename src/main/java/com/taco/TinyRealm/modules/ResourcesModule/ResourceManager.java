@@ -1,4 +1,4 @@
-package com.taco.tiny_realm.modules.ResourcesModule;
+package com.taco.TinyRealm.modules.ResourcesModule;
 
 import org.springframework.stereotype.Component;
 

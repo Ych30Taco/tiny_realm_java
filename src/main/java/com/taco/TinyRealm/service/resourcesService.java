@@ -1,10 +1,12 @@
-package com.taco.tiny_realm.service;
+package com.taco.TinyRealm.service;
 
-import com.taco.tiny_realm.modules.ResourcesModule.ResourceData;
-import com.taco.tiny_realm.modules.ResourcesModule.ResourceManager;
-import com.taco.tiny_realm.modules.ResourcesModule.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.taco.TinyRealm.modules.ResourcesModule.ResourceData;
+import com.taco.TinyRealm.modules.ResourcesModule.ResourceManager;
+import com.taco.TinyRealm.modules.ResourcesModule.ResourceType;
+
 import java.util.*;
 
 @Service
