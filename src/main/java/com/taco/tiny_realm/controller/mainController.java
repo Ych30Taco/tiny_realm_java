@@ -12,8 +12,6 @@ public class mainController {
     @PostMapping("/main")
 
     public Map<String, Object> getmain(@RequestBody Map<String, Object> body) {
-        // Logic to process the request and return equity data
-        // This is a placeholder implementation
         return Map.of("status", "success", "data", body);
     }
     
