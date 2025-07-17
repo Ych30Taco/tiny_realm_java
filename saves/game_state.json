@@ -1,0 +1,14 @@
+{
+  "player" : {
+    "playerId" : "player_468f2835-b5b4-4f47-b0d0-ee8feacb3a61",
+    "playerName" : "DefaultPlayer",
+    "level" : 1,
+    "currentLocation" : {
+      "x" : 0,
+      "y" : 0
+    },
+    "resources" : { }
+  },
+  "gameTime" : 3,
+  "gameEvents" : [ "遊戲載入後，時間增加1單位。", "遊戲載入後，時間增加1單位。", "遊戲載入後，時間增加1單位。" ]
+}
