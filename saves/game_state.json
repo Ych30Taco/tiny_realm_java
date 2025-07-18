@@ -1,14 +1,29 @@
 {
   "player" : {
-    "playerId" : "player_468f2835-b5b4-4f47-b0d0-ee8feacb3a61",
-    "playerName" : "DefaultPlayer",
+    "playerId" : "player_c2c69bb9-bfa2-431f-a23e-e830fcc961dc",
+    "playerName" : "DefaultHero",
     "level" : 1,
+    "experience" : 0,
     "currentLocation" : {
       "x" : 0,
       "y" : 0
     },
-    "resources" : { }
+    "resources" : {
+      "gold" : 100,
+      "iron" : 523,
+      "wood" : 523,
+      "food" : 2701,
+      "stone" : 523
+    },
+    "unlockedTechnologies" : [ ],
+    "resourceProductionRates" : {
+      "gold" : 0,
+      "iron" : 1,
+      "wood" : 1,
+      "food" : 1,
+      "stone" : 1
+    }
   },
-  "gameTime" : 3,
-  "gameEvents" : [ "遊戲載入後，時間增加1單位。", "遊戲載入後，時間增加1單位。", "遊戲載入後，時間增加1單位。" ]
+  "gameTime" : 0,
+  "gameEvents" : [ ]
 }
