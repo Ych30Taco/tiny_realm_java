@@ -1,6 +1,7 @@
 app:
   data:
     resource-types-path: classpath:static_data/resource_types.json
+    building-types-path: classpath:static_data/building_types.json
 server:
   port: 1026
 
@@ -8,5 +9,12 @@ server:
 spring:
   application:
     name: TinyRealm
-  
+
+logging:
+  level:
+    root: INFO
+    com.taco.TinyRealm: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
 

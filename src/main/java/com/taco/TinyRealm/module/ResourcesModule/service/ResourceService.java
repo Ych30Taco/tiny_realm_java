@@ -193,7 +193,7 @@ public class ResourceService {
      * 並為每個玩家計算和增加資源。
      * </p>
      */
-    @Scheduled(initialDelay = 0, fixedRate = 1000) // 應用程式啟動後立即執行，然後每 1 秒執行一次
+    @Scheduled(initialDelay = 0, fixedRate = 100000) // 應用程式啟動後立即執行，然後每 1 秒執行一次//taco需要再做修改
     public void produceResourcesPerSecond() {
         // 首先，嘗試從遊戲狀態中獲取當前玩家。
         // 在單人遊戲中，GameState 只有一個 Player 物件。
@@ -218,7 +218,7 @@ public class ResourceService {
             // 遍歷玩家設定的每個資源生產率
             for (Map.Entry<String, Integer> entry : currentPlayer.getResourceProductionRates().entrySet()) {
                 String resourceId = entry.getKey();   // 資源類型 ID (如 "wood")
-                Integer amountPerSecond = entry.getValue(); // 每秒生產的數量
+                Integer amountPerSecond = entry.getValue()*100; // 每秒生產的數量//taco需要再做修改
 
                 if (amountPerSecond != null && amountPerSecond > 0) { // 只處理有效且正數的生產率
                     // 檢查這個資源 ID 是否是已定義的有效資源類型

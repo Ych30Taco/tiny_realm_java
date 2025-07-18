@@ -1,0 +1,131 @@
+[
+    {
+      "typeId": "HEADQUARTERS",
+      "name": "總部",
+      "description": "玩家的基地核心，提供基本功能和基礎科技。",
+      "maxLevel": 5,
+      "baseBuildTimeSeconds": 60,
+      "baseConstructionCost": {
+        "WOOD": 100,
+        "STONE": 50
+      },
+      "upgradeCosts": {
+        "2": { "WOOD": 150, "STONE": 75, "GOLD": 20 },
+        "3": { "WOOD": 200, "STONE": 100, "GOLD": 30 },
+        "4": { "WOOD": 250, "STONE": 125, "GOLD": 40 },
+        "5": { "WOOD": 300, "STONE": 150, "GOLD": 50 }
+      },
+      "upgradeTimesSeconds": {
+        "1": 90,
+        "2": 120,
+        "3": 150,
+        "4": 180
+      },
+      "requiredPlayerLevel": 1,
+      "requiredTechnologyId": null,
+      "requiredBuildingTypeIds": [],
+      "hasProductionQueue": false,
+      "productionQueueCapacity": 0,
+      "producibleUnitTypes": [],
+      "baseHealth": 1000,
+      "maxStorageCapacity": 1000,
+      "productionRates": {},
+      "terrainRestrictions": ["GRASS", "PLAIN"]
+    },
+    {
+      "typeId": "BARRACKS",
+      "name": "兵營",
+      "description": "用於訓練各種戰鬥單位。",
+      "maxLevel": 3,
+      "baseBuildTimeSeconds": 120,
+      "baseConstructionCost": {
+        "WOOD": 200,
+        "STONE": 100,
+        "GOLD": 50
+      },
+      "upgradeCosts": {
+        "2": { "WOOD": 300, "STONE": 150, "GOLD": 75 },
+        "3": { "WOOD": 400, "STONE": 200, "GOLD": 100 }
+      },
+      "upgradeTimesSeconds": {
+        "1": 180,
+        "2": 240
+      },
+      "requiredPlayerLevel": 5,
+      "requiredTechnologyId": "MILITARY_TRAINING",
+      "requiredBuildingTypeIds": ["HEADQUARTERS"],
+      "hasProductionQueue": true,
+      "productionQueueCapacity": 5,
+      "producibleUnitTypes": ["SOLDIER", "ARCHER"],
+      "baseHealth": 500,
+      "maxStorageCapacity": 0,
+      "productionRates": {},
+      "terrainRestrictions": ["GRASS", "HILL"]
+    },
+    {
+      "typeId": "FARM",
+      "name": "農場",
+      "description": "生產食物資源。",
+      "maxLevel": 5,
+      "baseBuildTimeSeconds": 30,
+      "baseConstructionCost": {
+        "WOOD": 50,
+        "FOOD": 20
+      },
+      "upgradeCosts": {
+        "2": { "WOOD": 75, "FOOD": 30 },
+        "3": { "WOOD": 100, "FOOD": 40 },
+        "4": { "WOOD": 125, "FOOD": 50 },
+        "5": { "WOOD": 150, "FOOD": 60 }
+      },
+      "upgradeTimesSeconds": {
+        "1": 45,
+        "2": 60,
+        "3": 75,
+        "4": 90
+      },
+      "requiredPlayerLevel": 1,
+      "requiredTechnologyId": null,
+      "requiredBuildingTypeIds": [],
+      "hasProductionQueue": false,
+      "productionQueueCapacity": 0,
+      "producibleUnitTypes": [],
+      "baseHealth": 200,
+      "maxStorageCapacity": 0,
+      "productionRates": {
+        "FOOD": 0.5
+      },
+      "terrainRestrictions": ["GRASS"]
+    },
+    {
+      "typeId": "LUMBER_MILL",
+      "name": "伐木場",
+      "description": "生產木材資源。",
+      "maxLevel": 3,
+      "baseBuildTimeSeconds": 45,
+      "baseConstructionCost": {
+        "WOOD": 80,
+        "STONE": 30
+      },
+      "upgradeCosts": {
+        "2": { "WOOD": 120, "STONE": 45 },
+        "3": { "WOOD": 160, "STONE": 60 }
+      },
+      "upgradeTimesSeconds": {
+        "1": 60,
+        "2": 90
+      },
+      "requiredPlayerLevel": 3,
+      "requiredTechnologyId": null,
+      "requiredBuildingTypeIds": [],
+      "hasProductionQueue": false,
+      "productionQueueCapacity": 0,
+      "producibleUnitTypes": [],
+      "baseHealth": 250,
+      "maxStorageCapacity": 0,
+      "productionRates": {
+        "WOOD": 0.7
+      },
+      "terrainRestrictions": ["FOREST"]
+    }
+  ]
