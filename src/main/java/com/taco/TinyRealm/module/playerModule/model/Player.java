@@ -19,6 +19,7 @@ public class Player {
     private Location currentLocation;
     private Map<String, Integer> resources; // 儲存玩家持有的資源數量
     private List<String> unlockedTechnologies; // 已解鎖科技的ID列表
+    private Map<String, Integer> resourceProductionRates; // <-- 新增：每秒產出率 (資源ID -> 數量)
     // ... 未來可以加入更多屬性，例如背包、部隊列表、建築列表等
 
     // 用於創建新玩家的簡化建構子
@@ -31,8 +32,19 @@ public class Player {
         this.resources = new HashMap<>();
         // 給予新玩家一些初始資源
         this.resources.put("gold", 100);
-        this.resources.put("wood", 50);
-        this.resources.put("stone", 20);
+        this.resources.put("wood", 100);
+        this.resources.put("stone", 100);
+        this.resources.put("food", 100);
+        this.resources.put("iron", 100);
         this.unlockedTechnologies = new ArrayList<>();
+
+        // 初始化玩家的基礎生產率 (範例)
+        this.resourceProductionRates = new HashMap<>();
+        this.resourceProductionRates.put("gold", 0);  
+        this.resourceProductionRates.put("wood", 1);  // 每秒產出 1 個木材
+        this.resourceProductionRates.put("stone", 1);  // 每秒產出 1 個石頭
+        this.resourceProductionRates.put("food", 1);  // 每秒產出 1 個食物
+        this.resourceProductionRates.put("iron", 1);  // 每秒產出 1 個鐵礦
+        // ... 其他資源的初始產出率
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository // 標記為 Spring Bean
 public class PlayerRepositoryImpl implements PlayerRepository {
 
-    private final GameSaveLoadService saveLoadService;
+    public final GameSaveLoadService saveLoadService;
 
     public PlayerRepositoryImpl(GameSaveLoadService saveLoadService) {
         this.saveLoadService = saveLoadService;

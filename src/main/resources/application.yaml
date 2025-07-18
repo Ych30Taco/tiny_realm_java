@@ -1,4 +1,6 @@
-
+app:
+  data:
+    resource-types-path: classpath:static_data/resource_types.json
 server:
   port: 1026
 

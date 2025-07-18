@@ -1,0 +1,32 @@
+[
+    {
+      "id": "gold",
+      "name": "黃金",
+      "description": "珍貴的金屬，用於貿易和升級。",
+      "iconPath": "path/to/icon_gold.png"
+    },
+    {
+      "id": "wood",
+      "name": "木材",
+      "description": "基本的建築材料。",
+      "iconPath": "path/to/icon_wood.png"
+    },
+    {
+      "id": "stone",
+      "name": "石頭",
+      "description": "堅硬的建築材料。",
+      "iconPath": "path/to/icon_stone.png"
+    },
+    {
+      "id": "food",
+      "name": "食物",
+      "description": "維持人口生存的必需品。",
+      "iconPath": "path/to/icon_food.png"
+    },
+    {
+        "id": "iron",
+        "name": "鐵礦",
+        "description": "更堅硬的建築材料。",
+        "iconPath": "path/to/icon_iron.png"
+      }
+  ]
