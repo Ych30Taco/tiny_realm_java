@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.taco.TinyRealm.module.SaveSystemModule.model.GameState;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.nio.file.Paths;
 
 @Service // 標記為 Spring Bean
 public class GameSaveLoadService {
+    private static final Logger logger = LoggerFactory.getLogger(GameSaveLoadService.class);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_SAVE_FILE_NAME = "game_state.json";
@@ -34,14 +37,13 @@ public class GameSaveLoadService {
             // 如果儲存目錄不存在，則創建它
             if (!Files.exists(dirPath)) {
                 Files.createDirectories(dirPath);
-                System.out.println("DEBUG: 已建立儲存目錄: " + dirPath.toAbsolutePath());
+                logger.debug("已建立儲存目錄: {}", dirPath.toAbsolutePath());
             }
             File saveFile = dirPath.resolve(filename).toFile();
             objectMapper.writeValue(saveFile, gameState);
-            System.out.println("遊戲已儲存至: " + saveFile.getAbsolutePath());
+            logger.info("遊戲已儲存至: {}", saveFile.getAbsolutePath());
         } catch (IOException e) {
-            System.err.println("錯誤：儲存遊戲失敗！" + e.getMessage());
-            e.printStackTrace();
+            logger.error("儲存遊戲失敗！{}", e.getMessage(), e);
         }
     }
 
@@ -55,15 +57,14 @@ public class GameSaveLoadService {
         if (saveFile.exists()) {
             try {
                 GameState loadedState = objectMapper.readValue(saveFile, GameState.class);
-                System.out.println("遊戲已從 " + saveFile.getAbsolutePath() + " 載入。");
+                logger.info("遊戲已從 {} 載入。", saveFile.getAbsolutePath());
                 return loadedState;
             } catch (IOException e) {
-                System.err.println("錯誤：載入遊戲失敗！檔案可能已損壞或格式不正確。" + e.getMessage());
-                e.printStackTrace();
+                logger.error("載入遊戲失敗！檔案可能已損壞或格式不正確。{}", e.getMessage(), e);
                 return null; // 載入失敗
             }
         }
-        System.out.println("DEBUG: 找不到存檔檔案: " + saveFile.getAbsolutePath() + "。");
+        logger.debug("找不到存檔檔案: {}。", saveFile.getAbsolutePath());
         return null; // 檔案不存在
     }
 

@@ -4,6 +4,8 @@ import com.taco.TinyRealm.module.playerModule.model.Location;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.playerModule.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import java.util.UUID; // 用於生成唯一 ID
 
 @Service // 標記為 Spring Bean
 public class PlayerService {
+    private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
     private final PlayerRepository playerRepository;
 
@@ -32,6 +35,7 @@ public class PlayerService {
 
         String newPlayerId = "player_" + UUID.randomUUID().toString(); // 生成唯一 ID
         Player newPlayer = new Player(newPlayerId, playerName);
+        logger.info("新玩家已創建: {} (ID: {})", playerName, newPlayerId);
         return playerRepository.save(newPlayer); // 儲存新玩家 (透過 savesystem)
     }
 
@@ -72,16 +76,18 @@ public class PlayerService {
         if (playerOpt.isPresent()) {
             Player player = playerOpt.get();
             player.setExperience(player.getExperience() + amount);
+            logger.info("玩家 {} 增加經驗值 {}，目前總經驗 {}。", player.getPlayerName(), amount, player.getExperience());
             // 這裡可以加入升級邏輯
             if (player.getExperience() >= calculateExpToNextLevel(player.getLevel())) {
                 player.setLevel(player.getLevel() + 1);
-                System.out.println(player.getPlayerName() + " 升級到 Lv." + player.getLevel() + "！");
+                logger.info("玩家 {} 升級到 Lv.{}！", player.getPlayerName(), player.getLevel());
                 // 經驗值可以歸零或扣除升級所需
                 player.setExperience(player.getExperience() - calculateExpToNextLevel(player.getLevel() -1));
             }
             playerRepository.save(player);
             return Optional.of(player);
         }
+        logger.error("找不到玩家 ID: {}，無法增加經驗。", playerId);
         return Optional.empty();
     }
 
@@ -103,9 +109,11 @@ public class PlayerService {
             Player player = playerOpt.get();
             Map<String, Integer> resources = player.getResources();
             resources.put(resourceType, resources.getOrDefault(resourceType, 0) + amount);
+            logger.info("玩家 {} 增加 {} {}，目前持有 {}。", player.getPlayerName(), amount, resourceType, resources.get(resourceType));
             playerRepository.save(player);
             return Optional.of(player);
         }
+        logger.error("找不到玩家 ID: {}，無法增加資源。", playerId);
         return Optional.empty();
     }
 

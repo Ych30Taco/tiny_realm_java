@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 資源模組的服務層。
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ResourceService {
+    private static final Logger logger = LoggerFactory.getLogger(ResourceService.class);
 
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
     private final ResourceLoader resourceLoader;  // Spring 資源載入器
@@ -76,12 +79,14 @@ public class ResourceService {
                 resourceDefinitions = resources.stream()
                                                 .collect(Collectors.toMap(Resource::getId, Function.identity()));
                 System.out.println("DEBUG: 資源類型已成功載入 (" + resourceDefinitions.size() + " 種)。");
+                logger.info("資源類型已成功載入 ({} 種)。", resourceDefinitions.size());
             }
         } catch (IOException e) {
             // 如果載入失敗，列印錯誤訊息並堆疊追蹤。
             // 在實際應用中，可以考慮拋出 RuntimeException 讓應用程式啟動失敗，
             // 因為靜態數據載入失敗通常是不可接受的錯誤。
             System.err.println("錯誤：載入資源類型失敗！請檢查 " + resourceTypesPath + " 檔案。" + e.getMessage());
+            logger.error("載入資源類型失敗！請檢查 {} 檔案。{}", resourceTypesPath, e.getMessage(), e);
             e.printStackTrace();
         }
     }
@@ -116,15 +121,21 @@ public class ResourceService {
         // 驗證資源 ID 是否有效
         if (!resourceDefinitions.containsKey(resourceId)) {
             System.err.println("錯誤：無效的資源類型ID: " + resourceId);
+            logger.error("無效的資源類型ID: {}", resourceId);
             return Optional.empty();
         }
         // 驗證增加數量是否合法
         if (amount <= 0) {
             System.err.println("錯誤：資源增加數量必須大於0。");
+            logger.error("資源增加數量必須大於0。");
             return Optional.empty();
         }
         // 委託 PlayerService 執行實際的資源增加操作，並由 PlayerService 負責保存
-        return playerService.addPlayerResource(playerId, resourceId, amount);
+        Optional<Player> result = playerService.addPlayerResource(playerId, resourceId, amount);
+        if (result.isPresent()) {
+            logger.info("玩家 {} 獲得 {} {}。", playerId, amount, resourceId);
+        }
+        return result;
     }
 
     /**
@@ -139,11 +150,13 @@ public class ResourceService {
         // 驗證資源 ID 是否有效
         if (!resourceDefinitions.containsKey(resourceId)) {
             System.err.println("錯誤：無效的資源類型ID: " + resourceId);
+            logger.error("無效的資源類型ID: {}", resourceId);
             return Optional.empty();
         }
         // 驗證消耗數量是否合法
         if (amount <= 0) {
             System.err.println("錯誤：資源消耗數量必須大於0。");
+            logger.error("資源消耗數量必須大於0。");
             return Optional.empty();
         }
 
@@ -157,6 +170,7 @@ public class ResourceService {
             // 檢查資源是否充足
             if (currentAmount < amount) {
                 System.out.println("玩家 " + player.getPlayerName() + " (ID: " + playerId + ") 資源 " + resourceId + " 不足，需要 " + amount + " 但只有 " + currentAmount + "。");
+                logger.warn("玩家 {} (ID: {}) 資源 {} 不足，需要 {} 但只有 {}。", player.getPlayerName(), playerId, resourceId, amount, currentAmount);
                 return Optional.empty(); // 資源不足，操作失敗
             }
 
@@ -167,6 +181,7 @@ public class ResourceService {
             return Optional.of(player); // 返回更新後的玩家物件
         }
         System.err.println("錯誤：找不到玩家 ID: " + playerId + "，無法消耗資源。");
+        logger.error("找不到玩家 ID: {}，無法消耗資源。", playerId);
         return Optional.empty(); // 找不到玩家
     }
 
@@ -192,6 +207,7 @@ public class ResourceService {
             // 如果遊戲未初始化或沒有玩家，則跳過資源生產
             // 這通常發生在應用程式剛啟動，還沒有通過 /api/player/create 創建玩家時
             System.out.println("DEBUG: 遊戲未初始化或無玩家，跳過資源生產定時任務。");
+            logger.debug("遊戲未初始化或無玩家，跳過資源生產定時任務。");
             return;
         }
 
@@ -211,9 +227,11 @@ public class ResourceService {
                         // 增加資源數量：原數量 + 生產數量
                         playerResources.put(resourceId, playerResources.getOrDefault(resourceId, 0) + amountPerSecond);
                         System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 獲得 " + amountPerSecond + " " + resourceDefinitions.get(resourceId).getName() + "。");
+                        logger.info("玩家 [{}] 獲得 {} {}。", currentPlayer.getPlayerName(), amountPerSecond, resourceDefinitions.get(resourceId).getName());
                         resourcesActuallyAdded = true;
                     } else {
                         System.err.println("警告：玩家設定中存在未定義的資源類型ID: " + resourceId + "，已忽略。");
+                        logger.warn("玩家設定中存在未定義的資源類型ID: {}，已忽略。", resourceId);
                     }
                 }
             }
@@ -222,9 +240,11 @@ public class ResourceService {
             if (resourcesActuallyAdded) {
                 playerRepository.save(currentPlayer); // 保存更新後的玩家數據 (這會觸發 GameState 保存到 JSON)
                 System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 的資源已更新並儲存到檔案。");
+                logger.info("玩家 [{}] 的資源已更新並儲存到檔案。", currentPlayer.getPlayerName());
             }
         } else {
             System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 沒有設定任何資源生產率。");
+            logger.debug("玩家 [{}] 沒有設定任何資源生產率。", currentPlayer.getPlayerName());
         }
     }
 }
