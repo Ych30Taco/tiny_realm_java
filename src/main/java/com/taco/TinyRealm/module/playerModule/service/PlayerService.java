@@ -1,5 +1,7 @@
 package com.taco.TinyRealm.module.playerModule.service;
 
+import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.EventType;
 import com.taco.TinyRealm.module.playerModule.model.Location;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.playerModule.repository.PlayerRepository;
@@ -16,9 +18,11 @@ public class PlayerService {
     private static final Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
     private final PlayerRepository playerRepository;
+    private final EventPublisher eventPublisher; // 注入事件發佈器
 
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, EventPublisher eventPublisher) {
         this.playerRepository = playerRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -78,13 +82,21 @@ public class PlayerService {
             player.setExperience(player.getExperience() + amount);
             logger.info("玩家 {} 增加經驗值 {}，目前總經驗 {}。", player.getPlayerName(), amount, player.getExperience());
             // 這裡可以加入升級邏輯
+            boolean leveledUp = false;
             if (player.getExperience() >= calculateExpToNextLevel(player.getLevel())) {
                 player.setLevel(player.getLevel() + 1);
                 logger.info("玩家 {} 升級到 Lv.{}！", player.getPlayerName(), player.getLevel());
                 // 經驗值可以歸零或扣除升級所需
                 player.setExperience(player.getExperience() - calculateExpToNextLevel(player.getLevel() -1));
+                leveledUp = true;
             }
             playerRepository.save(player);
+            // 發佈經驗值變動事件
+            eventPublisher.publish(EventType.RESOURCE_CHANGED, "exp+" + amount, this);
+            // 若升級則發佈升級事件
+            if (leveledUp) {
+                eventPublisher.publish(EventType.PLAYER_LEVEL_UP, player, this);
+            }
             return Optional.of(player);
         }
         logger.error("找不到玩家 ID: {}，無法增加經驗。", playerId);
@@ -111,6 +123,8 @@ public class PlayerService {
             resources.put(resourceType, resources.getOrDefault(resourceType, 0) + amount);
             logger.info("玩家 {} 增加 {} {}，目前持有 {}。", player.getPlayerName(), amount, resourceType, resources.get(resourceType));
             playerRepository.save(player);
+            // 發佈資源變動事件，攜帶資源類型與數量
+            eventPublisher.publish(EventType.RESOURCE_CHANGED, resourceType + "+" + amount, this);
             return Optional.of(player);
         }
         logger.error("找不到玩家 ID: {}，無法增加資源。", playerId);

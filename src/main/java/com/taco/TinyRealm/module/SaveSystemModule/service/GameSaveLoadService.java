@@ -3,6 +3,9 @@ package com.taco.TinyRealm.module.SaveSystemModule.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.taco.TinyRealm.module.SaveSystemModule.model.GameState;
+import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.EventType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +23,9 @@ public class GameSaveLoadService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_SAVE_FILE_NAME = "game_state.json";
     private static final String SAVE_DIRECTORY = "saves"; // 相對路徑，在應用程式執行目錄下
+
+    @Autowired
+    private EventPublisher eventPublisher; // 事件發佈器自動注入
 
     public GameSaveLoadService() {
         // 配置 ObjectMapper，讓 JSON 輸出格式化，更易讀
@@ -42,6 +48,10 @@ public class GameSaveLoadService {
             File saveFile = dirPath.resolve(filename).toFile();
             objectMapper.writeValue(saveFile, gameState);
             logger.info("遊戲已儲存至: {}", saveFile.getAbsolutePath());
+            // 發佈遊戲存檔完成事件
+            if (eventPublisher != null) {
+                eventPublisher.publish(EventType.GAME_SAVED, filename, this);
+            }
         } catch (IOException e) {
             logger.error("儲存遊戲失敗！{}", e.getMessage(), e);
         }

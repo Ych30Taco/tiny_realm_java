@@ -10,10 +10,10 @@
     },
     "resources" : {
       "gold" : 100,
-      "iron" : 523,
-      "wood" : 523,
-      "food" : 2701,
-      "stone" : 523
+      "iron" : 1137,
+      "wood" : 1137,
+      "food" : 3315,
+      "stone" : 1137
     },
     "unlockedTechnologies" : [ ],
     "resourceProductionRates" : {
@@ -24,6 +24,6 @@
       "stone" : 1
     }
   },
-  "gameTime" : 0,
-  "gameEvents" : [ ]
+  "gameTime" : 1,
+  "gameEvents" : [ "遊戲啟動，時間增加1單位。" ]
 }

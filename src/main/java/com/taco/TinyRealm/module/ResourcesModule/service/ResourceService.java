@@ -8,6 +8,8 @@ import com.taco.TinyRealm.module.playerModule.service.PlayerService; // 引入�
 import com.taco.TinyRealm.module.ResourcesModule.model.Resource;     // 引入資源類型模型
 import com.taco.TinyRealm.module.SaveSystemModule.model.GameState;
 import com.taco.TinyRealm.module.SaveSystemModule.service.GameSaveLoadService; // 新增 import
+import com.taco.TinyRealm.module.EventSystemModule.EventPublisher; // 匯入事件發佈器
+import com.taco.TinyRealm.module.EventSystemModule.EventType;      // 匯入事件型別
 import org.springframework.beans.factory.annotation.Value; // 用於從配置檔讀取屬性
 import org.springframework.core.io.ResourceLoader;       // 用於載入 Spring 資源 (如 classpath 中的檔案)
 import org.springframework.scheduling.annotation.Scheduled; // 用於建立定時任務
@@ -38,6 +40,7 @@ public class ResourceService {
     private final PlayerService playerService;    // 玩家服務，用於委託玩家相關操作
     private final PlayerRepository playerRepository; // 玩家儲存庫，用於直接更新玩家資料
     private final GameSaveLoadService gameSaveLoadService; // 新增 GameSaveLoadService 欄位
+    private final EventPublisher eventPublisher; // 新增事件發佈器欄位
 
     // 用於儲存所有資源類型的 Map，以資源 ID 為鍵，方便快速查找其定義
     private Map<String, Resource> resourceDefinitions;
@@ -54,13 +57,22 @@ public class ResourceService {
      * @param playerService PlayerService 實例
      * @param playerRepository PlayerRepository 實例
      * @param gameSaveLoadService GameSaveLoadService 實例
+     * @param eventPublisher 事件發佈器實例
      */
-    public ResourceService(ObjectMapper objectMapper, ResourceLoader resourceLoader, PlayerService playerService, PlayerRepository playerRepository, GameSaveLoadService gameSaveLoadService) {
+    public ResourceService(
+        ObjectMapper objectMapper,
+        ResourceLoader resourceLoader,
+        PlayerService playerService,
+        PlayerRepository playerRepository,
+        GameSaveLoadService gameSaveLoadService,
+        EventPublisher eventPublisher // 新增參數
+    ) {
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
         this.playerService = playerService;
         this.playerRepository = playerRepository;
-        this.gameSaveLoadService = gameSaveLoadService; // 注入 GameSaveLoadService
+        this.gameSaveLoadService = gameSaveLoadService;
+        this.eventPublisher = eventPublisher; // 注入事件發佈器
     }
 
     /**
@@ -112,6 +124,7 @@ public class ResourceService {
     /**
      * 玩家獲取資源 (增加資源數量)。
      * 此方法會委託給 PlayerService 來實際增加玩家的資源數量，並觸發數據保存。
+     * 並於成功時發佈資源變動事件。
      * @param playerId 玩家的唯一 ID。
      * @param resourceId 資源類型 ID (例如 "wood", "gold")。
      * @param amount 獲取的資源數量 (必須大於 0)。
@@ -134,6 +147,15 @@ public class ResourceService {
         Optional<Player> result = playerService.addPlayerResource(playerId, resourceId, amount);
         if (result.isPresent()) {
             logger.info("玩家 {} 獲得 {} {}。", playerId, amount, resourceId);
+            // 發佈資源增加事件，payload 可攜帶詳細資訊
+            // payload 格式：Map<String, Object>，包含玩家ID、資源ID、數量、動作
+            java.util.Map<String, Object> payload = java.util.Map.of(
+                "playerId", playerId,
+                "resourceId", resourceId,
+                "amount", amount,
+                "action", "add"
+            );
+            eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
         }
         return result;
     }
@@ -141,6 +163,7 @@ public class ResourceService {
     /**
      * 玩家消耗資源 (減少資源數量)。
      * 此方法會檢查玩家資源是否充足，然後更新玩家資源數量並保存。
+     * 並於成功時發佈資源變動事件。
      * @param playerId 玩家的唯一 ID。
      * @param resourceId 資源類型 ID。
      * @param amount 消耗的資源數量 (必須大於 0)。
@@ -176,8 +199,15 @@ public class ResourceService {
 
             // 更新玩家資源數量
             resources.put(resourceId, currentAmount - amount);
-            // 直接透過 PlayerRepository 保存更新後的 Player 物件，這會觸發 GameState 的保存
             playerRepository.save(player);
+            // 發佈資源消耗事件
+            java.util.Map<String, Object> payload = java.util.Map.of(
+                "playerId", playerId,
+                "resourceId", resourceId,
+                "amount", amount,
+                "action", "consume"
+            );
+            eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
             return Optional.of(player); // 返回更新後的玩家物件
         }
         System.err.println("錯誤：找不到玩家 ID: " + playerId + "，無法消耗資源。");
@@ -188,12 +218,9 @@ public class ResourceService {
     /**
      * 定時任務：每秒鐘為遊戲中的「主玩家」增加資源。
      * 此任務在應用程式啟動後立即執行 (initialDelay = 0)，然後每隔 1000 毫秒 (1 秒) 重複執行。
-     * <p>
-     * 注意：這個實作是針對單人遊戲模式。在多人遊戲中，您需要遍歷所有活躍玩家或從資料庫中獲取所有玩家，
-     * 並為每個玩家計算和增加資源。
-     * </p>
+     * 執行時會針對每個資源產出發佈資源變動事件。
      */
-    @Scheduled(initialDelay = 0, fixedRate = 1000) // 應用程式啟動後立即執行，然後每 1 秒執行一次
+    @Scheduled(initialDelay = 0, fixedRate = 1000)
     public void produceResourcesPerSecond() {
         // 首先，嘗試從遊戲狀態中獲取當前玩家。
         // 在單人遊戲中，GameState 只有一個 Player 物件。
@@ -213,21 +240,28 @@ public class ResourceService {
 
         // 檢查玩家是否有設定資源生產率
         if (currentPlayer.getResourceProductionRates() != null && !currentPlayer.getResourceProductionRates().isEmpty()) {
-            boolean resourcesActuallyAdded = false; // 標記是否實際增加了資源
+            boolean resourcesActuallyAdded = false;
 
             // 遍歷玩家設定的每個資源生產率
             for (Map.Entry<String, Integer> entry : currentPlayer.getResourceProductionRates().entrySet()) {
-                String resourceId = entry.getKey();   // 資源類型 ID (如 "wood")
-                Integer amountPerSecond = entry.getValue(); // 每秒生產的數量
+                String resourceId = entry.getKey();
+                Integer amountPerSecond = entry.getValue();
 
-                if (amountPerSecond != null && amountPerSecond > 0) { // 只處理有效且正數的生產率
-                    // 檢查這個資源 ID 是否是已定義的有效資源類型
+                if (amountPerSecond != null && amountPerSecond > 0) {
                     if (resourceDefinitions.containsKey(resourceId)) {
-                        Map<String, Integer> playerResources = currentPlayer.getResources(); // 獲取玩家當前資源 Map
+                        Map<String, Integer> playerResources = currentPlayer.getResources();
                         // 增加資源數量：原數量 + 生產數量
                         playerResources.put(resourceId, playerResources.getOrDefault(resourceId, 0) + amountPerSecond);
                         System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 獲得 " + amountPerSecond + " " + resourceDefinitions.get(resourceId).getName() + "。");
                         logger.info("玩家 [{}] 獲得 {} {}。", currentPlayer.getPlayerName(), amountPerSecond, resourceDefinitions.get(resourceId).getName());
+                        // 發佈自動產出資源事件
+                        java.util.Map<String, Object> payload = java.util.Map.of(
+                            "playerId", currentPlayer.getPlayerId(),
+                            "resourceId", resourceId,
+                            "amount", amountPerSecond,
+                            "action", "produce"
+                        );
+                        eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
                         resourcesActuallyAdded = true;
                     } else {
                         System.err.println("警告：玩家設定中存在未定義的資源類型ID: " + resourceId + "，已忽略。");
@@ -235,7 +269,6 @@ public class ResourceService {
                     }
                 }
             }
-
             // 如果實際有資源被增加，才需要保存玩家數據
             if (resourcesActuallyAdded) {
                 playerRepository.save(currentPlayer); // 保存更新後的玩家數據 (這會觸發 GameState 保存到 JSON)
