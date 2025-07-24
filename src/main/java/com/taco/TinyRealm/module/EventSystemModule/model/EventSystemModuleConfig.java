@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.module.EventSystemModule;
+package com.taco.TinyRealm.module.EventSystemModule.model;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ComponentScan;

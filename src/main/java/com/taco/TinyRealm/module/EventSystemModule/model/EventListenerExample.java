@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.module.EventSystemModule;
+package com.taco.TinyRealm.module.EventSystemModule.model;
 
 import com.taco.TinyRealm.module.EventSystemModule.service.EventSystemService;
 import org.springframework.beans.factory.annotation.Autowired;

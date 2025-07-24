@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.module.EventSystemModule;
+package com.taco.TinyRealm.module.EventSystemModule.model;
 
 /**
  * 定義所有事件型別的列舉。
