@@ -3,6 +3,9 @@ package com.taco.TinyRealm.module.ResourcesModule.controller;
 import com.taco.TinyRealm.module.playerModule.model.Player;     // 因為資源操作會影響玩家，API 響應可能返回玩家物件
 import com.taco.TinyRealm.module.ResourcesModule.model.Resource; // 引入資源類型模型
 import com.taco.TinyRealm.module.ResourcesModule.service.ResourceService; // 引入資源服務
+import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.EventType;
+
 import lombok.Data;          // Lombok 註解，自動生成 getter, setter 等
 import lombok.NoArgsConstructor; // Lombok 註解
 import lombok.AllArgsConstructor; // Lombok 註解
@@ -23,13 +26,15 @@ import java.util.Optional;
 public class ResourceController {
 
     private final ResourceService resourceService; // 注入 ResourceService 實例
+    private final EventPublisher eventPublisher;
 
     /**
      * 建構子注入 ResourceService。
      * @param resourceService 資源服務的實例。
      */
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, EventPublisher eventPublisher) {
         this.resourceService = resourceService;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -74,13 +79,15 @@ public class ResourceController {
      * @param request 包含資源 ID 和增加數量的請求體。
      */
     @PostMapping("/{playerId}/add")
-    public ResponseEntity<Player> addPlayerResource(@PathVariable String playerId, @RequestBody ResourceOperationRequest request) {
-        Optional<Player> updatedPlayer = resourceService.addPlayerResource(playerId, request.getResourceId(), request.getAmount());
-        return updatedPlayer
-                // 如果操作成功，返回 HTTP 200 OK 和更新後的 Player 物件
-                .map(player -> new ResponseEntity<>(player, HttpStatus.OK))
-                // 如果操作失敗 (例如玩家不存在、資源 ID 無效、數量不合法)，返回 HTTP 400 Bad Request
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    public ResponseEntity<Void> addPlayerResource(@PathVariable String playerId, @RequestBody ResourceOperationRequest request) {
+        java.util.Map<String, Object> payload = java.util.Map.of(
+            "playerId", playerId,
+            "resourceId", request.getResourceId(),
+            "amount", request.getAmount(),
+            "action", "add"
+        );
+        eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     /**
@@ -92,13 +99,15 @@ public class ResourceController {
      * @param request 包含資源 ID 和消耗數量的請求體。
      */
     @PostMapping("/{playerId}/consume")
-    public ResponseEntity<Player> consumePlayerResource(@PathVariable String playerId, @RequestBody ResourceOperationRequest request) {
-        Optional<Player> updatedPlayer = resourceService.consumePlayerResource(playerId, request.getResourceId(), request.getAmount());
-        return updatedPlayer
-                // 如果操作成功，返回 HTTP 200 OK 和更新後的 Player 物件
-                .map(player -> new ResponseEntity<>(player, HttpStatus.OK))
-                // 如果操作失敗 (例如玩家不存在、資源 ID 無效、數量不合法、資源不足)，返回 HTTP 400 Bad Request
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    public ResponseEntity<Void> consumePlayerResource(@PathVariable String playerId, @RequestBody ResourceOperationRequest request) {
+        java.util.Map<String, Object> payload = java.util.Map.of(
+            "playerId", playerId,
+            "resourceId", request.getResourceId(),
+            "amount", request.getAmount(),
+            "action", "consume"
+        );
+        eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     /**

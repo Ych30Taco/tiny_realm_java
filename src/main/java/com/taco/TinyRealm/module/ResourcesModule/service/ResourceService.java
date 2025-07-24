@@ -2,17 +2,11 @@ package com.taco.TinyRealm.module.ResourcesModule.service;
 
 import com.fasterxml.jackson.core.type.TypeReference; // 用於 Jackson 反序列化 List
 import com.fasterxml.jackson.databind.ObjectMapper;   // Jackson 核心物件，用於 JSON 處理
-import com.taco.TinyRealm.module.playerModule.model.Player;         // 引入玩家模型，因為資源操作會影響玩家
-import com.taco.TinyRealm.module.playerModule.repository.PlayerRepository; // 引入玩家儲存庫，用於直接保存玩家狀態
-import com.taco.TinyRealm.module.playerModule.service.PlayerService; // 引入玩家服務，用於增減資源等高層操作
 import com.taco.TinyRealm.module.ResourcesModule.model.Resource;     // 引入資源類型模型
-import com.taco.TinyRealm.module.SaveSystemModule.model.GameState;
-import com.taco.TinyRealm.module.SaveSystemModule.service.GameSaveLoadService; // 新增 import
 import com.taco.TinyRealm.module.EventSystemModule.EventPublisher; // 匯入事件發佈器
 import com.taco.TinyRealm.module.EventSystemModule.EventType;      // 匯入事件型別
 import org.springframework.beans.factory.annotation.Value; // 用於從配置檔讀取屬性
 import org.springframework.core.io.ResourceLoader;       // 用於載入 Spring 資源 (如 classpath 中的檔案)
-import org.springframework.scheduling.annotation.Scheduled; // 用於建立定時任務
 import org.springframework.stereotype.Service;           // 標記為 Spring 服務組件
 
 import jakarta.annotation.PostConstruct; // 用於標記初始化方法
@@ -37,9 +31,6 @@ public class ResourceService {
 
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
     private final ResourceLoader resourceLoader;  // Spring 資源載入器
-    private final PlayerService playerService;    // 玩家服務，用於委託玩家相關操作
-    private final PlayerRepository playerRepository; // 玩家儲存庫，用於直接更新玩家資料
-    private final GameSaveLoadService gameSaveLoadService; // 新增 GameSaveLoadService 欄位
     private final EventPublisher eventPublisher; // 新增事件發佈器欄位
 
     // 用於儲存所有資源類型的 Map，以資源 ID 為鍵，方便快速查找其定義
@@ -54,24 +45,15 @@ public class ResourceService {
      * Spring 會自動提供這些依賴的實例。
      * @param objectMapper Jackson ObjectMapper 實例
      * @param resourceLoader Spring ResourceLoader 實例
-     * @param playerService PlayerService 實例
-     * @param playerRepository PlayerRepository 實例
-     * @param gameSaveLoadService GameSaveLoadService 實例
      * @param eventPublisher 事件發佈器實例
      */
     public ResourceService(
         ObjectMapper objectMapper,
         ResourceLoader resourceLoader,
-        PlayerService playerService,
-        PlayerRepository playerRepository,
-        GameSaveLoadService gameSaveLoadService,
         EventPublisher eventPublisher // 新增參數
     ) {
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
-        this.playerService = playerService;
-        this.playerRepository = playerRepository;
-        this.gameSaveLoadService = gameSaveLoadService;
         this.eventPublisher = eventPublisher; // 注入事件發佈器
     }
 
@@ -119,165 +101,5 @@ public class ResourceService {
      */
     public Optional<Resource> getResourceDefinitionById(String resourceId) {
         return Optional.ofNullable(resourceDefinitions.get(resourceId));
-    }
-
-    /**
-     * 玩家獲取資源 (增加資源數量)。
-     * 此方法會委託給 PlayerService 來實際增加玩家的資源數量，並觸發數據保存。
-     * 並於成功時發佈資源變動事件。
-     * @param playerId 玩家的唯一 ID。
-     * @param resourceId 資源類型 ID (例如 "wood", "gold")。
-     * @param amount 獲取的資源數量 (必須大於 0)。
-     * @return 如果操作成功，返回包含更新後 Player 物件的 Optional；否則返回 Optional.empty()。
-     */
-    public Optional<Player> addPlayerResource(String playerId, String resourceId, int amount) {
-        // 驗證資源 ID 是否有效
-        if (!resourceDefinitions.containsKey(resourceId)) {
-            System.err.println("錯誤：無效的資源類型ID: " + resourceId);
-            logger.error("無效的資源類型ID: {}", resourceId);
-            return Optional.empty();
-        }
-        // 驗證增加數量是否合法
-        if (amount <= 0) {
-            System.err.println("錯誤：資源增加數量必須大於0。");
-            logger.error("資源增加數量必須大於0。");
-            return Optional.empty();
-        }
-        // 委託 PlayerService 執行實際的資源增加操作，並由 PlayerService 負責保存
-        Optional<Player> result = playerService.addPlayerResource(playerId, resourceId, amount);
-        if (result.isPresent()) {
-            logger.info("玩家 {} 獲得 {} {}。", playerId, amount, resourceId);
-            // 發佈資源增加事件，payload 可攜帶詳細資訊
-            // payload 格式：Map<String, Object>，包含玩家ID、資源ID、數量、動作
-            java.util.Map<String, Object> payload = java.util.Map.of(
-                "playerId", playerId,
-                "resourceId", resourceId,
-                "amount", amount,
-                "action", "add"
-            );
-            eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
-        }
-        return result;
-    }
-
-    /**
-     * 玩家消耗資源 (減少資源數量)。
-     * 此方法會檢查玩家資源是否充足，然後更新玩家資源數量並保存。
-     * 並於成功時發佈資源變動事件。
-     * @param playerId 玩家的唯一 ID。
-     * @param resourceId 資源類型 ID。
-     * @param amount 消耗的資源數量 (必須大於 0)。
-     * @return 如果操作成功且資源充足，返回包含更新後 Player 物件的 Optional；否則返回 Optional.empty()。
-     */
-    public Optional<Player> consumePlayerResource(String playerId, String resourceId, int amount) {
-        // 驗證資源 ID 是否有效
-        if (!resourceDefinitions.containsKey(resourceId)) {
-            System.err.println("錯誤：無效的資源類型ID: " + resourceId);
-            logger.error("無效的資源類型ID: {}", resourceId);
-            return Optional.empty();
-        }
-        // 驗證消耗數量是否合法
-        if (amount <= 0) {
-            System.err.println("錯誤：資源消耗數量必須大於0。");
-            logger.error("資源消耗數量必須大於0。");
-            return Optional.empty();
-        }
-
-        // 從 PlayerService 獲取當前玩家數據
-        Optional<Player> playerOpt = playerService.getPlayer(playerId);
-        if (playerOpt.isPresent()) {
-            Player player = playerOpt.get();
-            Map<String, Integer> resources = player.getResources(); // 獲取玩家當前資源 Map
-            int currentAmount = resources.getOrDefault(resourceId, 0); // 獲取當前資源數量，如果沒有則為 0
-
-            // 檢查資源是否充足
-            if (currentAmount < amount) {
-                System.out.println("玩家 " + player.getPlayerName() + " (ID: " + playerId + ") 資源 " + resourceId + " 不足，需要 " + amount + " 但只有 " + currentAmount + "。");
-                logger.warn("玩家 {} (ID: {}) 資源 {} 不足，需要 {} 但只有 {}。", player.getPlayerName(), playerId, resourceId, amount, currentAmount);
-                return Optional.empty(); // 資源不足，操作失敗
-            }
-
-            // 更新玩家資源數量
-            resources.put(resourceId, currentAmount - amount);
-            playerRepository.save(player);
-            // 發佈資源消耗事件
-            java.util.Map<String, Object> payload = java.util.Map.of(
-                "playerId", playerId,
-                "resourceId", resourceId,
-                "amount", amount,
-                "action", "consume"
-            );
-            eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
-            return Optional.of(player); // 返回更新後的玩家物件
-        }
-        System.err.println("錯誤：找不到玩家 ID: " + playerId + "，無法消耗資源。");
-        logger.error("找不到玩家 ID: {}，無法消耗資源。", playerId);
-        return Optional.empty(); // 找不到玩家
-    }
-
-    /**
-     * 定時任務：每秒鐘為遊戲中的「主玩家」增加資源。
-     * 此任務在應用程式啟動後立即執行 (initialDelay = 0)，然後每隔 1000 毫秒 (1 秒) 重複執行。
-     * 執行時會針對每個資源產出發佈資源變動事件。
-     */
-    @Scheduled(initialDelay = 0, fixedRate = 1000)
-    public void produceResourcesPerSecond() {
-        // 首先，嘗試從遊戲狀態中獲取當前玩家。
-        // 在單人遊戲中，GameState 只有一個 Player 物件。
-        // 透過 PlayerRepositoryImpl 的 public final saveLoadService 屬性來獲取當前 GameState。
-        // 這是一種簡化的方法，因為 PlayerRepositoryImpl 已經注入了 GameSaveLoadService。
-        // 更嚴謹的做法可以是 PlayerService 提供一個 getActivePlayer() 或 getSinglePlayer()。
-        GameState gameState = gameSaveLoadService.loadGame();
-        Player currentPlayer = (gameState != null) ? gameState.getPlayer() : null;
-
-        if (currentPlayer == null) {
-            // 如果遊戲未初始化或沒有玩家，則跳過資源生產
-            // 這通常發生在應用程式剛啟動，還沒有通過 /api/player/create 創建玩家時
-            System.out.println("DEBUG: 遊戲未初始化或無玩家，跳過資源生產定時任務。");
-            logger.debug("遊戲未初始化或無玩家，跳過資源生產定時任務。");
-            return;
-        }
-
-        // 檢查玩家是否有設定資源生產率
-        if (currentPlayer.getResourceProductionRates() != null && !currentPlayer.getResourceProductionRates().isEmpty()) {
-            boolean resourcesActuallyAdded = false;
-
-            // 遍歷玩家設定的每個資源生產率
-            for (Map.Entry<String, Integer> entry : currentPlayer.getResourceProductionRates().entrySet()) {
-                String resourceId = entry.getKey();
-                Integer amountPerSecond = entry.getValue();
-
-                if (amountPerSecond != null && amountPerSecond > 0) {
-                    if (resourceDefinitions.containsKey(resourceId)) {
-                        Map<String, Integer> playerResources = currentPlayer.getResources();
-                        // 增加資源數量：原數量 + 生產數量
-                        playerResources.put(resourceId, playerResources.getOrDefault(resourceId, 0) + amountPerSecond);
-                        System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 獲得 " + amountPerSecond + " " + resourceDefinitions.get(resourceId).getName() + "。");
-                        logger.info("玩家 [{}] 獲得 {} {}。", currentPlayer.getPlayerName(), amountPerSecond, resourceDefinitions.get(resourceId).getName());
-                        // 發佈自動產出資源事件
-                        java.util.Map<String, Object> payload = java.util.Map.of(
-                            "playerId", currentPlayer.getPlayerId(),
-                            "resourceId", resourceId,
-                            "amount", amountPerSecond,
-                            "action", "produce"
-                        );
-                        eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
-                        resourcesActuallyAdded = true;
-                    } else {
-                        System.err.println("警告：玩家設定中存在未定義的資源類型ID: " + resourceId + "，已忽略。");
-                        logger.warn("玩家設定中存在未定義的資源類型ID: {}，已忽略。", resourceId);
-                    }
-                }
-            }
-            // 如果實際有資源被增加，才需要保存玩家數據
-            if (resourcesActuallyAdded) {
-                playerRepository.save(currentPlayer); // 保存更新後的玩家數據 (這會觸發 GameState 保存到 JSON)
-                System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 的資源已更新並儲存到檔案。");
-                logger.info("玩家 [{}] 的資源已更新並儲存到檔案。", currentPlayer.getPlayerName());
-            }
-        } else {
-            System.out.println("DEBUG: 玩家 [" + currentPlayer.getPlayerName() + "] 沒有設定任何資源生產率。");
-            logger.debug("玩家 [{}] 沒有設定任何資源生產率。", currentPlayer.getPlayerName());
-        }
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID; // 用於生成唯一 ID
 
@@ -106,29 +105,6 @@ public class PlayerService {
     // 計算升級所需經驗值 (簡化版)
     private long calculateExpToNextLevel(int currentLevel) {
         return currentLevel * 100L; // 簡化：每級所需經驗為當前等級的100倍
-    }
-
-    /**
-     * 增加玩家資源。
-     * @param playerId 玩家ID。
-     * @param resourceType 資源類型 (例如 "gold", "wood")。
-     * @param amount 增加的數量。
-     * @return 更新後的玩家物件 (Optional 避免 NullPointerException)。
-     */
-    public Optional<Player> addPlayerResource(String playerId, String resourceType, int amount) {
-        Optional<Player> playerOpt = playerRepository.findById(playerId);
-        if (playerOpt.isPresent()) {
-            Player player = playerOpt.get();
-            Map<String, Integer> resources = player.getResources();
-            resources.put(resourceType, resources.getOrDefault(resourceType, 0) + amount);
-            logger.info("玩家 {} 增加 {} {}，目前持有 {}。", player.getPlayerName(), amount, resourceType, resources.get(resourceType));
-            playerRepository.save(player);
-            // 發佈資源變動事件，攜帶資源類型與數量
-            eventPublisher.publish(EventType.RESOURCE_CHANGED, resourceType + "+" + amount, this);
-            return Optional.of(player);
-        }
-        logger.error("找不到玩家 ID: {}，無法增加資源。", playerId);
-        return Optional.empty();
     }
 
     // ... 其他玩家相關的業務邏輯，例如消耗資源、解鎖科技等

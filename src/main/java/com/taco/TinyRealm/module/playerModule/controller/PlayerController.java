@@ -1,5 +1,7 @@
 package com.taco.TinyRealm.module.playerModule.controller;
 
+import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.EventType;
 import com.taco.TinyRealm.module.playerModule.model.Location;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.playerModule.service.PlayerService;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class PlayerController {
 
     private final PlayerService playerService;
+    private final EventPublisher eventPublisher;
 
-    public PlayerController(PlayerService playerService) {
+    public PlayerController(PlayerService playerService, EventPublisher eventPublisher) {
         this.playerService = playerService;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -78,13 +82,18 @@ public class PlayerController {
      * POST /api/player/{playerId}/addResource
      * 為玩家增加特定資源。
      * 請求體範例: {"resourceType": "wood", "amount": 10}
-     * 響應範例: 更新後的 Player 物件
+     * 響應範例: 202 Accepted
      */
     @PostMapping("/{playerId}/addResource")
-    public ResponseEntity<Player> addPlayerResource(@PathVariable String playerId, @RequestBody ResourceAddRequest request) {
-        return playerService.addPlayerResource(playerId, request.getResourceType(), request.getAmount())
-                .map(player -> new ResponseEntity<>(player, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> addPlayerResource(@PathVariable String playerId, @RequestBody ResourceAddRequest request) {
+        java.util.Map<String, Object> payload = java.util.Map.of(
+            "playerId", playerId,
+            "resourceId", request.getResourceType(),
+            "amount", request.getAmount(),
+            "action", "add"
+        );
+        eventPublisher.publish(EventType.RESOURCE_CHANGED, payload, this);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 
