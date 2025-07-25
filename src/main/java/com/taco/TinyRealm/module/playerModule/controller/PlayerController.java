@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.module.playerModule.controller;
 
-import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
-import com.taco.TinyRealm.module.EventSystemModule.EventType;
+import com.taco.TinyRealm.module.EventSystemModule.model.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.model.EventType;
 import com.taco.TinyRealm.module.playerModule.model.Location;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.playerModule.service.PlayerService;

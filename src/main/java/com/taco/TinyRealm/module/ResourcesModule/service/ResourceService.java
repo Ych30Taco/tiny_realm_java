@@ -3,8 +3,8 @@ package com.taco.TinyRealm.module.ResourcesModule.service;
 import com.fasterxml.jackson.core.type.TypeReference; // 用於 Jackson 反序列化 List
 import com.fasterxml.jackson.databind.ObjectMapper;   // Jackson 核心物件，用於 JSON 處理
 import com.taco.TinyRealm.module.ResourcesModule.model.Resource;     // 引入資源類型模型
-import com.taco.TinyRealm.module.EventSystemModule.EventPublisher; // 匯入事件發佈器
-import com.taco.TinyRealm.module.EventSystemModule.EventType;      // 匯入事件型別
+import com.taco.TinyRealm.module.EventSystemModule.model.EventPublisher; // 匯入事件發佈器
+import com.taco.TinyRealm.module.EventSystemModule.model.EventType;      // 匯入事件型別
 import org.springframework.beans.factory.annotation.Value; // 用於從配置檔讀取屬性
 import org.springframework.core.io.ResourceLoader;       // 用於載入 Spring 資源 (如 classpath 中的檔案)
 import org.springframework.stereotype.Service;           // 標記為 Spring 服務組件

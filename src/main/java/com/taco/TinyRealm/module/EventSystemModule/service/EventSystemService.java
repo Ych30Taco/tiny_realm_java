@@ -1,6 +1,6 @@
 package com.taco.TinyRealm.module.EventSystemModule.service;
 
-import com.taco.TinyRealm.module.EventSystemModule.BaseEvent;
+import com.taco.TinyRealm.module.EventSystemModule.model.BaseEvent;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

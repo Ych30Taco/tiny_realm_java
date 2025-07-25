@@ -3,8 +3,8 @@ package com.taco.TinyRealm.module.ResourcesModule.controller;
 import com.taco.TinyRealm.module.playerModule.model.Player;     // 因為資源操作會影響玩家，API 響應可能返回玩家物件
 import com.taco.TinyRealm.module.ResourcesModule.model.Resource; // 引入資源類型模型
 import com.taco.TinyRealm.module.ResourcesModule.service.ResourceService; // 引入資源服務
-import com.taco.TinyRealm.module.EventSystemModule.EventPublisher;
-import com.taco.TinyRealm.module.EventSystemModule.EventType;
+import com.taco.TinyRealm.module.EventSystemModule.model.EventPublisher;
+import com.taco.TinyRealm.module.EventSystemModule.model.EventType;
 
 import lombok.Data;          // Lombok 註解，自動生成 getter, setter 等
 import lombok.NoArgsConstructor; // Lombok 註解

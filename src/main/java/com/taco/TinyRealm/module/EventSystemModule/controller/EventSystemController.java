@@ -1,6 +1,6 @@
 package com.taco.TinyRealm.module.EventSystemModule.controller;
 
-import com.taco.TinyRealm.module.EventSystemModule.BaseEvent;
+import com.taco.TinyRealm.module.EventSystemModule.model.BaseEvent;
 import com.taco.TinyRealm.module.EventSystemModule.service.EventSystemService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;

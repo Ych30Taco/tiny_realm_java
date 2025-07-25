@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.module.SaveSystemModule.service;
 
-import com.taco.TinyRealm.module.EventSystemModule.BaseEvent;
-import com.taco.TinyRealm.module.EventSystemModule.EventType;
+import com.taco.TinyRealm.module.EventSystemModule.model.BaseEvent;
+import com.taco.TinyRealm.module.EventSystemModule.model.EventType;
 import com.taco.TinyRealm.module.EventSystemModule.service.EventSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
