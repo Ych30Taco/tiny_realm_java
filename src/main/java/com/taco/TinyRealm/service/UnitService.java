@@ -27,7 +27,7 @@ public class UnitService {
     private static final int SOLDIER_WOOD_COST = 10;
 
     public Unit createUnit(String playerId, String type, int count, int x, int y ,boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         boolean hasBarracks = gameState.getBuildings().stream()
                 .anyMatch(b -> b.getType().equals("barracks"));
@@ -52,15 +52,16 @@ public class UnitService {
         unit.setX(x);
         unit.setY(y);
 
+        if (gameState.getUnits() == null) gameState.setUnits(new java.util.ArrayList<>());
         gameState.getUnits().add(unit);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
 
         eventService.addEvent(playerId, "unit_created", "Created " + count + " " + type + " at (" + x + "," + y + ")",isTest);
         return unit;
     }
 
     public Unit moveUnit(String playerId, String unitId, int newX, int newY) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         Unit unit = gameState.getUnits().stream()
                 .filter(u -> u.getId().equals(unitId))
@@ -78,8 +79,9 @@ public class UnitService {
     }
 
     public List<Unit> getUnits(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
+        if (gameState.getUnits() == null) gameState.setUnits(new java.util.ArrayList<>());
         return gameState.getUnits();
     }
 }

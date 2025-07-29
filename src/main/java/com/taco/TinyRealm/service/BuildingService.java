@@ -53,6 +53,7 @@ public class BuildingService {
         building.setX(x);
         building.setY(y);
 
+        if (gameState.getBuildings() == null) gameState.setBuildings(new java.util.ArrayList<>());
         gameState.getBuildings().add(building);
         storageService.saveGameState(playerId, gameState, isTest);
 
@@ -60,15 +61,17 @@ public class BuildingService {
 
         // 更新任務進度
         if (type.equals("barracks")) {
-            gameState.getTasks().stream()
-                .filter(t -> t.getType().equals("build_barracks") && "ACTIVE".equals(t.getStatus()))
-                .forEach(t -> {
-                    try {
-                        taskService.updateTaskProgress(playerId, t.getId(), 1,false);
-                    } catch (IOException e) {
-                        // ignore
-                    }
-                });
+            if (gameState.getTasks() != null) {
+                gameState.getTasks().stream()
+                    .filter(t -> t.getType().equals("build_barracks") && "ACTIVE".equals(t.getStatus()))
+                    .forEach(t -> {
+                        try {
+                            taskService.updateTaskProgress(playerId, t.getId(), 1,isTest);
+                        } catch (IOException e) {
+                            // ignore
+                        }
+                    });
+            }
         }
         return building;
     }

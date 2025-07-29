@@ -20,7 +20,7 @@ public class TaskService {
     private EventService eventService;
 
     public Task assignTask(String playerId, String type, String description, int target, Resource rewards,boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
 
         Task task = new Task();
@@ -32,15 +32,16 @@ public class TaskService {
         task.setRewards(rewards);
         task.setStatus("ACTIVE");
 
+        if (gameState.getTasks() == null) gameState.setTasks(new java.util.ArrayList<>());
         gameState.getTasks().add(task);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
 
-        eventService.addEvent(playerId, "task_assigned", "Assigned task: " + description,false);
+        eventService.addEvent(playerId, "task_assigned", "Assigned task: " + description,isTest);
         return task;
     }
 
     public Task updateTaskProgress(String playerId, String taskId, int progressIncrement,boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
 
         Task task = gameState.getTasks().stream()
@@ -53,16 +54,16 @@ public class TaskService {
         task.setProgress(task.getProgress() + progressIncrement);
         if (task.getProgress() >= task.getTarget()) {
             task.setStatus("COMPLETED");
-            resourceService.addResources(playerId, task.getRewards().getGold(), task.getRewards().getWood(),false);
-            eventService.addEvent(playerId, "task_completed", "Completed task: " + task.getDescription(),false);
+            resourceService.addResources(playerId, task.getRewards().getGold(), task.getRewards().getWood(),isTest);
+            eventService.addEvent(playerId, "task_completed", "Completed task: " + task.getDescription(),isTest);
         }
 
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
         return task;
     }
 
     public List<Task> getTasks(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getTasks();
     }

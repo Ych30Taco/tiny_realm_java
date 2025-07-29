@@ -32,6 +32,7 @@ public class AllianceService {
         alliance.setLeaderId(playerId);
         alliance.setLevel(1);
         alliance.setResources(new Resource());
+        if (alliance.getMembers() == null) alliance.setMembers(new java.util.ArrayList<>());
         alliance.getMembers().add(playerId);
 
         gameState.setAllianceId(alliance.getId());
@@ -50,6 +51,7 @@ public class AllianceService {
         Alliance alliance = storageService.loadAlliance(allianceId, isTest);
         if (alliance == null) throw new IllegalArgumentException("Alliance not found");
 
+        if (alliance.getMembers() == null) alliance.setMembers(new java.util.ArrayList<>());
         alliance.getMembers().add(playerId);
         gameState.setAllianceId(allianceId);
         storageService.saveGameState(playerId, gameState, isTest);

@@ -27,7 +27,33 @@ public class StorageService {
 
     public GameState loadGameState(String playerId, boolean isTest) throws IOException {
         File file = new File(storagePath + getFilePrefix(isTest) + playerId + ".json");
-        if (!file.exists()) return null;
+        if (!file.exists()) {
+            // 自動初始化空 GameState
+            GameState gameState = new GameState();
+            // 預設 player
+            com.taco.TinyRealm.model.Player player = new com.taco.TinyRealm.model.Player();
+            player.setId(playerId);
+            player.setName(playerId);
+            player.setLevel(1);
+            gameState.setPlayer(player);
+            // 預設資源
+            com.taco.TinyRealm.model.Resource resource = new com.taco.TinyRealm.model.Resource();
+            resource.setGold(0);
+            resource.setWood(0);
+            gameState.setResources(resource);
+            // 其他欄位預設
+            gameState.setBuildings(new java.util.ArrayList<>());
+            gameState.setUnits(new java.util.ArrayList<>());
+            gameState.setTasks(new java.util.ArrayList<>());
+            gameState.setInventory(new java.util.ArrayList<>());
+            gameState.setTrades(new java.util.ArrayList<>());
+            gameState.setTechnologies(new java.util.ArrayList<>());
+            gameState.setBattles(new java.util.ArrayList<>());
+            gameState.setEvents(new java.util.ArrayList<>());
+            gameState.setTerrains(new java.util.ArrayList<>());
+            saveGameState(playerId, gameState, isTest);
+            return gameState;
+        }
         return objectMapper.readValue(file, GameState.class);
     }
 
@@ -51,7 +77,7 @@ public class StorageService {
 
     public List<MarketListing> loadMarket(boolean isTest) throws IOException {
         File file = new File(storagePath + getFilePrefix(isTest) + "market.json");
-        if (!file.exists()) return null;
+        if (!file.exists()) return new java.util.ArrayList<>();
         return objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, MarketListing.class));
     }
 

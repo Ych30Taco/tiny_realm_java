@@ -23,7 +23,7 @@ public class TechnologyService {
     private static final int TECH_WOOD_COST = 50;
 
     public Technology researchTechnology(String playerId, String type ,boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
 
         boolean hasLab = gameState.getBuildings().stream()
@@ -40,22 +40,23 @@ public class TechnologyService {
                 .orElse(null);
         if (existingTech != null) throw new IllegalArgumentException("Technology already researched");
 
-        resourceService.addResources(playerId, -TECH_GOLD_COST, -TECH_WOOD_COST,false);
+        resourceService.addResources(playerId, -TECH_GOLD_COST, -TECH_WOOD_COST, isTest);
 
         Technology technology = new Technology();
         technology.setId(UUID.randomUUID().toString());
         technology.setType(type);
         technology.setLevel(1);
 
+        if (gameState.getTechnologies() == null) gameState.setTechnologies(new java.util.ArrayList<>());
         gameState.getTechnologies().add(technology);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
 
-        eventService.addEvent(playerId, "technology_researched", "Researched " + type ,false);
+        eventService.addEvent(playerId, "technology_researched", "Researched " + type ,isTest);
         return technology;
     }
 
     public List<Technology> getTechnologies(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getTechnologies();
     }

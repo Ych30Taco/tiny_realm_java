@@ -26,7 +26,7 @@ public class BattleService {
     private TaskService taskService; // 新增：任務服務
 
     public Battle startBattle(String playerId, List<String> unitIds, String enemyType,boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
 
         List<Unit> playerUnits = new ArrayList<>();
@@ -62,19 +62,21 @@ public class BattleService {
         if (playerWins) {
             rewards.setGold(50);
             rewards.setWood(20);
-            resourceService.addResources(playerId, rewards.getGold(), rewards.getWood(), false);
+            resourceService.addResources(playerId, rewards.getGold(), rewards.getWood(), isTest);
 
             // 更新任務進度
             if (enemyType.equals("bandit")) {
-                gameState.getTasks().stream()
-                    .filter(t -> t.getType().equals("defeat_bandit") && "ACTIVE".equals(t.getStatus()))
-                    .forEach(t -> {
-                        try {
-                            taskService.updateTaskProgress(playerId, t.getId(), 1,false);
-                        } catch (IOException e) {
-                            // ignore
-                        }
-                    });
+                if (gameState.getTasks() != null) {
+                    gameState.getTasks().stream()
+                        .filter(t -> t.getType().equals("defeat_bandit") && "ACTIVE".equals(t.getStatus()))
+                        .forEach(t -> {
+                            try {
+                                taskService.updateTaskProgress(playerId, t.getId(), 1,isTest);
+                            } catch (IOException e) {
+                                // ignore
+                            }
+                        });
+                }
             }
         }
 
@@ -88,10 +90,11 @@ public class BattleService {
         battle.setRewards(rewards);
         battle.setTimestamp(System.currentTimeMillis());
 
+        if (gameState.getBattles() == null) gameState.setBattles(new java.util.ArrayList<>());
         gameState.getBattles().add(battle);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
 
-        eventService.addEvent(playerId, "battle_completed", "Battle against " + enemyType + ": " + battle.getResult(), false);
+        eventService.addEvent(playerId, "battle_completed", "Battle against " + enemyType + ": " + battle.getResult(), isTest);
         return battle;
     }
 

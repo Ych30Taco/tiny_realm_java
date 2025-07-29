@@ -19,6 +19,7 @@ public class InventoryService {
     public Item addItem(String playerId, String type, int quantity, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
+        if (gameState.getInventory() == null) gameState.setInventory(new java.util.ArrayList<>());
         Item existingItem = gameState.getInventory().stream()
                 .filter(item -> item.getType().equals(type))
                 .findFirst()
@@ -41,6 +42,7 @@ public class InventoryService {
     public Item removeItem(String playerId, String itemId, int quantity, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
+        if (gameState.getInventory() == null) gameState.setInventory(new java.util.ArrayList<>());
         Item item = gameState.getInventory().stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst()
