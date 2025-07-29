@@ -20,7 +20,7 @@ public class InventoryController {
                                      @RequestParam String type,
                                      @RequestParam int quantity) {
         try {
-            Item item = inventoryService.addItem(playerId, type, quantity);
+            Item item = inventoryService.addItem(playerId, type, quantity,false);
             return ResponseEntity.ok(item);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -34,7 +34,7 @@ public class InventoryController {
                                         @PathVariable String itemId,
                                         @RequestParam int quantity) {
         try {
-            Item item = inventoryService.removeItem(playerId, itemId, quantity);
+            Item item = inventoryService.removeItem(playerId, itemId, quantity,false);
             return ResponseEntity.ok(item);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -46,7 +46,7 @@ public class InventoryController {
     @GetMapping("/{playerId}")
     public ResponseEntity<?> getInventory(@PathVariable String playerId) {
         try {
-            List<Item> inventory = inventoryService.getInventory(playerId);
+            List<Item> inventory = inventoryService.getInventory(playerId,false);
             return ResponseEntity.ok(inventory);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

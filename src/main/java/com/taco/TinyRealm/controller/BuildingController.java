@@ -21,7 +21,7 @@ public class BuildingController {
                                             @RequestParam int x,
                                             @RequestParam int y) {
         try {
-            Building building = buildingService.createBuilding(playerId, type, x, y);
+            Building building = buildingService.createBuilding(playerId, type, x, y,false);
             return ResponseEntity.ok(building);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -34,7 +34,7 @@ public class BuildingController {
     public ResponseEntity<?> upgradeBuilding(@PathVariable String playerId,
                                              @PathVariable String buildingId) {
         try {
-            Building building = buildingService.upgradeBuilding(playerId, buildingId);
+            Building building = buildingService.upgradeBuilding(playerId, buildingId,false);
             return ResponseEntity.ok(building);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -46,7 +46,7 @@ public class BuildingController {
     @GetMapping("/{playerId}")
     public ResponseEntity<?> getBuildings(@PathVariable String playerId) {
         try {
-            List<Building> buildings = buildingService.getBuildings(playerId);
+            List<Building> buildings = buildingService.getBuildings(playerId ,false);
             return ResponseEntity.ok(buildings);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

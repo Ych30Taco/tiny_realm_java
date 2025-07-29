@@ -20,7 +20,7 @@ public class EventController {
                                       @RequestParam String type,
                                       @RequestParam String message) {
         try {
-            eventService.addEvent(playerId, type, message);
+            eventService.addEvent(playerId, type, message, false);
             return ResponseEntity.ok("Event added successfully");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to add event: " + e.getMessage());
@@ -32,7 +32,7 @@ public class EventController {
     @GetMapping("/{playerId}")
     public ResponseEntity<?> getEvents(@PathVariable String playerId) {
         try {
-            List<GameEvent> events = eventService.getEvents(playerId);
+            List<GameEvent> events = eventService.getEvents(playerId, false);
             return ResponseEntity.ok(events);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

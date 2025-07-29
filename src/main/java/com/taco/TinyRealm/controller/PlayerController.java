@@ -17,7 +17,7 @@ public class PlayerController {
     @PostMapping("/create")
     public ResponseEntity<?> createPlayer(@RequestParam String id, @RequestParam String name) {
         try {
-            Player player = playerService.createPlayer(id, name);
+            Player player = playerService.createPlayer(id, name,false);
             return ResponseEntity.ok(player);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
@@ -27,7 +27,7 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getPlayer(@PathVariable String id) {
         try {
-            Player player = playerService.getPlayer(id);
+            Player player = playerService.getPlayer(id,false);
             if (player == null) return ResponseEntity.status(404).body(null);
             return ResponseEntity.ok(player);
         } catch (IOException e) {
@@ -38,7 +38,7 @@ public class PlayerController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePlayer(@PathVariable String id, @RequestParam String name, @RequestParam int level) {
         try {
-            Player player = playerService.updatePlayer(id, name, level);
+            Player player = playerService.updatePlayer(id, name, level,false);
             return ResponseEntity.ok(player);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

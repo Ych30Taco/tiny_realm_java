@@ -16,8 +16,8 @@ public class InventoryService {
     @Autowired
     private EventService eventService;
 
-    public Item addItem(String playerId, String type, int quantity) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public Item addItem(String playerId, String type, int quantity, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         Item existingItem = gameState.getInventory().stream()
                 .filter(item -> item.getType().equals(type))
@@ -25,21 +25,21 @@ public class InventoryService {
                 .orElse(null);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
-            eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + type);
+            eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + type, isTest);
         } else {
             Item newItem = new Item();
             newItem.setId(UUID.randomUUID().toString());
             newItem.setType(type);
             newItem.setQuantity(quantity);
             gameState.getInventory().add(newItem);
-            eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + type);
+            eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + type, isTest);
         }
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
         return existingItem != null ? existingItem : gameState.getInventory().get(gameState.getInventory().size() - 1);
     }
 
-    public Item removeItem(String playerId, String itemId, int quantity) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public Item removeItem(String playerId, String itemId, int quantity, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         Item item = gameState.getInventory().stream()
                 .filter(i -> i.getId().equals(itemId))
@@ -48,13 +48,13 @@ public class InventoryService {
         if (item.getQuantity() < quantity) throw new IllegalArgumentException("Insufficient item quantity");
         item.setQuantity(item.getQuantity() - quantity);
         if (item.getQuantity() == 0) gameState.getInventory().remove(item);
-        storageService.saveGameState(playerId, gameState);
-        eventService.addEvent(playerId, "item_removed", "Removed " + quantity + " " + item.getType());
+        storageService.saveGameState(playerId, gameState, isTest);
+        eventService.addEvent(playerId, "item_removed", "Removed " + quantity + " " + item.getType(), isTest);
         return item;
     }
 
-    public List<Item> getInventory(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public List<Item> getInventory(String playerId, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getInventory();
     }

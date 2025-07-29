@@ -13,25 +13,24 @@ public class ResourceService {
     @Autowired
     private StorageService storageService;
 
-    public Resource addResources(String playerId, int gold, int wood) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public Resource addResources(String playerId, int gold, int wood, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) {
-            gameState = new GameState();
-            gameState.setPlayer(new Player());
+            throw new IllegalArgumentException("Player not found");
         }
         Resource resources = gameState.getResources();
         if (resources == null) {
             resources = new Resource();
             gameState.setResources(resources);
         }
-        resources.setGold(resources.getGold() + gold);
-        resources.setWood(resources.getWood() + wood);
-        storageService.saveGameState(playerId, gameState);
+        resources.setGold(Math.max(0, resources.getGold() + gold));
+        resources.setWood(Math.max(0, resources.getWood() + wood));
+        storageService.saveGameState(playerId, gameState, isTest);
         return resources;
     }
 
-    public Resource getResources(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public Resource getResources(String playerId, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         return gameState != null ? gameState.getResources() : null;
     }
 }

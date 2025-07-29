@@ -12,7 +12,7 @@ public class PlayerService {
     @Autowired
     private StorageService storageService;
 
-    public Player createPlayer(String id, String name) throws IOException {
+    public Player createPlayer(String id, String name, boolean isTest) throws IOException {
         Player player = new Player();
         player.setId(id);
         player.setName(name);
@@ -20,22 +20,22 @@ public class PlayerService {
 
         GameState gameState = new GameState();
         gameState.setPlayer(player);
-        storageService.saveGameState(id, gameState);
+        storageService.saveGameState(id, gameState, isTest);
         return player;
     }
 
-    public Player getPlayer(String id) throws IOException {
-        GameState gameState = storageService.loadGameState(id);
+    public Player getPlayer(String id, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(id, isTest);
         return gameState != null ? gameState.getPlayer() : null;
     }
 
-    public Player updatePlayer(String id, String name, int level) throws IOException {
-        GameState gameState = storageService.loadGameState(id);
+    public Player updatePlayer(String id, String name, int level, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(id, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         Player player = gameState.getPlayer();
         player.setName(name);
         player.setLevel(level);
-        storageService.saveGameState(id, gameState);
+        storageService.saveGameState(id, gameState, isTest);
         return player;
     }
 }

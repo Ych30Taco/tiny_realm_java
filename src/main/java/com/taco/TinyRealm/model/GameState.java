@@ -23,6 +23,14 @@ public class GameState {
     private List<Trade> trades = new ArrayList<>();
     @JsonProperty("version")
     private String version = "1.0";
+    @JsonProperty("battles")
+    private List<Battle> battles = new ArrayList<>();
+    @JsonProperty("technologies")
+    private List<Technology> technologies = new ArrayList<>();
+    @JsonProperty("allianceId")
+    private String allianceId; // 新增：玩家所屬聯盟 ID
+    @JsonProperty("tasks")
+    private List<Task> tasks = new ArrayList<>(); // 新增：任務清單
 
     public Player getPlayer() { return player; }
     public void setPlayer(Player player) { this.player = player; }
@@ -42,4 +50,12 @@ public class GameState {
     public void setUnits(List<Unit> units) { this.units = units; }
     public List<Trade> getTrades() { return trades; }
     public void setTrades(List<Trade> trades) { this.trades = trades; }
+    public List<Battle> getBattles() { return battles; }
+    public void setBattles(List<Battle> battles) { this.battles = battles; }
+    public List<Technology> getTechnologies() { return technologies; }
+    public void setTechnologies(List<Technology> technologies) { this.technologies = technologies; }
+    public String getAllianceId() { return allianceId; }
+    public void setAllianceId(String allianceId) { this.allianceId = allianceId; }
+    public List<Task> getTasks() { return tasks; }
+    public void setTasks(List<Task> tasks) { this.tasks = tasks; }
 }

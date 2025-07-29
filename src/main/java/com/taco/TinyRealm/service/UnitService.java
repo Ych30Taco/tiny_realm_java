@@ -20,22 +20,30 @@ public class UnitService {
     private TerrainService terrainService;
     @Autowired
     private EventService eventService;
+    @Autowired
+    private TechnologyService technologyService; // 新增：科技服務
 
     private static final int SOLDIER_GOLD_COST = 20;
     private static final int SOLDIER_WOOD_COST = 10;
 
-    public Unit createUnit(String playerId, String type, int count, int x, int y) throws IOException {
+    public Unit createUnit(String playerId, String type, int count, int x, int y ,boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         boolean hasBarracks = gameState.getBuildings().stream()
                 .anyMatch(b -> b.getType().equals("barracks"));
         if (!hasBarracks) throw new IllegalArgumentException("Barracks required to create units");
+        // 檢查科技要求（例如弓箭手需要 archery 科技）
+        if (type.equals("archer")) {
+            boolean hasTech = gameState.getTechnologies().stream()
+                    .anyMatch(t -> t.getType().equals("archery"));
+            if (!hasTech) throw new IllegalArgumentException("Archery technology required");
+        }
         if (!terrainService.isPositionValid(playerId, x, y)) throw new IllegalArgumentException("Invalid or occupied position");
         Resource resources = gameState.getResources();
         if (resources == null || resources.getGold() < SOLDIER_GOLD_COST * count || resources.getWood() < SOLDIER_WOOD_COST * count)
             throw new IllegalArgumentException("Insufficient resources");
-        resourceService.addResources(playerId, -SOLDIER_GOLD_COST * count, -SOLDIER_WOOD_COST * count);
-        terrainService.occupyPosition(playerId, x, y);
+        resourceService.addResources(playerId, -SOLDIER_GOLD_COST * count, -SOLDIER_WOOD_COST * count, isTest);
+        terrainService.occupyPosition(playerId, x, y,isTest);
 
         Unit unit = new Unit();
         unit.setId(UUID.randomUUID().toString());
@@ -47,7 +55,7 @@ public class UnitService {
         gameState.getUnits().add(unit);
         storageService.saveGameState(playerId, gameState);
 
-        eventService.addEvent(playerId, "unit_created", "Created " + count + " " + type + " at (" + x + "," + y + ")");
+        eventService.addEvent(playerId, "unit_created", "Created " + count + " " + type + " at (" + x + "," + y + ")",isTest);
         return unit;
     }
 
@@ -60,12 +68,12 @@ public class UnitService {
                 .orElseThrow(() -> new IllegalArgumentException("Unit not found"));
         if (!terrainService.isPositionValid(playerId, newX, newY)) throw new IllegalArgumentException("Invalid or occupied position");
         terrainService.releasePosition(playerId, unit.getX(), unit.getY());
-        terrainService.occupyPosition(playerId, newX, newY);
+        terrainService.occupyPosition(playerId, newX, newY,false);
         unit.setX(newX);
         unit.setY(newY);
         storageService.saveGameState(playerId, gameState);
 
-        eventService.addEvent(playerId, "unit_moved", "Moved " + unit.getType() + " to (" + newX + "," + newY + ")");
+        eventService.addEvent(playerId, "unit_moved", "Moved " + unit.getType() + " to (" + newX + "," + newY + ")",false);
         return unit;
     }
 

@@ -22,7 +22,7 @@ public class UnitController {
                                         @RequestParam int x,
                                         @RequestParam int y) {
         try {
-            Unit unit = unitService.createUnit(playerId, type, count, x, y);
+            Unit unit = unitService.createUnit(playerId, type, count, x, y,false);
             return ResponseEntity.ok(unit);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

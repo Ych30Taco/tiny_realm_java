@@ -1,1 +1,755 @@
-{"player":{"id":"player1","name":"Hero","level":1},"resources":{"gold":100,"wood":50},"version":"1.0"}
+{
+    "player": {
+        "id": "play1",
+        "name": "Hero",
+        "level": 1
+    },
+    "resources": {
+        "gold": 100,
+        "wood": 50
+    },
+    "buildings": [
+        {
+            "id": "48a17d3e-4c88-477d-9e98-1458f304f7a4",
+            "type": "barracks",
+            "level": 10,
+            "x": 1,
+            "y": 1
+        },
+        {
+            "id": "6d0b957e-a85a-4cc3-9118-d49d785f7bb1",
+            "type": "barracks",
+            "level": 1,
+            "x": 1,
+            "y": 1
+        }
+    ],
+    "inventory": [
+        {
+            "id": "4a44baad-699b-414d-897c-b2d38ec059e7",
+            "type": "sword",
+            "quantity": 7
+        }
+    ],
+    "events": [
+        {
+            "id": "0b32a7d4-0b83-455a-a6df-a79ee9866c86",
+            "type": "building_created",
+            "message": "Created barracks at (1,1)",
+            "timestamp": 1753750144199
+        },
+        {
+            "id": "ed6a836f-a0c2-4c9a-ae32-8176ce6c35b8",
+            "type": "building_created",
+            "message": "Created barracks at (1,1)",
+            "timestamp": 1753750254423
+        },
+        {
+            "id": "ca3b0fc0-a767-4558-897d-dee099eb5097",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 2",
+            "timestamp": 1753750500406
+        },
+        {
+            "id": "6e601267-8e52-4830-bece-3137498fa38c",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 3",
+            "timestamp": 1753750503052
+        },
+        {
+            "id": "e1344b82-0de0-4eb2-b480-ef15b52f0429",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 4",
+            "timestamp": 1753750503725
+        },
+        {
+            "id": "6940c623-7f30-4ea6-b034-4a70099f0622",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 5",
+            "timestamp": 1753750504294
+        },
+        {
+            "id": "43b228a3-9580-4452-b32a-85e4c99eb3cd",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 6",
+            "timestamp": 1753750504819
+        },
+        {
+            "id": "e0df39ce-1a84-4739-9fba-9b8607c2f177",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 7",
+            "timestamp": 1753750505278
+        },
+        {
+            "id": "01f1d366-3f55-4c99-a073-5bede9d73640",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 8",
+            "timestamp": 1753750505706
+        },
+        {
+            "id": "7f8bed03-aed9-49b4-ad18-d63eceec48a9",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 9",
+            "timestamp": 1753750506229
+        },
+        {
+            "id": "5c66fb5d-e4f9-4be7-98c3-faf00893f2f5",
+            "type": "building_upgraded",
+            "message": "Upgraded barracks to level 10",
+            "timestamp": 1753750506775
+        },
+        {
+            "id": "218c69d0-4bc9-41b7-a761-0b00655fd10c",
+            "type": "item_removed",
+            "message": "Removed 1 sword",
+            "timestamp": 1753750663951
+        },
+        {
+            "id": "112877d0-0e9d-4431-ac55-b14bc296e70d",
+            "type": "item_removed",
+            "message": "Removed 1 sword",
+            "timestamp": 1753750665176
+        },
+        {
+            "id": "d8facb6b-3b0a-4795-b1bc-b188c022eda4",
+            "type": "item_removed",
+            "message": "Removed 1 sword",
+            "timestamp": 1753750665769
+        },
+        {
+            "id": "4832bd80-bc38-424d-9598-c5b7aae9569f",
+            "type": "building_created",
+            "message": "New barracks built",
+            "timestamp": 1753750709992
+        },
+        {
+            "id": "6a8b6630-f618-4b22-bb53-65096f191a6c",
+            "type": "building_created",
+            "message": "New barracks built",
+            "timestamp": 1753750716396
+        },
+        {
+            "id": "a50caed1-ca60-412b-a3f9-fa9b62abb83e",
+            "type": "building_created",
+            "message": "New barracks built",
+            "timestamp": 1753750717936
+        },
+        {
+            "id": "3a82ea92-5fa1-4abd-827e-99158c901716",
+            "type": "building_created",
+            "message": "New barracks built",
+            "timestamp": 1753750718989
+        },
+        {
+            "id": "808193ce-56f1-4fa9-b1b6-879805ab7684",
+            "type": "trade_accepted",
+            "message": "Trade with play0 accepted",
+            "timestamp": 1753751639373
+        }
+    ],
+    "terrains": [
+        {
+            "x": 0,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 0,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 1,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 2,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 3,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 4,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 5,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 6,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 7,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 8,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 0,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 1,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 2,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 3,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 4,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 5,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 6,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 7,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 8,
+            "type": "plain",
+            "occupied": false
+        },
+        {
+            "x": 9,
+            "y": 9,
+            "type": "plain",
+            "occupied": false
+        }
+    ],
+    "units": [],
+    "trades": [],
+    "version": "1.0"
+}

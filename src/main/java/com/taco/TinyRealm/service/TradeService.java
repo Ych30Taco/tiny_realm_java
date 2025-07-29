@@ -53,8 +53,8 @@ public class TradeService {
         receiverState.getTrades().add(trade);
         storageService.saveGameState(initiatorId, initiatorState);
         storageService.saveGameState(receiverId, receiverState);
-        eventService.addEvent(initiatorId, "trade_created", "Trade proposed to " + receiverId);
-        eventService.addEvent(receiverId, "trade_received", "Trade received from " + initiatorId);
+        eventService.addEvent(initiatorId, "trade_created", "Trade proposed to " + receiverId,false);
+        eventService.addEvent(receiverId, "trade_received", "Trade received from " + initiatorId,false);
         return trade;
     }
 
@@ -81,17 +81,17 @@ public class TradeService {
             if (item.getQuantity() < requestedItem.getQuantity())
                 throw new IllegalArgumentException("Insufficient item quantity for receiver");
         }
-        resourceService.addResources(initiatorId, -trade.getOfferedResources().getGold(), -trade.getOfferedResources().getWood());
-        resourceService.addResources(playerId, trade.getOfferedResources().getGold(), trade.getOfferedResources().getWood());
-        resourceService.addResources(playerId, -trade.getRequestedResources().getGold(), -trade.getRequestedResources().getWood());
-        resourceService.addResources(initiatorId, trade.getRequestedResources().getGold(), trade.getRequestedResources().getWood());
+        resourceService.addResources(initiatorId, -trade.getOfferedResources().getGold(), -trade.getOfferedResources().getWood(),false);
+        resourceService.addResources(playerId, trade.getOfferedResources().getGold(), trade.getOfferedResources().getWood(),false);
+        resourceService.addResources(playerId, -trade.getRequestedResources().getGold(), -trade.getRequestedResources().getWood(),false);
+        resourceService.addResources(initiatorId, trade.getRequestedResources().getGold(), trade.getRequestedResources().getWood(),false);
         for (Item offeredItem : trade.getOfferedItems()) {
-            inventoryService.removeItem(initiatorId, offeredItem.getId(), offeredItem.getQuantity());
-            inventoryService.addItem(playerId, offeredItem.getType(), offeredItem.getQuantity());
+            inventoryService.removeItem(initiatorId, offeredItem.getId(), offeredItem.getQuantity(),false);
+            inventoryService.addItem(playerId, offeredItem.getType(), offeredItem.getQuantity(),false);
         }
         for (Item requestedItem : trade.getRequestedItems()) {
-            inventoryService.removeItem(playerId, requestedItem.getId(), requestedItem.getQuantity());
-            inventoryService.addItem(initiatorId, requestedItem.getType(), requestedItem.getQuantity());
+            inventoryService.removeItem(playerId, requestedItem.getId(), requestedItem.getQuantity(),false);
+            inventoryService.addItem(initiatorId, requestedItem.getType(), requestedItem.getQuantity(),false);
         }
         trade.setStatus("ACCEPTED");
         initiatorState.getTrades().stream()
@@ -104,8 +104,8 @@ public class TradeService {
                 .ifPresent(t -> t.setStatus("ACCEPTED"));
         storageService.saveGameState(initiatorId, initiatorState);
         storageService.saveGameState(playerId, receiverState);
-        eventService.addEvent(initiatorId, "trade_accepted", "Trade with " + playerId + " accepted");
-        eventService.addEvent(playerId, "trade_accepted", "Trade with " + initiatorId + " accepted");
+        eventService.addEvent(initiatorId, "trade_accepted", "Trade with " + playerId + " accepted",false);
+        eventService.addEvent(playerId, "trade_accepted", "Trade with " + initiatorId + " accepted",false);
         return trade;
     }
 
@@ -131,8 +131,8 @@ public class TradeService {
                 .ifPresent(t -> t.setStatus("REJECTED"));
         storageService.saveGameState(initiatorId, initiatorState);
         storageService.saveGameState(playerId, receiverState);
-        eventService.addEvent(initiatorId, "trade_rejected", "Trade with " + playerId + " rejected");
-        eventService.addEvent(playerId, "trade_rejected", "Trade with " + initiatorId + " rejected");
+        eventService.addEvent(initiatorId, "trade_rejected", "Trade with " + playerId + " rejected",false);
+        eventService.addEvent(playerId, "trade_rejected", "Trade with " + initiatorId + " rejected",false);
         return trade;
     }
 

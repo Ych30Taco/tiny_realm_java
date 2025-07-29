@@ -45,7 +45,7 @@ public class TerrainService {
                 .orElse(false) == false;
     }
 
-    public void occupyPosition(String playerId, int x, int y) throws IOException {
+    public void occupyPosition(String playerId, int x, int y,boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         Terrain terrain = gameState.getTerrains().stream()

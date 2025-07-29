@@ -17,8 +17,8 @@ public class EventService {
     @Autowired(required = false)
     private SimpMessagingTemplate messagingTemplate;
 
-    public void addEvent(String playerId, String type, String message) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public void addEvent(String playerId, String type, String message, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         GameEvent event = new GameEvent();
         event.setId(UUID.randomUUID().toString());
@@ -26,14 +26,14 @@ public class EventService {
         event.setMessage(message);
         event.setTimestamp(System.currentTimeMillis());
         gameState.getEvents().add(event);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState, isTest);
         if (messagingTemplate != null) {
             messagingTemplate.convertAndSend("/topic/events/" + playerId, event);
         }
     }
 
-    public List<GameEvent> getEvents(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+    public List<GameEvent> getEvents(String playerId, boolean isTest) throws IOException {
+        GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getEvents();
     }
