@@ -1,0 +1,20 @@
+[
+  {
+    "type": "build_barracks",
+    "name": "Build Barracks",
+    "description": "Construct a barracks",
+    "category": "building",
+    "target": 1,
+    "rewards": { "gold": 50, "wood": 20 },
+    "timeLimit": 3600
+  },
+  {
+    "type": "research_archery",
+    "name": "Research Archery",
+    "description": "Research archery technology",
+    "category": "research",
+    "target": 1,
+    "rewards": { "gold": 100, "wood": 50 },
+    "timeLimit": 0
+  }
+]

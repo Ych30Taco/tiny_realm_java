@@ -1,0 +1,8 @@
+{
+  "maxListings": 100,
+  "tradeFee": 0.1,
+  "allowedResources": ["gold", "wood"],
+  "allowedItems": ["sword", "shield"],
+  "minPrice": { "gold": 10, "wood": 5 },
+  "description": "Market for trading resources and items"
+}

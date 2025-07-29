@@ -1,0 +1,22 @@
+[
+  {
+    "type": "soldier",
+    "name": "Soldier",
+    "description": "Basic infantry unit",
+    "cost": { "gold": 10, "wood": 5 },
+    "strength": 10,
+    "requiredBuilding": "barracks",
+    "requiredTech": null,
+    "trainingTime": 60
+  },
+  {
+    "type": "archer",
+    "name": "Archer",
+    "description": "Ranged attack unit",
+    "cost": { "gold": 15, "wood": 10 },
+    "strength": 15,
+    "requiredBuilding": "barracks",
+    "requiredTech": "archery",
+    "trainingTime": 90
+  }
+]

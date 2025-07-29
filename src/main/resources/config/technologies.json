@@ -1,0 +1,18 @@
+[
+  {
+    "type": "basic_military",
+    "name": "Basic Military",
+    "description": "Unlocks basic military units",
+    "cost": { "gold": 50, "wood": 20 },
+    "prerequisites": [],
+    "researchTime": 120
+  },
+  {
+    "type": "archery",
+    "name": "Archery",
+    "description": "Unlocks archer units",
+    "cost": { "gold": 100, "wood": 50 },
+    "prerequisites": ["basic_military"],
+    "researchTime": 240
+  }
+]

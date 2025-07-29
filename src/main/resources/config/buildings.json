@@ -1,0 +1,22 @@
+[
+  {
+    "type": "barracks",
+    "name": "Barracks",
+    "description": "Trains military units",
+    "cost": { "gold": 100, "wood": 50 },
+    "requiredTech": "basic_military",
+    "maxLevel": 5,
+    "buildTime": 300,
+    "output": { "soldiers": 10 }
+  },
+  {
+    "type": "laboratory",
+    "name": "Laboratory",
+    "description": "Researches technologies",
+    "cost": { "gold": 200, "wood": 100 },
+    "requiredTech": null,
+    "maxLevel": 3,
+    "buildTime": 600,
+    "output": {}
+  }
+]

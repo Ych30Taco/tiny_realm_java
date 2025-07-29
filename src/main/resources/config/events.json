@@ -1,0 +1,16 @@
+[
+  {
+    "type": "building_completed",
+    "name": "Building Completed",
+    "template": "Player {playerId} completed {buildingName}",
+    "category": "building",
+    "priority": "normal"
+  },
+  {
+    "type": "task_completed",
+    "name": "Task Completed",
+    "template": "Player {playerId} completed task {taskName}",
+    "category": "task",
+    "priority": "high"
+  }
+]
