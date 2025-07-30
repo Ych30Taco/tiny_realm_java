@@ -1,0 +1,9 @@
+{
+    "ResourceType": [
+        {"name": "FOOD",    "displayName": "糧食", "value": 100},
+        {"name": "WOOD",    "displayName": "木材", "value": 200},
+        {"name": "STONE",   "displayName": "石頭", "value": 300},
+        {"name": "IRON",    "displayName": "鐵礦", "value": 400},
+        {"name": "GOLD",    "displayName": "金幣", "value": 500}
+    ]
+}

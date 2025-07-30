@@ -1,6 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 /**
  * 市場掛單物件，紀錄資源或物品的交易資訊。

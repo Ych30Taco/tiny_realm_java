@@ -8,3 +8,7 @@ spring:
     name: TinyRealm
 
 
+app:
+  data:
+    config-resource-path: classpath:config/resource/
+    ResourceType-path: classpath:config/resource/ResourceType.json

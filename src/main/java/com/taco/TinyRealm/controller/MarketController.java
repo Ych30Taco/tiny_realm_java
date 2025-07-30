@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.MarketListing;
-import com.taco.TinyRealm.model.Resource;
+import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 import com.taco.TinyRealm.service.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

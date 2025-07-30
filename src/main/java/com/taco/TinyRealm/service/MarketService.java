@@ -2,7 +2,8 @@ package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Item;
 import com.taco.TinyRealm.model.MarketListing;
-import com.taco.TinyRealm.model.Resource;
+import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+import com.taco.TinyRealm.module.ResourceModule.service.ResourceService;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 

@@ -1,6 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 public class Task {
     @JsonProperty("id")

@@ -1,8 +1,8 @@
 package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Item;
-import com.taco.TinyRealm.model.Resource;
 import com.taco.TinyRealm.model.Trade;
+import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 import com.taco.TinyRealm.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
