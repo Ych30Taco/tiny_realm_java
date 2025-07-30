@@ -35,4 +35,9 @@ public class ResourceController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/types")
+    public ResponseEntity<?> getAllResourceDefinitions() {
+        return ResponseEntity.ok(resourceService.getAllResourceDefinitions());
+    }
 }
