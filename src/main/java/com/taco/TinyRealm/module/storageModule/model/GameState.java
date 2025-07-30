@@ -1,6 +1,18 @@
-package com.taco.TinyRealm.model;
+package com.taco.TinyRealm.module.storageModule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.taco.TinyRealm.model.Battle;
+import com.taco.TinyRealm.model.Building;
+import com.taco.TinyRealm.model.GameEvent;
+import com.taco.TinyRealm.model.Item;
+import com.taco.TinyRealm.model.Resource;
+import com.taco.TinyRealm.model.Task;
+import com.taco.TinyRealm.model.Technology;
+import com.taco.TinyRealm.model.Terrain;
+import com.taco.TinyRealm.model.Trade;
+import com.taco.TinyRealm.model.Unit;
+import com.taco.TinyRealm.module.playerModule.model.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package com.taco.TinyRealm.controller;
+package com.taco.TinyRealm.module.storageModule.controller;
 
-import com.taco.TinyRealm.model.GameState;
-import com.taco.TinyRealm.service.StorageService;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class StorageController {
     @PostMapping("/save/{playerId}")
     public ResponseEntity<?> saveGame(@PathVariable String playerId, @RequestBody GameState gameState) {
         try {
-            storageService.saveGameState(playerId, gameState);
+            storageService.saveGameState(playerId, gameState,false);
             return ResponseEntity.ok("Game state saved successfully");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to save game state: " + e.getMessage());
@@ -27,7 +28,7 @@ public class StorageController {
     @GetMapping("/load/{playerId}")
     public ResponseEntity<?> loadGame(@PathVariable String playerId) {
         try {
-            GameState gameState = storageService.loadGameState(playerId);
+            GameState gameState = storageService.loadGameState(playerId,false);
             if (gameState == null) return ResponseEntity.status(404).body(null);
             return ResponseEntity.ok(gameState);
         } catch (IOException e) {

@@ -1,9 +1,11 @@
 package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Battle;
-import com.taco.TinyRealm.model.GameState;
 import com.taco.TinyRealm.model.Resource;
 import com.taco.TinyRealm.model.Unit;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,7 +101,7 @@ public class BattleService {
     }
 
     public List<Battle> getBattles(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId,false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getBattles();
     }

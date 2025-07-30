@@ -1,8 +1,10 @@
 package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Alliance;
-import com.taco.TinyRealm.model.GameState;
 import com.taco.TinyRealm.model.Resource;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -64,19 +66,19 @@ public class AllianceService {
     }
 
     public void leaveAlliance(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId,false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         String allianceId = gameState.getAllianceId();
         if (allianceId == null) throw new IllegalArgumentException("Player not in an alliance");
 
-        Alliance alliance = storageService.loadAlliance(allianceId);
+        Alliance alliance = storageService.loadAlliance(allianceId,false);
         if (alliance == null) throw new IllegalArgumentException("Alliance not found");
         if (alliance.getLeaderId().equals(playerId)) throw new IllegalArgumentException("Leader cannot leave alliance");
 
         alliance.getMembers().remove(playerId);
         gameState.setAllianceId(null);
-        storageService.saveGameState(playerId, gameState);
-        storageService.saveAlliance(allianceId, alliance);
+        storageService.saveGameState(playerId, gameState,false);
+        storageService.saveAlliance(allianceId, alliance,false);
 
         eventService.addEvent(playerId, "alliance_left", "Left alliance: " + alliance.getName(),false);
         if (messagingTemplate != null)

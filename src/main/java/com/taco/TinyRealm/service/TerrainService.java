@@ -1,7 +1,9 @@
 package com.taco.TinyRealm.service;
 
-import com.taco.TinyRealm.model.GameState;
 import com.taco.TinyRealm.model.Terrain;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +71,7 @@ public class TerrainService {
     }
 
     public List<Terrain> getMap(String playerId) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId);
+        GameState gameState = storageService.loadGameState(playerId,false);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getTerrains();
     }

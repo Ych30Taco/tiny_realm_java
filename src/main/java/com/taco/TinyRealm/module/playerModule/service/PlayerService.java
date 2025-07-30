@@ -1,20 +1,24 @@
-package com.taco.TinyRealm.service;
+package com.taco.TinyRealm.module.playerModule.service;
 
-import com.taco.TinyRealm.model.GameState;
-import com.taco.TinyRealm.model.Player;
+import com.taco.TinyRealm.module.playerModule.model.Player;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class PlayerService {
     @Autowired
     private StorageService storageService;
 
-    public Player createPlayer(String id, String name, boolean isTest) throws IOException {
+    public Player createPlayer(String name, boolean isTest) throws IOException {
         Player player = new Player();
-        player.setId(id);
+        
+        player.setId(UUID.randomUUID().toString());
         player.setName(name);
         player.setLevel(1);
 
@@ -29,13 +33,13 @@ public class PlayerService {
         gameState.setBattles(new java.util.ArrayList<>());
         gameState.setEvents(new java.util.ArrayList<>());
         gameState.setTerrains(new java.util.ArrayList<>());
-        storageService.saveGameState(id, gameState, isTest);
+        storageService.saveGameState(player.getId(), gameState, isTest);
         return player;
     }
 
-    public Player getPlayer(String id, boolean isTest) throws IOException {
+    public GameState getPlayer(String id, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(id, isTest);
-        return gameState != null ? gameState.getPlayer() : null;
+        return gameState != null ? gameState : null;
     }
 
     public Player updatePlayer(String id, String name, int level, boolean isTest) throws IOException {

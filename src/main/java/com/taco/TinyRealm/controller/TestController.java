@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,3 +77,4 @@ public class TestController {
         return "test";
     }
 }
+ */

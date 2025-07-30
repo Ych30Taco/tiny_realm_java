@@ -1,8 +1,10 @@
 package com.taco.TinyRealm.service;
 
-import com.taco.TinyRealm.model.GameState;
 import com.taco.TinyRealm.model.Resource;
 import com.taco.TinyRealm.model.Task;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

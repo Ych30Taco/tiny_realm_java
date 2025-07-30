@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.model;
+package com.taco.TinyRealm.module.playerModule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

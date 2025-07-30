@@ -1,8 +1,10 @@
 package com.taco.TinyRealm.service;
 
-import com.taco.TinyRealm.model.GameState;
 import com.taco.TinyRealm.model.Resource;
 import com.taco.TinyRealm.model.Unit;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +74,7 @@ public class UnitService {
         terrainService.occupyPosition(playerId, newX, newY,false);
         unit.setX(newX);
         unit.setY(newY);
-        storageService.saveGameState(playerId, gameState);
+        storageService.saveGameState(playerId, gameState,false);
 
         eventService.addEvent(playerId, "unit_moved", "Moved " + unit.getType() + " to (" + newX + "," + newY + ")",false);
         return unit;
