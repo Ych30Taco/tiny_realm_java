@@ -60,5 +60,15 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>http://172.24.36.46:8088/api/v4/groups/15/-/packages/maven</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Internal Repository</name>
+            <url>http://172.24.36.46:8088/api/v4/projects/122/packages/maven</url>
+        </repository>
+    </repositories>
 </project>
