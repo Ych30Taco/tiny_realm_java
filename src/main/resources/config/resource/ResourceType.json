@@ -14,7 +14,8 @@
       "stackable": true,
       "category": "Basic",
       "sortOrder": 1,
-      "baseStorageCapacity": 5000000,
+      "nowAmount": 1000,
+      "maxAmount": 5000000,
       "protectedStoragePercentage": 0.3,
       "protectedStorageMaxAmount": 10000000,
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
@@ -34,7 +35,8 @@
       "stackable": true,
       "category": "Basic",
       "sortOrder": 2,
-      "baseStorageCapacity": 5000000,
+      "nowAmount": 1000,
+      "maxAmount": 5000000,
       "protectedStoragePercentage": 0.3,
       "protectedStorageMaxAmount": 10000000,
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
@@ -54,7 +56,8 @@
       "stackable": true,
       "category": "Basic",
       "sortOrder": 3,
-      "baseStorageCapacity": 4000000,
+      "nowAmount": 1000,
+      "maxAmount": 4000000,
       "protectedStoragePercentage": 0.25,
       "protectedStorageMaxAmount": 8000000,
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
@@ -74,7 +77,8 @@
       "stackable": true,
       "category": "Basic",
       "sortOrder": 4,
-      "baseStorageCapacity": 3000000,
+      "nowAmount": 1000,
+      "maxAmount": 3000000,
       "protectedStoragePercentage": 0.2,
       "protectedStorageMaxAmount": 6000000,
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
@@ -94,7 +98,8 @@
       "stackable": true,
       "category": "Premium",
       "sortOrder": 5,
-      "baseStorageCapacity": 999999999,
+      "nowAmount": 1000,
+      "maxAmount": 999999999,
       "protectedStoragePercentage": 1.0, 
       "protectedStorageMaxAmount": 999999999,
       "acquisitionMethods": ["QuestReward", "ShopPurchase", "EventReward", "Taxation", "Pillage"]
@@ -114,7 +119,8 @@
       "stackable": true,
       "category": "Premium",
       "sortOrder": 6,
-      "baseStorageCapacity": 999999999, 
+      "nowAmount": 1000,
+      "maxAmount": 999999999, 
       "protectedStoragePercentage": 1.0,
       "protectedStorageMaxAmount": 999999999,
       "acquisitionMethods": ["ShopPurchase", "EventReward", "AchievementReward"] 

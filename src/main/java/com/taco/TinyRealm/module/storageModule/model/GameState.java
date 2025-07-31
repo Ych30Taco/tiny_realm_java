@@ -10,8 +10,10 @@ import com.taco.TinyRealm.model.Technology;
 import com.taco.TinyRealm.model.Terrain;
 import com.taco.TinyRealm.model.Trade;
 import com.taco.TinyRealm.model.Unit;
-import com.taco.TinyRealm.module.ResourceModule.model.ResourceType;
 import com.taco.TinyRealm.module.playerModule.model.Player;
+import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
+import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
+import java.util.Map;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class GameState {
     private Player player;
     /** 玩家資源 */
     @JsonProperty("resources")
-    private List<ResourceType> resources;
+    private PlayerResource resources;
     /** 玩家建築列表 */
     @JsonProperty("buildings")
     private List<Building> buildings = new ArrayList<>();
@@ -65,9 +67,9 @@ public class GameState {
     /** 設定玩家資訊 */
     public void setPlayer(Player player) { this.player = player; }
     /** 取得玩家資源 */
-    public List<ResourceType> getResources() { return resources; }
+    public PlayerResource getResources() { return resources; }
     /** 設定玩家資源 */
-    public void setResources(List<ResourceType> resources) { this.resources = resources; }
+    public void setResources(PlayerResource resources) { this.resources = resources; }
     /** 取得遊戲版本 */
     public String getVersion() { return version; }
     /** 設定遊戲版本 */

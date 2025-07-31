@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.module.ResourceModule.model;
+package com.taco.TinyRealm.module.resourceModule.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +19,8 @@ public class ResourceType {
     private boolean stackable;
     private String category;
     private int sortOrder;
-    private long baseStorageCapacity;
+    private int nowAmount;
+    private int maxAmount;
     private double protectedStoragePercentage;
     private long protectedStorageMaxAmount;
     private List<String> acquisitionMethods;

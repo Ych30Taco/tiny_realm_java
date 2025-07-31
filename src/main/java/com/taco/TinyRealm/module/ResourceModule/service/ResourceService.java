@@ -1,8 +1,8 @@
-package com.taco.TinyRealm.module.ResourceModule.service;
+package com.taco.TinyRealm.module.resourceModule.service;
 
+import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
-import com.taco.TinyRealm.module.ResourceModule.model.ResourceType;
 
 import jakarta.annotation.PostConstruct;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,8 +15,10 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,11 +53,16 @@ public class ResourceService {
 
      @PostConstruct
     public void init() {
+        System.out.println("---- 應用程式啟動中，載入資源模組 ----");
         try (InputStream is = resourceTypesPath.getInputStream()) {
             resourceTypeList = objectMapper.readValue(is, new TypeReference<List<ResourceType>>() {});
+            String resourceNames = getResourceTypeId();
+            System.out.println("---- 應用程式啟動中，已載入" + resourceNames + " ----");
         } catch (Exception e) {
+            System.out.println("---- 應用程式啟動中，載入資源模組失敗 ----");
             throw new RuntimeException("Failed to load ResourceType.json", e);
         }
+        System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
     }
 
     public List<ResourceType> getAllResourceTypes() {
@@ -67,6 +74,16 @@ public class ResourceService {
                 .filter(r -> r.getResourceID().equals(resourceID))
                 .findFirst()
                 .orElse(null);
+    }
+    public String getResourceTypeId() {
+        List<ResourceType> resourceList = resourceTypeList;
+        String resource_name = "";
+        for (ResourceType resource : resourceList) {
+            Map<String, String> name = resource.getResourceName();
+            resource_name+=name.get("zh-TW")+ " , ";
+        }
+        resource_name+= "共"+resourceList.size()+"資源";
+        return resource_name;
     }
 
 

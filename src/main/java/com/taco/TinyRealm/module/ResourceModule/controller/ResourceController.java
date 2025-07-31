@@ -1,10 +1,10 @@
-package com.taco.TinyRealm.module.ResourceModule.controller;
-
-import com.taco.TinyRealm.module.ResourceModule.service.ResourceService;
+package com.taco.TinyRealm.module.resourceModule.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
 
 import java.io.IOException;
 import java.util.Map;
