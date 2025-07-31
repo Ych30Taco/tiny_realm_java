@@ -48,9 +48,9 @@ public class PlayerService {
         return player;
     }
 
-    public GameState getPlayer(String playid, boolean isTest) throws IOException {
+    public GameState getPlayer(String playerid, boolean isTest) throws IOException {
         //GameState gameState = storageService.loadGameState(id, isTest);
-        GameState gameState = storageService.getGameStateList(playid);
+        GameState gameState = storageService.getGameStateList(playerid);
         return gameState != null ? gameState : null;
     }
 

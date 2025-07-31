@@ -22,6 +22,7 @@ public class StorageService {
     private Map<String,GameState> gameStateList = new ConcurrentHashMap<>();
     
     public GameState getGameStateList(String playerId) {
+        System.out.println(playerId);
         return  Collections.unmodifiableMap(gameStateList).get(playerId);
     }
 
@@ -42,8 +43,16 @@ public class StorageService {
             System.out.println("Warning: Game state file for player " + playerId + " does not exist.");
             return null;
         }
-        gameStateList.put(playerId, objectMapper.readValue(file, GameState.class));
-        return objectMapper.readValue(file, GameState.class);
+        System.out.println(playerId);
+
+        // 讀取一次檔案，將結果存到一個變數
+        GameState loadedState = objectMapper.readValue(file, GameState.class);
+        System.out.println("loadedState"+loadedState);
+        // 將這個變數存入記憶體
+        gameStateList.put(playerId, loadedState);
+         System.out.println("gameStateList"+gameStateList);
+        // 回傳這個變數
+        return loadedState;
     }
 
     /*
