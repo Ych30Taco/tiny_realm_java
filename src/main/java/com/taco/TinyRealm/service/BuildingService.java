@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Building;
 import com.taco.TinyRealm.module.ResourceModule.model.Resource;
@@ -103,3 +103,4 @@ public class BuildingService {
         return gameState.getBuildings();
     }
 }
+ */

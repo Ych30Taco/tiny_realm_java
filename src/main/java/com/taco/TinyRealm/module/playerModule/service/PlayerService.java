@@ -24,11 +24,12 @@ public class PlayerService {
 
         GameState gameState = new GameState();
         gameState.setPlayer(player);
+        gameState.setResources(new java.util.ArrayList<>());
         gameState.setBuildings(new java.util.ArrayList<>());
         gameState.setUnits(new java.util.ArrayList<>());
         gameState.setTasks(new java.util.ArrayList<>());
         gameState.setInventory(new java.util.ArrayList<>());
-        gameState.setTrades(new java.util.ArrayList<>());
+        gameState.setTrades(new java.util.ArrayList<>());   
         gameState.setTechnologies(new java.util.ArrayList<>());
         gameState.setBattles(new java.util.ArrayList<>());
         gameState.setEvents(new java.util.ArrayList<>());

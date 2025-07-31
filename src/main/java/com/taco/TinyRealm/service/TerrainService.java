@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Terrain;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
@@ -76,3 +76,4 @@ public class TerrainService {
         return gameState.getTerrains();
     }
 }
+ */

@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+//import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 import java.util.List;
 
@@ -28,8 +28,8 @@ public class Battle {
     @JsonProperty("result")
     private String result;
     /** 戰鬥獎勵 */
-    @JsonProperty("rewards")
-    private Resource rewards;
+    //@JsonProperty("rewards")
+    //private Resource rewards;
     /** 戰鬥發生時間戳（毫秒） */
     @JsonProperty("timestamp")
     private long timestamp;
@@ -59,9 +59,9 @@ public class Battle {
     /** 設定戰鬥結果 */
     public void setResult(String result) { this.result = result; }
     /** 取得戰鬥獎勵 */
-    public Resource getRewards() { return rewards; }
+    //public Resource getRewards() { return rewards; }
     /** 設定戰鬥獎勵 */
-    public void setRewards(Resource rewards) { this.rewards = rewards; }
+    //public void setRewards(Resource rewards) { this.rewards = rewards; }
     /** 取得戰鬥時間戳 */
     public long getTimestamp() { return timestamp; }
     /** 設定戰鬥時間戳 */

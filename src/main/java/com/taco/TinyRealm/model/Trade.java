@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+//import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 import java.util.List;
 
@@ -19,14 +19,14 @@ public class Trade {
     @JsonProperty("receiverId")
     private String receiverId;
     /** 發起方提供的資源 */
-    @JsonProperty("offeredResources")
-    private Resource offeredResources;
+    /*@JsonProperty("offeredResources")
+    private Resource offeredResources;*/
     /** 發起方提供的物品列表 */
     @JsonProperty("offeredItems")
     private List<Item> offeredItems;
     /** 發起方要求的資源 */
-    @JsonProperty("requestedResources")
-    private Resource requestedResources;
+   /* @JsonProperty("requestedResources")
+    private Resource requestedResources;*/
     /** 發起方要求的物品列表 */
     @JsonProperty("requestedItems")
     private List<Item> requestedItems;
@@ -47,17 +47,17 @@ public class Trade {
     /** 設定接收方 ID */
     public void setReceiverId(String receiverId) { this.receiverId = receiverId; }
     /** 取得發起方提供資源 */
-    public Resource getOfferedResources() { return offeredResources; }
+    //public Resource getOfferedResources() { return offeredResources; }
     /** 設定發起方提供資源 */
-    public void setOfferedResources(Resource offeredResources) { this.offeredResources = offeredResources; }
+   // public void setOfferedResources(Resource offeredResources) { this.offeredResources = offeredResources; }
     /** 取得發起方提供物品 */
     public List<Item> getOfferedItems() { return offeredItems; }
     /** 設定發起方提供物品 */
     public void setOfferedItems(List<Item> offeredItems) { this.offeredItems = offeredItems; }
     /** 取得要求資源 */
-    public Resource getRequestedResources() { return requestedResources; }
+    //public Resource getRequestedResources() { return requestedResources; }
     /** 設定要求資源 */
-    public void setRequestedResources(Resource requestedResources) { this.requestedResources = requestedResources; }
+    //public void setRequestedResources(Resource requestedResources) { this.requestedResources = requestedResources; }
     /** 取得要求物品 */
     public List<Item> getRequestedItems() { return requestedItems; }
     /** 設定要求物品 */

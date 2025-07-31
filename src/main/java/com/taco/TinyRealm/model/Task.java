@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+//import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 public class Task {
     @JsonProperty("id")
@@ -14,8 +14,8 @@ public class Task {
     private int progress;
     @JsonProperty("target")
     private int target;
-    @JsonProperty("rewards")
-    private Resource rewards;
+    /*@JsonProperty("rewards")
+    private Resource rewards;*/
     @JsonProperty("status")
     private String status;
 
@@ -29,8 +29,8 @@ public class Task {
     public void setProgress(int progress) { this.progress = progress; }
     public int getTarget() { return target; }
     public void setTarget(int target) { this.target = target; }
-    public Resource getRewards() { return rewards; }
-    public void setRewards(Resource rewards) { this.rewards = rewards; }
+    //public Resource getRewards() { return rewards; }
+    //public void setRewards(Resource rewards) { this.rewards = rewards; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 }

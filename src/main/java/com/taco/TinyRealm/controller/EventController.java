@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.GameEvent;
 import com.taco.TinyRealm.service.EventService;
@@ -41,3 +41,4 @@ public class EventController {
         }
     }
 }
+ */

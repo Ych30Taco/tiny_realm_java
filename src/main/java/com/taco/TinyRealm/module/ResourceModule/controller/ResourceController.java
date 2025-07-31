@@ -1,6 +1,5 @@
 package com.taco.TinyRealm.module.ResourceModule.controller;
 
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 import com.taco.TinyRealm.module.ResourceModule.service.ResourceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resource")
@@ -15,6 +15,17 @@ public class ResourceController {
     @Autowired
     private ResourceService resourceService;
 
+    @GetMapping("/types")
+    public ResponseEntity<?> getAllResourceTypes() {
+        return ResponseEntity.ok(resourceService.getAllResourceTypes());
+    }
+    @PostMapping("/typeById")
+    public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
+        String resourceID = (String) body.get("resourceID");
+        return ResponseEntity.ok(resourceService.getResourceTypeById(resourceID ));
+    }
+
+/* 
     @PostMapping("/{playerId}/add")
     public ResponseEntity<?> addResources(@PathVariable String playerId, @RequestParam int gold, @RequestParam int wood) {
         try {
@@ -34,10 +45,7 @@ public class ResourceController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
         }
-    }
+    }*/
 
-    @GetMapping("/types")
-    public ResponseEntity<?> getAllResourceDefinitions() {
-        return ResponseEntity.ok(resourceService.getAllResourceDefinitions());
-    }
+
 }

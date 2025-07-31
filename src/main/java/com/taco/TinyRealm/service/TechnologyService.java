@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Technology;
 import com.taco.TinyRealm.module.ResourceModule.model.Resource;
@@ -64,3 +64,4 @@ public class TechnologyService {
         return gameState.getTechnologies();
     }
 }
+ */

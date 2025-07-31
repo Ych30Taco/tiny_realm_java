@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Alliance;
 import com.taco.TinyRealm.module.ResourceModule.model.Resource;
@@ -126,3 +126,4 @@ public class AllianceService {
         return alliance;
     }
 }
+ */

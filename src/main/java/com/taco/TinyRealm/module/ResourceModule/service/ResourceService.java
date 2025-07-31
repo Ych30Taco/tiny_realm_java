@@ -1,8 +1,8 @@
 package com.taco.TinyRealm.module.ResourceModule.service;
 
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
+import com.taco.TinyRealm.module.ResourceModule.model.ResourceType;
 
 import jakarta.annotation.PostConstruct;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -27,12 +29,11 @@ public class ResourceService {
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
     private final ResourceLoader resourceLoader;  // Spring 資源載入器
 
-    // 用於儲存所有資源類型的 Map，以資源 ID 為鍵，方便快速查找其定義
-    private List<Map<String, String>> resourceDefinitions = new java.util.ArrayList<>();
+    private List<ResourceType> resourceTypeList = Collections.emptyList();
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.ResourceType-path}")
-    private String resourceTypesPath;
+    private org.springframework.core.io.Resource resourceTypesPath;
 
     @Autowired
     private StorageService storageService;
@@ -50,39 +51,27 @@ public class ResourceService {
 
      @PostConstruct
     public void init() {
-        try {
-            // 從 classpath 載入 resource_types.json 檔案
-            org.springframework.core.io.Resource resourceFile = resourceLoader.getResource(resourceTypesPath);
-            try (InputStream inputStream = resourceFile.getInputStream()) {
-                // 使用 ObjectMapper 將 JSON 檔案內容反序列化為 List<ResourceType>
-                Map<String, List<Map<String, String>>> resources = objectMapper.readValue(
-                    inputStream, new TypeReference<Map<String, List<Map<String, String>>>>() {});
-                List<Map<String, String>> resourcedata = resources.get("ResourceType");
-                System.out.println("DEBUG: 資源類型已成功載入 (" + resourcedata.size() + " 種)。");
-                for (Map<String, String> data : resourcedata) {
-                    System.out.println("Resource name: " + data.get("name"));
-                }
-                // 存到類別欄位
-                this.resourceDefinitions = resourcedata;
-            }
-        } catch (IOException e) {
-            System.err.println("錯誤：載入資源類型失敗！請檢查 " + resourceTypesPath + " 檔案。" + e.getMessage());
-            e.printStackTrace();
+        try (InputStream is = resourceTypesPath.getInputStream()) {
+            resourceTypeList = objectMapper.readValue(is, new TypeReference<List<ResourceType>>() {});
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load ResourceType.json", e);
         }
     }
 
-    /**
-     * 獲取所有已定義的資源類型列表。
-     * @return 包含所有資源類型定義的列表。
-     */
-    public List<Map<String, String>> getAllResourceDefinitions() {
-        // 返回一個新的 ArrayList，避免外部直接修改內部資料
-        return new java.util.ArrayList<>(resourceDefinitions);
+    public List<ResourceType> getAllResourceTypes() {
+        return resourceTypeList;
+    }
+
+    public ResourceType getResourceTypeById(String resourceID) {
+        return resourceTypeList.stream()
+                .filter(r -> r.getResourceID().equals(resourceID))
+                .findFirst()
+                .orElse(null);
     }
 
 
 
-
+/* 
     public Resource addResources(String playerId, int gold, int wood, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) {
@@ -103,4 +92,5 @@ public class ResourceService {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         return gameState != null ? gameState.getResources() : null;
     }
+    */
 }

@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+//import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Alliance {
     private int level;
     /** 聯盟資源 */
     @JsonProperty("resources")
-    private Resource resources;
+    //private Resource resources;
 
     /** 取得聯盟 ID */
     public String getId() { return id; }
@@ -50,7 +50,7 @@ public class Alliance {
     /** 設定聯盟等級 */
     public void setLevel(int level) { this.level = level; }
     /** 取得聯盟資源 */
-    public Resource getResources() { return resources; }
+    //public Resource getResources() { return resources; }
     /** 設定聯盟資源 */
-    public void setResources(Resource resources) { this.resources = resources; }
+    //public void setResources(Resource resources) { this.resources = resources; }
 }

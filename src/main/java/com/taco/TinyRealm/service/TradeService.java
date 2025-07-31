@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Item;
 import com.taco.TinyRealm.model.Trade;
@@ -147,3 +147,4 @@ public class TradeService {
         return gameState.getTrades();
     }
 }
+ */

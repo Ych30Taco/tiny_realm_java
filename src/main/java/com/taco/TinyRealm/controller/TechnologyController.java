@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Technology;
 import com.taco.TinyRealm.service.TechnologyService;
@@ -40,3 +40,4 @@ public class TechnologyController {
         }
     }
 }
+ */

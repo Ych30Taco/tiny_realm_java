@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
+//import com.taco.TinyRealm.module.ResourceModule.model.Resource;
 
 /**
  * 市場掛單物件，紀錄資源或物品的交易資訊。
@@ -17,14 +17,14 @@ public class MarketListing {
     @JsonProperty("type")
     private String type; // "resource" or "item"
     /** 掛單資源內容（若為資源掛單） */
-    @JsonProperty("resource")
-    private Resource resource;
+/*     @JsonProperty("resource")
+    private Resource resource; */
     /** 掛單物品內容（若為物品掛單） */
     @JsonProperty("item")
     private Item item;
     /** 價格（資源型態） */
-    @JsonProperty("price")
-    private Resource price;
+/*     @JsonProperty("price")
+    private Resource price; */
     /** 掛單狀態（ACTIVE/SOLD） */
     @JsonProperty("status")
     private String status;
@@ -42,17 +42,17 @@ public class MarketListing {
     /** 設定掛單類型 */
     public void setType(String type) { this.type = type; }
     /** 取得資源內容 */
-    public Resource getResource() { return resource; }
+    //public Resource getResource() { return resource; }
     /** 設定資源內容 */
-    public void setResource(Resource resource) { this.resource = resource; }
+   // public void setResource(Resource resource) { this.resource = resource; }
     /** 取得物品內容 */
     public Item getItem() { return item; }
     /** 設定物品內容 */
     public void setItem(Item item) { this.item = item; }
     /** 取得價格 */
-    public Resource getPrice() { return price; }
+    //public Resource getPrice() { return price; }
     /** 設定價格 */
-    public void setPrice(Resource price) { this.price = price; }
+    //public void setPrice(Resource price) { this.price = price; }
     /** 取得掛單狀態 */
     public String getStatus() { return status; }
     /** 設定掛單狀態 */

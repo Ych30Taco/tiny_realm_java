@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Alliance;
 import com.taco.TinyRealm.service.AllianceService;
@@ -91,3 +91,4 @@ public class AllianceController {
         }
     }
 }
+ */

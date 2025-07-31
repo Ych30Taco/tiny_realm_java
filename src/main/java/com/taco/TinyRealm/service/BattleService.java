@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.service;
+/* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Battle;
 import com.taco.TinyRealm.model.Unit;
@@ -107,3 +107,4 @@ public class BattleService {
         return gameState.getBattles();
     }
 }
+ */

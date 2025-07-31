@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Battle;
 import com.taco.TinyRealm.service.BattleService;
@@ -41,3 +41,4 @@ public class BattleController {
         }
     }
 }
+ */

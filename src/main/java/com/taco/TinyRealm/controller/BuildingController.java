@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.controller;
+/* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Building;
 import com.taco.TinyRealm.service.BuildingService;
@@ -55,3 +55,4 @@ public class BuildingController {
         }
     }
 }
+ */
