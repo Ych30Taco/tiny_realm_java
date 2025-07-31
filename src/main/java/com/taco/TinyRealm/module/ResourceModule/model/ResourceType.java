@@ -22,6 +22,7 @@ public class ResourceType {
     private int nowAmount;
     private int maxAmount;
     private double protectedStoragePercentage;
-    private long protectedStorageMaxAmount;
+    private int protectedStorageMaxAmount;
     private List<String> acquisitionMethods;
+    private int baseProductionRate;// 基礎生產速率（每小時）
 }

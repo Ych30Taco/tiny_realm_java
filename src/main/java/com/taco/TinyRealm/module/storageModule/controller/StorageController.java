@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/storage")
@@ -15,7 +16,7 @@ public class StorageController {
     @Autowired
     private StorageService storageService;
 
-    @PostMapping("/save/{playerId}")
+    @PostMapping("/save")
     public ResponseEntity<?> saveGame(@PathVariable String playerId, @RequestBody GameState gameState) {
         try {
             storageService.saveGameState(playerId, gameState,false);
@@ -25,8 +26,9 @@ public class StorageController {
         }
     }
 
-    @GetMapping("/load/{playerId}")
-    public ResponseEntity<?> loadGame(@PathVariable String playerId) {
+    @GetMapping("/load")
+    public ResponseEntity<?> loadGame(@RequestBody Map<String, Object> body ) {
+        String playerId = (String) body.get("playerId");
         try {
             GameState gameState = storageService.loadGameState(playerId,false);
             if (gameState == null) return ResponseEntity.status(404).body(null);

@@ -22,6 +22,8 @@ public class PlayerService {
     @Autowired
     private ResourceService resourceService;
 
+    private Map<String, PlayerResource> playerResources;
+    
     public Player createPlayer(String name, boolean isTest) throws IOException {
         Player player = new Player();
         
@@ -62,16 +64,20 @@ public class PlayerService {
     }
 
     public PlayerResource initializePlayerResources() {
-         PlayerResource playerResource = new PlayerResource();
-         Map<String, Integer> nowAmount = new HashMap<>();
-         Map<String, Integer> maxAmount = new HashMap<>();
+        PlayerResource playerResource = new PlayerResource();
+        Map<String, Integer> nowAmount = new HashMap<>();
+        Map<String, Integer> maxAmount = new HashMap<>();
 
-         for (ResourceType type : resourceService.getAllResourceTypes()) {
-            nowAmount.put(type.getResourceID(),  type.getNowAmount());
-            maxAmount.put(type.getResourceID(), type.getMaxAmount());
-         }
-         playerResource.setNowAmount(nowAmount);
-         playerResource.setMaxAmount(maxAmount);
+        for (ResourceType type : resourceService.getAllResourceTypes()) {
+           nowAmount.put(type.getResourceID(),  type.getNowAmount());
+           maxAmount.put(type.getResourceID(), type.getMaxAmount());
+        }
+        playerResource.setNowAmount(nowAmount);
+        playerResource.setMaxAmount(maxAmount);
+        playerResource.setLastUpdatedTime(System.currentTimeMillis());
          return playerResource;
      }
+    public PlayerResource getPlayerResources(String playerId) {
+        return playerResources.get(playerId);
+    }
 }
