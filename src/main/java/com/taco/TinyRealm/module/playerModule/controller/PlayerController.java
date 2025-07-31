@@ -31,8 +31,8 @@ public class PlayerController {
     @GetMapping("/userdata")
     public ResponseEntity<?> getPlayer(@RequestBody Map<String, Object> body) {
         try {
-            String id = (String) body.get("id");
-            GameState playdata = playerService.getPlayer(id,false);
+            String playid = (String) body.get("playid");
+            GameState playdata = playerService.getPlayer(playid,false);
             if (playdata == null) return ResponseEntity.status(404).body(null);
             return ResponseEntity.ok(playdata);
         } catch (IOException e) {

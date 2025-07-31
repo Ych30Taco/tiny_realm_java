@@ -8,7 +8,7 @@ import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import org.springframework.stereotype.Service;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -19,9 +19,12 @@ public class StorageService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String storagePath = "game_data/";
 
-    private Map<String,GameState> gameStateList = Collections.emptyMap();
-     
+    private Map<String,GameState> gameStateList = new ConcurrentHashMap<>();
     
+    public GameState getGameStateList(String playerId) {
+        return  Collections.unmodifiableMap(gameStateList).get(playerId);
+    }
+
     private String getFilePrefix(boolean isTest) {
         return isTest ? "test_" : "";
     }
@@ -42,9 +45,7 @@ public class StorageService {
         gameStateList.put(playerId, objectMapper.readValue(file, GameState.class));
         return objectMapper.readValue(file, GameState.class);
     }
-    public GameState getGameStateList(String playerId) {
-        return gameStateList.get(playerId);
-    }
+
     /*
     //聯盟
     public void saveAlliance(String allianceId, Alliance alliance, boolean isTest) throws IOException {
