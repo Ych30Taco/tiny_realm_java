@@ -1,8 +1,12 @@
 package com.taco.TinyRealm.module.playerModule.service;
 
+import com.taco.TinyRealm.module.buildingModule.model.Building;
+import com.taco.TinyRealm.module.buildingModule.model.BuildingStatus;
+import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
+import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
-import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +26,8 @@ public class PlayerService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private BuildingService buildingService;
 
     private Map<String, PlayerResource> playerResources;
     
@@ -42,7 +49,7 @@ public class PlayerService {
         GameState gameState = new GameState();
         gameState.setPlayer(player);
         gameState.setResources(initializePlayerResources());
-        gameState.setBuildings(new java.util.ArrayList<>());
+        gameState.setBuildings(initializePlayerBuilding(player.getId()));
         /*gameState.setUnits(new java.util.ArrayList<>());
         gameState.setTasks(new java.util.ArrayList<>());
         gameState.setInventory(new java.util.ArrayList<>());
@@ -51,6 +58,7 @@ public class PlayerService {
         gameState.setBattles(new java.util.ArrayList<>());
         gameState.setEvents(new java.util.ArrayList<>());
         gameState.setTerrains(new java.util.ArrayList<>());*/
+        System.out.println("---- 應用程式啟動中，已建立玩家 " + gameState + " ----");
         storageService.saveGameState(player.getId(), gameState, isTest);
         return player;
     }
@@ -76,15 +84,29 @@ public class PlayerService {
         Map<String, Integer> nowAmount = new HashMap<>();
         Map<String, Integer> maxAmount = new HashMap<>();
 
-        for (ResourceType type : resourceService.getAllResourceTypes()) {
-           nowAmount.put(type.getResourceID(),  type.getNowAmount());
-           maxAmount.put(type.getResourceID(), type.getMaxAmount());
+        for (Resource type : resourceService.getAllResourceTypes()) {
+           nowAmount.put(type.getId(),  type.getNowAmount());
+           maxAmount.put(type.getId(), type.getMaxAmount());
         }
         playerResource.setNowAmount(nowAmount);
         playerResource.setMaxAmount(maxAmount);
         playerResource.setLastUpdatedTime(System.currentTimeMillis());
          return playerResource;
-     }
+    }
+    public PlayerBuliding initializePlayerBuilding(String playerId) {
+        PlayerBuliding playerBuilding = new PlayerBuliding();
+        playerBuilding.setOwnerId(playerId);
+        playerBuilding.setBuildingId("mainHall");
+        playerBuilding.setInstanceId("mainHall_" + playerId);
+        playerBuilding.setLevel(1);
+        playerBuilding.setStatus(BuildingStatus.IDLE);
+        playerBuilding.setBuildStartTime(System.currentTimeMillis());
+        playerBuilding.setPositionX(0);
+        playerBuilding.setPositionY(0);
+        return playerBuilding;  
+    }
+
+
     public PlayerResource getPlayerResources(String playerId) {
         return playerResources.get(playerId);
     }

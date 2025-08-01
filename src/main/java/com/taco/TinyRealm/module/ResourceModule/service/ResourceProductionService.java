@@ -47,7 +47,7 @@ public class ResourceProductionService {
 
         // 更新每種資源
         resourceService.getAllResourceTypes().forEach(type -> {
-            String resourceId = type.getResourceID();
+            String resourceId = type.getId();
             int rate = type.getBaseProductionRate();
             int produced =  (int)(rate * hourPassed);
             int nowAmount = playerResource.getNowAmount().getOrDefault(resourceId, 0);

@@ -10,10 +10,10 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceType {
-    private String resourceID;
-    private Map<String, String> resourceName;
-    private Map<String, String> resourceDescription;
+public class Resource {
+    private String id;
+    private Map<String, String> name;
+    private Map<String, String> description;
     private String resourceIconURL;
     private boolean isPremium;
     private boolean stackable;

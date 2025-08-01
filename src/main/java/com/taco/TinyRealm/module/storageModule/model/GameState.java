@@ -2,7 +2,6 @@ package com.taco.TinyRealm.module.storageModule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.taco.TinyRealm.model.Battle;
-import com.taco.TinyRealm.model.Building;
 import com.taco.TinyRealm.model.GameEvent;
 import com.taco.TinyRealm.model.Item;
 import com.taco.TinyRealm.model.Task;
@@ -10,9 +9,11 @@ import com.taco.TinyRealm.model.Technology;
 import com.taco.TinyRealm.model.Terrain;
 import com.taco.TinyRealm.model.Trade;
 import com.taco.TinyRealm.model.Unit;
+import com.taco.TinyRealm.module.buildingModule.model.Building;
+import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
-import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import java.util.Map;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class GameState {
     private PlayerResource resources;
     /** 玩家建築列表 */
     @JsonProperty("buildings")
-    private List<Building> buildings = new ArrayList<>();
+    private PlayerBuliding buildings ;
     /** 玩家物品背包 */
     @JsonProperty("inventory")
     private List<Item> inventory = new ArrayList<>();
@@ -75,9 +76,9 @@ public class GameState {
     /** 設定遊戲版本 */
     public void setVersion(String version) { this.version = version; }
     /** 取得建築列表 */
-    public List<Building> getBuildings() { return buildings; }
+    public PlayerBuliding getBuildings() { return buildings; }
     /** 設定建築列表 */
-    public void setBuildings(List<Building> buildings) { this.buildings = buildings; }
+    public void setBuildings(PlayerBuliding buildings) { this.buildings = buildings; }
     /** 取得背包物品 */
     public List<Item> getInventory() { return inventory; }
     /** 設定背包物品 */

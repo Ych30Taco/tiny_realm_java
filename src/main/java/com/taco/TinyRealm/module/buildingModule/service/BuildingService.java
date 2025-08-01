@@ -1,38 +1,71 @@
-/* package com.taco.TinyRealm.service;
+package com.taco.TinyRealm.module.buildingModule.service;
 
-import com.taco.TinyRealm.model.Building;
-import com.taco.TinyRealm.module.ResourceModule.model.Resource;
-import com.taco.TinyRealm.module.ResourceModule.service.ResourceService;
-import com.taco.TinyRealm.module.storageModule.model.GameState;
-import com.taco.TinyRealm.module.storageModule.service.StorageService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taco.TinyRealm.module.buildingModule.model.Building;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class BuildingService {
-    @Autowired
-    private StorageService storageService;
-    @Autowired
-    private ResourceService resourceService;
-    @Autowired
-    private EventService eventService;
-    @Autowired
-    private TerrainService terrainService; // 新增：地形服務
-    @Autowired
-    private TechnologyService technologyService; // 新增：科技服務
-    @Autowired
-    private TaskService taskService; // 新增：任務服務
+    private final ObjectMapper objectMapper;      // Jackson JSON 處理器
 
-    private static final int BARRACKS_GOLD_COST = 50;
-    private static final int BARRACKS_WOOD_COST = 20;
-    private static final int UPGRADE_GOLD_COST = 30;
-    private static final int UPGRADE_WOOD_COST = 10;
+    private List<Building> buildingsList = Collections.emptyList();
 
+    // 從 application.yaml 中讀取靜態資源定義檔案的路徑
+    @Value("${app.data.building-path}")
+    private org.springframework.core.io.Resource buildingPath;
+         /**
+     * 建構子注入依賴。
+     * Spring 會自動提供這些依賴的實例。
+     * @param objectMapper Jackson ObjectMapper 實例
+     */
+    public BuildingService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+
+        @PostConstruct
+    public void init() {
+        System.out.println("---- 應用程式啟動中，載入建築模組 ----");
+        try {
+            try (InputStream is = buildingPath.getInputStream()) {
+                buildingsList = objectMapper.readValue(is, new TypeReference<List<Building>>() {});
+                String buildingNames = getBuildingName();
+                System.out.println("---- 應用程式啟動中，已載入" + buildingNames + " ----");
+            }
+        } catch (Exception e) {
+            System.out.println("---- 應用程式啟動中，載入建築模組失敗 ----");
+            e.printStackTrace(); // 印出詳細錯誤
+            throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
+        }
+        System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
+    }
+    public List<Building> getAllbuilding() {
+        return buildingsList;
+    }
+
+    public Building getBuildingById(String buildingID) {
+        return buildingsList.stream()
+                .filter(r -> r.getId().equals(buildingID))
+                .findFirst()
+                .orElse(null);
+    }
+    public String getBuildingName() {
+        List<Building> resourceList = buildingsList;
+        String building_name = "";
+        for (Building building : buildingsList) {
+            building_name+=building.getName()+ " , ";
+        }
+        building_name+= "共"+resourceList.size()+"種建築";
+        return building_name;
+    }
+    
+    /* 
     public Building createBuilding(String playerId, String type, int x, int y, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
@@ -101,6 +134,6 @@ public class BuildingService {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         return gameState.getBuildings();
-    }
+    }*/
 }
- */
+ 

@@ -1,6 +1,7 @@
 package com.taco.TinyRealm.module.resourceModule.service;
 
-import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
+import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.core.io.Resource;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +30,12 @@ import java.util.stream.Collectors;
 public class ResourceService {
 
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
-    private final ResourceLoader resourceLoader;  // Spring 資源載入器
 
-    private List<ResourceType> resourceTypeList = Collections.emptyList();
+    private List<Resource> resourcesList = Collections.emptyList();
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
-    @Value("${app.data.ResourceType-path}")
-    private org.springframework.core.io.Resource resourceTypesPath;
+    @Value("${app.data.resource-path}")
+    private org.springframework.core.io.Resource resourcePath;
 
     @Autowired
     private StorageService storageService;
@@ -44,45 +44,46 @@ public class ResourceService {
      * 建構子注入依賴。
      * Spring 會自動提供這些依賴的實例。
      * @param objectMapper Jackson ObjectMapper 實例
-     * @param resourceLoader Spring ResourceLoader 實例
      */
-    public ResourceService(ObjectMapper objectMapper, ResourceLoader resourceLoader) {
+    public ResourceService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.resourceLoader = resourceLoader;
     }
 
     @PostConstruct
     public void init() {
         System.out.println("---- 應用程式啟動中，載入資源模組 ----");
-        try (InputStream is = resourceTypesPath.getInputStream()) {
-            resourceTypeList = objectMapper.readValue(is, new TypeReference<List<ResourceType>>() {});
-            String resourceNames = getResourceTypeId();
-            System.out.println("---- 應用程式啟動中，已載入" + resourceNames + " ----");
+        try {
+            try (InputStream is = resourcePath.getInputStream()) {
+                resourcesList = objectMapper.readValue(is, new TypeReference<List<Resource>>() {});
+                String resourceNames = getResourceName();
+                System.out.println("---- 應用程式啟動中，已載入" + resourceNames + " ----");
+            }
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入資源模組失敗 ----");
-            throw new RuntimeException("Failed to load ResourceType.json", e);
+            e.printStackTrace(); // 印出詳細錯誤
+            throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
     }
 
-    public List<ResourceType> getAllResourceTypes() {
-        return resourceTypeList;
+    public List<Resource> getAllResourceTypes() {
+        return resourcesList;
     }
 
-    public ResourceType getResourceTypeById(String resourceID) {
-        return resourceTypeList.stream()
-                .filter(r -> r.getResourceID().equals(resourceID))
+    public Resource getResourceTypeById(String resourceID) {
+        return resourcesList.stream()
+                .filter(r -> r.getId().equals(resourceID))
                 .findFirst()
                 .orElse(null);
     }
-    public String getResourceTypeId() {
-        List<ResourceType> resourceList = resourceTypeList;
+    public String getResourceName() {
+        List<Resource> resourceList = resourcesList;
         String resource_name = "";
-        for (ResourceType resource : resourceList) {
-            Map<String, String> name = resource.getResourceName();
+        for (Resource resource : resourceList) {
+            Map<String, String> name = resource.getName();
             resource_name+=name.get("zh-TW")+ " , ";
         }
-        resource_name+= "共"+resourceList.size()+"資源";
+        resource_name+= "共"+resourceList.size()+"種資源";
         return resource_name;
     }
 
@@ -90,23 +91,60 @@ public class ResourceService {
 
 
 
-/* 
-    public Resource addResources(String playerId, int gold, int wood, boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId, isTest);
-        if (gameState == null) {
-            throw new IllegalArgumentException("Player not found");
-        }
-        Resource resources = gameState.getResources();
-        if (resources == null) {
-            resources = new Resource();
-            gameState.setResources(resources);
-        }
-        resources.setGold(Math.max(0, resources.getGold() + gold));
-        resources.setWood(Math.max(0, resources.getWood() + wood));
-        storageService.saveGameState(playerId, gameState, isTest);
-        return resources;
-    }
 
+    public GameState addResources(String playerId, Map<String, Integer>  addResource, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateList(playerId);
+        try {
+            Map<String, Integer> resources = gameState.getResources().getNowAmount();
+            if (resources == null) {
+                throw new IllegalArgumentException("Player not found");
+            }
+            for (Map.Entry<String, Integer> entry : addResource.entrySet()) {
+                String resourceId = entry.getKey();
+                int amountToAdd = entry.getValue();
+                if (amountToAdd < 0) {
+                    throw new IllegalArgumentException("Cannot add negative amount of resource: " + resourceId);
+                }
+                resources.put(resourceId, resources.getOrDefault(resourceId, 0) + amountToAdd);
+            }
+            gameState.getResources().setLastUpdatedTime(System.currentTimeMillis());
+            storageService.saveGameState(playerId, gameState, isTest);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: handle exception
+        }
+        return gameState;
+    }
+    public GameState dedResources(String playerId, Map<String, Integer>  dedResource, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateList(playerId);
+        try {
+            Map<String, Integer> resources = gameState.getResources().getNowAmount();
+            if (resources == null) {
+                throw new IllegalArgumentException("Player not found");
+            }
+            for (Map.Entry<String, Integer> entry : dedResource.entrySet()) {;
+                String resourceId = entry.getKey();
+                int amountToDed = entry.getValue();
+                int nowAmount=resources.getOrDefault(resourceId, 0);
+                if (amountToDed < 0) {
+                    throw new IllegalArgumentException("Cannot deduct negative amount of resource: " + resourceId);
+                }
+                if (nowAmount < amountToDed) {
+                    
+                    return gameState ; // 如果資源不足，則不進行扣除
+                }
+                resources.put(resourceId, nowAmount - amountToDed);
+            }
+            gameState.getResources().setLastUpdatedTime(System.currentTimeMillis());
+            storageService.saveGameState(playerId, gameState, isTest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: handle exception
+        }
+        return gameState;
+    }
+    /*
     public Resource getResources(String playerId, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         return gameState != null ? gameState.getResources() : null;

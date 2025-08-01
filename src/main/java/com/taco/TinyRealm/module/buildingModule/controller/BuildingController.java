@@ -1,13 +1,15 @@
-/* package com.taco.TinyRealm.controller;
+package com.taco.TinyRealm.module.buildingModule.controller;
 
-import com.taco.TinyRealm.model.Building;
-import com.taco.TinyRealm.service.BuildingService;
+
+import com.taco.TinyRealm.module.buildingModule.model.Building;
+import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/building")
@@ -15,6 +17,17 @@ public class BuildingController {
     @Autowired
     private BuildingService buildingService;
 
+    @GetMapping("/types")
+    public ResponseEntity<?> getAllResourceTypes() {
+        return ResponseEntity.ok(buildingService.getAllbuilding());
+    }
+
+    @PostMapping("/typeById")
+    public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
+        String buildingID = (String) body.get("buildingID");
+        return ResponseEntity.ok(buildingService.getBuildingById(buildingID ));
+    }
+    /* 
     @PostMapping("/{playerId}/create")
     public ResponseEntity<?> createBuilding(@PathVariable String playerId,
                                             @RequestParam String type,
@@ -53,6 +66,6 @@ public class BuildingController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
-    }
+    }*/
 }
- */
+ 

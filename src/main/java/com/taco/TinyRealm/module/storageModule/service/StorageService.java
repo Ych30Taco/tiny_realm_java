@@ -3,7 +3,7 @@ package com.taco.TinyRealm.module.storageModule.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.taco.TinyRealm.model.Alliance;
 import com.taco.TinyRealm.model.MarketListing;
-import com.taco.TinyRealm.module.resourceModule.model.ResourceType;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class StorageService {
         return  Collections.unmodifiableMap(gameStateList).get(playerId);
     }
     public List<String> getGameStateIdList() {
-        System.out.println("現在上線人數: " + gameStateList.keySet().size());
+        //System.out.println("現在上線人數: " + gameStateList.keySet().size());
         return new ArrayList<>(gameStateList.keySet());
     }
 

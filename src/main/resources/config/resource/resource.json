@@ -1,7 +1,7 @@
 [
     {
-      "resourceID": "FOOD",
-      "resourceName": {
+      "id": "FOOD",
+      "name": {
         "en": "Food",
         "zh-TW": "糧食"
       },
@@ -22,8 +22,8 @@
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
     },
     {
-      "resourceID": "WOOD",
-      "resourceName": {
+      "id": "WOOD",
+      "name": {
         "en": "Wood",
         "zh-TW": "木頭"
       },
@@ -44,8 +44,8 @@
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
     },
     {
-      "resourceID": "STONE",
-      "resourceName": {
+      "id": "STONE",
+      "name": {
         "en": "Stone",
         "zh-TW": "石頭"
       },
@@ -66,8 +66,8 @@
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
     },
     {
-      "resourceID": "IRON",
-      "resourceName": {
+      "id": "IRON",
+      "name": {
         "en": "Iron",
         "zh-TW": "鐵礦"
       },
@@ -88,8 +88,8 @@
       "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
     },
     {
-      "resourceID": "GOLD",
-      "resourceName": {
+      "id": "GOLD",
+      "name": {
         "en": "Gold",
         "zh-TW": "金幣"
       },
@@ -110,8 +110,8 @@
       "acquisitionMethods": ["QuestReward", "ShopPurchase", "EventReward", "Taxation", "Pillage"]
     },
     {
-      "resourceID": "DIAMOND",
-      "resourceName": {
+      "id": "DIAMOND",
+      "name": {
         "en": "Diamond",
         "zh-TW": "鑽石"
       },
