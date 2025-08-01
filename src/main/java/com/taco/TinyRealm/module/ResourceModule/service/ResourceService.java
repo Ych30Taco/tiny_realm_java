@@ -51,7 +51,7 @@ public class ResourceService {
         this.resourceLoader = resourceLoader;
     }
 
-     @PostConstruct
+    @PostConstruct
     public void init() {
         System.out.println("---- 應用程式啟動中，載入資源模組 ----");
         try (InputStream is = resourceTypesPath.getInputStream()) {

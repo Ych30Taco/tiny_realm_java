@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class StorageService {
@@ -22,8 +23,11 @@ public class StorageService {
     private Map<String,GameState> gameStateList = new ConcurrentHashMap<>();
     
     public GameState getGameStateList(String playerId) {
-        System.out.println(playerId);
         return  Collections.unmodifiableMap(gameStateList).get(playerId);
+    }
+    public List<String> getGameStateIdList() {
+        System.out.println("現在上線人數: " + gameStateList.keySet().size());
+        return new ArrayList<>(gameStateList.keySet());
     }
 
     private String getFilePrefix(boolean isTest) {
@@ -31,6 +35,7 @@ public class StorageService {
     }
 
     public void saveGameState(String playerId, GameState gameState, boolean isTest) throws IOException {
+        gameState.getPlayer().setLastUpdatedTime(System.currentTimeMillis());
         File dir = new File(storagePath);
         if (!dir.exists()) dir.mkdirs();
         objectMapper.writeValue(new File(storagePath + getFilePrefix(isTest) + playerId + ".json"), gameState);
@@ -43,16 +48,19 @@ public class StorageService {
             System.out.println("Warning: Game state file for player " + playerId + " does not exist.");
             return null;
         }
-        System.out.println(playerId);
+        GameState gameState = objectMapper.readValue(file, GameState.class);
+        gameState.getPlayer().setLastLoginTime(System.currentTimeMillis());
+        gameState.getPlayer().setLastUpdatedTime(System.currentTimeMillis());
 
-        // 讀取一次檔案，將結果存到一個變數
-        GameState loadedState = objectMapper.readValue(file, GameState.class);
-        System.out.println("loadedState"+loadedState);
-        // 將這個變數存入記憶體
-        gameStateList.put(playerId, loadedState);
-         System.out.println("gameStateList"+gameStateList);
-        // 回傳這個變數
-        return loadedState;
+        gameStateList.put(playerId, gameState);
+        return gameState;
+    }
+
+    public void logOutGameState(String playerId,boolean isTest) throws IOException {
+        if(gameStateList.remove(playerId)!= null)
+            System.out.println("Player " + playerId + " 退出並保存遊戲.");
+        else
+            System.out.println("Player " + playerId + " 未在遊戲狀態清單中找到");
     }
 
     /*

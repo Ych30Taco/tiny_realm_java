@@ -31,12 +31,21 @@ public class PlayerController {
     @GetMapping("/userdata")
     public ResponseEntity<?> getPlayer(@RequestBody Map<String, Object> body) {
         try {
-            String playerid = (String) body.get("playerid");
-            GameState playdata = playerService.getPlayer(playerid,false);
+            String playerId = (String) body.get("playerId");
+            GameState playdata = playerService.getPlayer(playerId,false);
             if (playdata == null) return ResponseEntity.status(404).body(null);
             return ResponseEntity.ok(playdata);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
+        }
+    }
+    @PostMapping("/logOut")
+    public void logOutPlayer(@RequestBody Map<String, Object> body) {
+        try {
+            String playerId = (String) body.get("playerId");
+            playerService.logOutPlayer(playerId,false);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

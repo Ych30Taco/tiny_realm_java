@@ -31,6 +31,13 @@ public class PlayerService {
         player.setId("9f917eb2-de3a-420b-ae3b-0a493264072a");
         player.setName(name);
         player.setLevel(1);
+        player.setExperience(0);
+        player.setStatus(1);
+        player.setFoundingTime(System.currentTimeMillis());
+        player.setLastLoginTime(System.currentTimeMillis());
+        player.setLastUpdatedTime(0);
+        player.setLastLogoutTime(0); // 初始登出時間為 0
+        
 
         GameState gameState = new GameState();
         gameState.setPlayer(player);
@@ -48,9 +55,9 @@ public class PlayerService {
         return player;
     }
 
-    public GameState getPlayer(String playerid, boolean isTest) throws IOException {
+    public GameState getPlayer(String playerId, boolean isTest) throws IOException {
         //GameState gameState = storageService.loadGameState(id, isTest);
-        GameState gameState = storageService.getGameStateList(playerid);
+        GameState gameState = storageService.getGameStateList(playerId);
         return gameState != null ? gameState : null;
     }
 
@@ -80,5 +87,14 @@ public class PlayerService {
      }
     public PlayerResource getPlayerResources(String playerId) {
         return playerResources.get(playerId);
+    }
+    public void logOutPlayer(String playerId, boolean isTest) throws IOException{
+        GameState gameState = storageService.getGameStateList(playerId);
+        Player player = gameState.getPlayer();
+        player.setStatus(0); // 設置玩家狀態為離線
+        player.setLastLogoutTime(System.currentTimeMillis());
+        gameState.setPlayer(player);
+        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.logOutGameState(playerId, isTest);
     }
 }
