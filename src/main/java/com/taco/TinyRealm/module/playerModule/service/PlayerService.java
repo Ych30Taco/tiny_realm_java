@@ -85,13 +85,16 @@ public class PlayerService {
         PlayerResource playerResource = new PlayerResource();
         Map<String, Integer> nowAmount = new HashMap<>();
         Map<String, Integer> maxAmount = new HashMap<>();
+        Map<String, Integer> productionRates = new HashMap<>();
 
         for (Resource type : resourceService.getAllResourceTypes()) {
            nowAmount.put(type.getId(),  type.getNowAmount());
            maxAmount.put(type.getId(), type.getMaxAmount());
+           productionRates.put(type.getId(), 0); // 初始生產速率為 0
         }
         playerResource.setNowAmount(nowAmount);
         playerResource.setMaxAmount(maxAmount);
+        playerResource.setProductionRates(productionRates);
         playerResource.setLastUpdatedTime(System.currentTimeMillis());
          return playerResource;
     }

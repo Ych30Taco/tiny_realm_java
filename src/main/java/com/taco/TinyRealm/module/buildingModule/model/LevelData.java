@@ -14,4 +14,5 @@ public class LevelData {
     private Map<String, Integer> cost;
     private Map<String, Integer> output;
     private Map<String, String> prerequisites;
+    private int productionRate; // 每小時生產速率
 }

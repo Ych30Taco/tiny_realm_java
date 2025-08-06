@@ -9,6 +9,7 @@ import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+import com.taco.TinyRealm.module.resourceModule.service.ResourceProductionService;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 
@@ -35,6 +36,8 @@ public class BuildingService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private ResourceProductionService productionService;
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
@@ -136,6 +139,13 @@ public class BuildingService {
         gameState.getBuildings().put(buildingId, playerBuilding);
         storageService.saveGameState(playerId, gameState, isTest);
 
+        // 更新資源生產速率
+        try {
+            productionService.updatePlayerResources(playerId, isTest);
+        } catch (Exception e) {
+            System.err.println("更新資源生產速率時發生錯誤: " + e.getMessage());
+        }
+
         /*eventService.addEvent(playerId, "building_created", "Created " + buildingId + " at (" + x + "," + y + ")", isTest);
 
         // 更新任務進度
@@ -188,6 +198,13 @@ public class BuildingService {
         playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
         gameState.getBuildings().put(buildingId, playerBuilding);
         storageService.saveGameState(playerId, gameState, isTest);
+
+        // 更新資源生產速率
+        try {
+            productionService.updatePlayerResources(playerId, isTest);
+        } catch (Exception e) {
+            System.err.println("更新資源生產速率時發生錯誤: " + e.getMessage());
+        }
 
         //eventService.addEvent(playerId, "building_upgraded", "Upgraded " + building.getType() + " to level " + building.getLevel(), isTest);
         return gameState;

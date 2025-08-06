@@ -15,6 +15,7 @@ public class Building {
     private String id;
     private String name;
     private String type;
+    private String resourceType; // 該建築影響的資源類型，例如 "wood", "food"
     private int maxCount;
     private List<LevelData> levels;
 }
