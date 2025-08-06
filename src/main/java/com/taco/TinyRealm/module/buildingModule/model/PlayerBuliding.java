@@ -16,6 +16,7 @@ public class PlayerBuliding {
     private int level;
     private BuildingStatus status;
     private long buildStartTime;
+    private long buildEndTime;
     private int positionX;
     private int positionY;
 

@@ -31,7 +31,7 @@ public class GameState {
     private PlayerResource resources;
     /** 玩家建築列表 */
     @JsonProperty("buildings")
-    private PlayerBuliding buildings ;
+    private  Map<String, PlayerBuliding> buildings ;
     /** 玩家物品背包 */
     @JsonProperty("inventory")
     private List<Item> inventory = new ArrayList<>();
@@ -76,9 +76,9 @@ public class GameState {
     /** 設定遊戲版本 */
     public void setVersion(String version) { this.version = version; }
     /** 取得建築列表 */
-    public PlayerBuliding getBuildings() { return buildings; }
+    public Map<String, PlayerBuliding> getBuildings() { return buildings; }
     /** 設定建築列表 */
-    public void setBuildings(PlayerBuliding buildings) { this.buildings = buildings; }
+    public void setBuildings(Map<String, PlayerBuliding> buildings) { this.buildings = buildings; }
     /** 取得背包物品 */
     public List<Item> getInventory() { return inventory; }
     /** 設定背包物品 */

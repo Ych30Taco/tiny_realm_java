@@ -21,7 +21,7 @@ public class ResourceProductionService {
     @Autowired
     StorageService storageService;
 
-    @Scheduled(initialDelay = 0, fixedRate = 5000) // 每5分鐘
+    @Scheduled(initialDelay = 1000, fixedRate = 1000) // 每1分鐘
     public void updateAllPlayersResources() {
         //獲取所有上線玩家ID
         for (String playerId : storageService.getGameStateIdList()) {
@@ -43,7 +43,7 @@ public class ResourceProductionService {
 
         // 計算時間間隔（小時）
         long currentTime = System.currentTimeMillis();
-        double hourPassed = (currentTime - playerResource.getLastUpdatedTime()) / (1000.0 * 3600.0);
+        double hourPassed = (currentTime - playerResource.getLastUpdatedTime()) / (1000.0 * 60.0);
 
         // 更新每種資源
         resourceService.getAllResourceTypes().forEach(type -> {

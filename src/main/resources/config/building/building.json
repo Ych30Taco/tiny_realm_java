@@ -7,17 +7,17 @@
     "levels": [
       {
         "level": 1,
-        "buildTime": 300,
+        "buildTime": 60000,
         "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
         "output": { },
         "prerequisites": {}
       },
       {
         "level": 2,
-        "buildTime": 600,
+        "buildTime": 360000,
         "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
         "output": { "food": 150 },
-        "prerequisites": {  }
+        "prerequisites": { "mainHall": 1 }
       }
     ]
   },
@@ -29,17 +29,17 @@
     "levels": [
       {
         "level": 1,
-        "buildTime": 300,
+        "buildTime": 60000,
         "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
         "output": { "food": 100 },
-        "prerequisites": { "mainHallLevel": 1 }
+        "prerequisites": { "mainHall": 1 }
       },
       {
         "level": 2,
-        "buildTime": 600,
+        "buildTime": 360000,
         "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
         "output": { "food": 150 },
-        "prerequisites": { "mainHallLevel": 2 }
+        "prerequisites": { "farm": 2 }
       }
     ]
   },
@@ -51,10 +51,23 @@
     "levels": [
       {
         "level": 1,
-        "buildTime": 400,
-        "cost": { "gold": 150, "wood": 80 },
+        "buildTime": 60000,
+        "cost": {  "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
         "output": { "soldierCapacity": 50 },
-        "prerequisites": { "mainHallLevel": 2 }
+        "prerequisites": { "mainHall": 1 }
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": {  "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 0 },
+        "output": { "soldierCapacity": 100 },
+        "prerequisites": { "barracks": 1 }
+      },{
+        "level": 3,
+        "buildTime": 600000,
+        "cost": {  "FOOD": 1500,"WOOD": 1500,"IRON": 1500,"STONE": 0 },
+        "output": { "soldierCapacity": 150 },
+        "prerequisites": { "barracks": 2 }
       }
     ]
   }

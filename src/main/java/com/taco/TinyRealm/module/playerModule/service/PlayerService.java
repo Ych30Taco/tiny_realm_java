@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class PlayerService {
@@ -58,7 +60,7 @@ public class PlayerService {
         gameState.setBattles(new java.util.ArrayList<>());
         gameState.setEvents(new java.util.ArrayList<>());
         gameState.setTerrains(new java.util.ArrayList<>());*/
-        System.out.println("---- 應用程式啟動中，已建立玩家 " + gameState + " ----");
+        System.out.println("---- 應用程式啟動中，已建立玩家 " + player.getId().toString() + " ----");
         storageService.saveGameState(player.getId(), gameState, isTest);
         return player;
     }
@@ -93,7 +95,8 @@ public class PlayerService {
         playerResource.setLastUpdatedTime(System.currentTimeMillis());
          return playerResource;
     }
-    public PlayerBuliding initializePlayerBuilding(String playerId) {
+    public Map<String ,PlayerBuliding> initializePlayerBuilding(String playerId) {
+        Map<String ,PlayerBuliding> playerBuildings = new HashMap<>();
         PlayerBuliding playerBuilding = new PlayerBuliding();
         playerBuilding.setOwnerId(playerId);
         playerBuilding.setBuildingId("mainHall");
@@ -103,7 +106,8 @@ public class PlayerService {
         playerBuilding.setBuildStartTime(System.currentTimeMillis());
         playerBuilding.setPositionX(0);
         playerBuilding.setPositionY(0);
-        return playerBuilding;  
+        playerBuildings.put ("mainHall",playerBuilding);
+        return playerBuildings;  
     }
 
 

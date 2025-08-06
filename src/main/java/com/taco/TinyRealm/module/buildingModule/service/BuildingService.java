@@ -3,18 +3,38 @@ package com.taco.TinyRealm.module.buildingModule.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.taco.TinyRealm.module.buildingModule.model.Building;
+import com.taco.TinyRealm.module.buildingModule.model.BuildingStatus;
+import com.taco.TinyRealm.module.buildingModule.model.LevelData;
+import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
+import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
+import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+
 import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.io.IOException;
 
 @Service
 public class BuildingService {
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
 
     private List<Building> buildingsList = Collections.emptyList();
+
+    @Autowired
+    private StorageService storageService;
+    @Autowired
+    private ResourceService resourceService;
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
@@ -29,7 +49,7 @@ public class BuildingService {
     }
 
 
-        @PostConstruct
+    @PostConstruct
     public void init() {
         System.out.println("---- 應用程式啟動中，載入建築模組 ----");
         try {
@@ -65,38 +85,61 @@ public class BuildingService {
         return building_name;
     }
     
-    /* 
-    public Building createBuilding(String playerId, String type, int x, int y, boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId, isTest);
+    
+    public GameState createBuilding(String playerId, String buildingId, int x, int y, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateList(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         // 檢查地形位置
-        if (!terrainService.isPositionValid(playerId, x, y)) throw new IllegalArgumentException("Invalid or occupied position");
-        // 檢查科技要求（例如兵營需要 basic_military 科技）
-        if (type.equals("barracks")) {
+        //if (!terrainService.isPositionValid(playerId, x, y)) throw new IllegalArgumentException("Invalid or occupied position");
+        // 檢查科技要求
+        /*if (buildingId.equals("barracks")) {
             boolean hasTech = gameState.getTechnologies().stream()
                     .anyMatch(t -> t.getType().equals("basic_military"));
             if (!hasTech) throw new IllegalArgumentException("Basic military technology required");
+        }*/
+        if(gameState.getBuildings().containsKey(buildingId)){
+            throw new IllegalArgumentException("Building already exists: " + buildingId);
         }
-        Resource resources = gameState.getResources();
-        if (resources == null || resources.getGold() < BARRACKS_GOLD_COST || resources.getWood() < BARRACKS_WOOD_COST)
-            throw new IllegalArgumentException("Insufficient resources");
-        resourceService.addResources(playerId, -BARRACKS_GOLD_COST, -BARRACKS_WOOD_COST, isTest);
-        terrainService.occupyPosition(playerId, x, y, isTest); // 佔用地形
-        Building building = new Building();
-        building.setId(UUID.randomUUID().toString());
-        building.setType(type);
-        building.setLevel(1);
-        building.setX(x);
-        building.setY(y);
+        LevelData levelData = getBuildingById(buildingId).getLevels().get(0);
+        Map<String, String> prerequisites = levelData.getPrerequisites();
+        Map<String, Integer> buildingCost = levelData.getCost();
+        PlayerResource resources = gameState.getResources();
+        //檢查建築要求
+        for (String prerequisite : prerequisites.keySet()) {
+            if (!gameState.getBuildings().containsKey(prerequisite)) {
+                throw new IllegalArgumentException("Prerequisite building not found: " + prerequisite);
+            }
+        }
+        //檢查資源是否足夠
+        resources.getNowAmount().forEach((key, value) -> {
+            if (value < buildingCost.getOrDefault(key, 0)) {
+                throw new IllegalArgumentException("Insufficient resources for building: " + key);
+            }
+        });
+        
 
-        if (gameState.getBuildings() == null) gameState.setBuildings(new java.util.ArrayList<>());
-        gameState.getBuildings().add(building);
+
+        
+        resourceService.dedResources(playerId, buildingCost, isTest);
+        //terrainService.occupyPosition(playerId, x, y, isTest); // 佔用地形
+        PlayerBuliding playerBuilding = new PlayerBuliding();
+        playerBuilding.setOwnerId(playerId);
+        playerBuilding.setBuildingId(buildingId);
+        playerBuilding.setInstanceId(UUID.randomUUID().toString());
+        playerBuilding.setLevel(1);
+        playerBuilding.setStatus(BuildingStatus.BUILDING);
+        playerBuilding.setPositionX(x);
+        playerBuilding.setPositionY(y);
+        playerBuilding.setBuildStartTime(System.currentTimeMillis());
+        playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
+
+        gameState.getBuildings().put(buildingId, playerBuilding);
         storageService.saveGameState(playerId, gameState, isTest);
 
-        eventService.addEvent(playerId, "building_created", "Created " + type + " at (" + x + "," + y + ")", isTest);
+        /*eventService.addEvent(playerId, "building_created", "Created " + buildingId + " at (" + x + "," + y + ")", isTest);
 
         // 更新任務進度
-        if (type.equals("barracks")) {
+        if (buildingId.equals("barracks")) {
             if (gameState.getTasks() != null) {
                 gameState.getTasks().stream()
                     .filter(t -> t.getType().equals("build_barracks") && "ACTIVE".equals(t.getStatus()))
@@ -108,32 +151,71 @@ public class BuildingService {
                         }
                     });
             }
-        }
-        return building;
+        }*/
+        return gameState;
     }
-
-    public Building upgradeBuilding(String playerId, String buildingId, boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId, isTest);
+     
+    public GameState upgradeBuilding(String playerId, String buildingId, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateList(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
-        Building building = gameState.getBuildings().stream()
-                .filter(b -> b.getId().equals(buildingId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Building not found"));
-        Resource resources = gameState.getResources();
-        if (resources == null || resources.getGold() < UPGRADE_GOLD_COST || resources.getWood() < UPGRADE_WOOD_COST)
-            throw new IllegalArgumentException("Insufficient resources");
-        resourceService.addResources(playerId, -UPGRADE_GOLD_COST, -UPGRADE_WOOD_COST, isTest);
-        building.setLevel(building.getLevel() + 1);
+        if(!gameState.getBuildings().containsKey(buildingId)){
+            throw new IllegalArgumentException("Building does not exist: " + buildingId);
+        }
+        PlayerBuliding playerBuilding = gameState.getBuildings().get(buildingId);
+        int nowlevel = playerBuilding.getLevel();// 取得當前等級 ,與下一等級陣列一致，等級1的條件為陣列[1]
+        LevelData levelData = getBuildingById(buildingId).getLevels().get(nowlevel);
+        Map<String, String> prerequisites = levelData.getPrerequisites();// 取得升級要求
+        Map<String, Integer> buildingCost = levelData.getCost();// 取得升級所需資源
+        PlayerResource resources = gameState.getResources();// 取得目前玩家資源
+        //檢查建築要求
+        for (String prerequisite : prerequisites.keySet()) {
+            if (!gameState.getBuildings().containsKey(prerequisite) || gameState.getBuildings().get(prerequisite).getLevel() != nowlevel) { 
+                // 如果要求的建築不存在或等級不符合，則拋出異常
+                throw new IllegalArgumentException("Prerequisite building not found or level mismatch: " + prerequisite);
+            }
+        }
+         //檢查資源是否足夠
+        resources.getNowAmount().forEach((key, value) -> {
+            // 如果資源不足，則拋出異常
+            if (value < buildingCost.getOrDefault(key, nowlevel)) {
+                throw new IllegalArgumentException("Insufficient resources for building: " + key);
+            }
+        });
+        resourceService.dedResources(playerId, buildingCost, isTest);
+        playerBuilding.setLevel(playerBuilding.getLevel() + 1);
+        playerBuilding.setStatus(BuildingStatus.UPGRADE);
+        playerBuilding.setBuildStartTime(System.currentTimeMillis());
+        playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
+        gameState.getBuildings().put(buildingId, playerBuilding);
         storageService.saveGameState(playerId, gameState, isTest);
 
-        eventService.addEvent(playerId, "building_upgraded", "Upgraded " + building.getType() + " to level " + building.getLevel(), isTest);
-        return building;
+        //eventService.addEvent(playerId, "building_upgraded", "Upgraded " + building.getType() + " to level " + building.getLevel(), isTest);
+        return gameState;
     }
-
-    public List<Building> getBuildings(String playerId, boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId, isTest);
-        if (gameState == null) throw new IllegalArgumentException("Player not found");
-        return gameState.getBuildings();
-    }*/
+    @Scheduled(initialDelay = 0, fixedRate = 1000) // 每1分鐘
+    public void updateAllPlayersBulidingStatus() {
+        //獲取所有上線玩家ID
+        for (String playerId : storageService.getGameStateIdList()) {
+            try {
+                updatePlayerBuildingStatus(playerId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }   
+        }
+    }
+    private void updatePlayerBuildingStatus(String playerId) throws IOException {
+        GameState gameState = storageService.getGameStateList(playerId);
+        if (gameState == null) {
+            throw new IllegalArgumentException("Player not found");
+        }
+        gameState.getBuildings().forEach((buildingId, playerBuilding) -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime >= playerBuilding.getBuildEndTime()) {
+                playerBuilding.setStatus(BuildingStatus.IDLE);
+            } 
+        });
+        
+        //storageService.saveGameState(playerId, gameState, false);
+    }
 }
  
