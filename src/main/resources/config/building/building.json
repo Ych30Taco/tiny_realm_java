@@ -79,7 +79,7 @@
         "buildTime": 360000,
         "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
         "output": { "food": 150 },
-        "prerequisites": { "farm": 2 },
+        "prerequisites": { "farm": 1 },
         "productionRate": 150
       },
       {
@@ -121,7 +121,7 @@
         "buildTime": 600000,
         "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
         "output": { "stone": 200 },
-        "prerequisites": { "quarry": 2 },
+        "prerequisites": { "lumberMill": 2 },
         "productionRate": 200
       }
 
@@ -149,7 +149,7 @@
         "buildTime": 360000,
         "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 500},
         "output": { "stone": 150 },
-        "prerequisites": { "quarry": 1 },
+        "prerequisites": { "stoneQuarry": 1 },
         "productionRate": 150
       },
       {
@@ -157,7 +157,7 @@
         "buildTime": 600000,
         "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
         "output": { "stone": 200 },
-        "prerequisites": { "quarry": 2 },
+        "prerequisites": { "stoneQuarry": 2 },
         "productionRate": 200
       }
     ]

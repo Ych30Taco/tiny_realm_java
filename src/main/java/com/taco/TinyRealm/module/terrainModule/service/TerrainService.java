@@ -64,6 +64,16 @@ public class TerrainService {
         terrain_name+= "共"+resourceList.size()+"種地形";
         return terrain_name;
     }
+    public List<Terrain> getAllerrain() {
+        return terrainsList;
+    }
+    
+    public Terrain getTerrainTypeById(String terrainID) {
+        return terrainsList.stream()
+                .filter(r -> r.getId().equals(terrainID))
+                .findFirst()
+                .orElse(null);
+    }
 /* 
     public void initializeMap(String playerId) throws IOException {
         GameState gameState = storageService.loadGameState(playerId, false);
