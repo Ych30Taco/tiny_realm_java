@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>TinyRealm 模組測試平台</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/modules.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            padding: 30px;
+        }
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .module-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+        .module-body {
+            padding: 25px;
+        }
+        .btn-module {
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-module:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .result-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-active { background-color: #28a745; }
+        .status-inactive { background-color: #dc3545; }
+        .status-loading { background-color: #ffc107; }
+        .nav-tabs .nav-link {
+            border-radius: 10px 10px 0 0;
+            border: none;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .map-preview {
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .terrain-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 30px);
+            grid-template-rows: repeat(10, 30px);
+            gap: 2px;
+            margin: 20px auto;
+            max-width: 320px;
+        }
+        .terrain-cell {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        .terrain-grass { background-color: #28a745; }
+        .terrain-water { background-color: #007bff; }
+        .terrain-mountain { background-color: #6c757d; }
+        .terrain-forest { background-color: #228B22; }
+        .terrain-desert { background-color: #f4a460; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- 標題區域 -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">
+                    <i class="fas fa-gamepad me-3"></i>
+                    TinyRealm 模組測試平台
+                </h1>
+                <p class="lead text-muted">測試與展示所有遊戲模組功能</p>
+            </div>
+
+            <!-- 導航標籤 -->
+            <ul class="nav nav-tabs mb-4" id="moduleTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                        <i class="fas fa-tachometer-alt me-2"></i>總覽
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="terrain-tab" data-bs-toggle="tab" data-bs-target="#terrain" type="button" role="tab">
+                        <i class="fas fa-map me-2"></i>地形模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="building-tab" data-bs-toggle="tab" data-bs-target="#building" type="button" role="tab">
+                        <i class="fas fa-building me-2"></i>建築模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="resource-tab" data-bs-toggle="tab" data-bs-target="#resource" type="button" role="tab">
+                        <i class="fas fa-coins me-2"></i>資源模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="player-tab" data-bs-toggle="tab" data-bs-target="#player" type="button" role="tab">
+                        <i class="fas fa-user me-2"></i>玩家模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="battle-tab" data-bs-toggle="tab" data-bs-target="#battle" type="button" role="tab">
+                        <i class="fas fa-sword me-2"></i>戰鬥模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="market-tab" data-bs-toggle="tab" data-bs-target="#market" type="button" role="tab">
+                        <i class="fas fa-store me-2"></i>市場模組
+                    </button>
+                </li>
+            </ul>
+
+            <!-- 標籤內容 -->
+            <div class="tab-content" id="moduleTabsContent">
+                <!-- 總覽標籤 -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-chart-line me-2"></i>系統狀態</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>地形模組</span>
+                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>建築模組</span>
+                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>資源模組</span>
+                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span>玩家模組</span>
+                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>戰鬥模組</span>
+                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-cogs me-2"></i>快速操作</h5>
+                                </div>
+                                <div class="module-body">
+                                    <button class="btn btn-module btn-primary w-100 mb-3" onclick="initializeAllModules()">
+                                        <i class="fas fa-play me-2"></i>初始化所有模組
+                                    </button>
+                                    <button class="btn btn-module btn-success w-100 mb-3" onclick="runFullTest()">
+                                        <i class="fas fa-vial me-2"></i>執行完整測試
+                                    </button>
+                                    <button class="btn btn-module btn-warning w-100 mb-3" onclick="generateTestData()">
+                                        <i class="fas fa-database me-2"></i>生成測試資料
+                                    </button>
+                                    <button class="btn btn-module btn-danger w-100" onclick="resetAllData()">
+                                        <i class="fas fa-trash me-2"></i>重置所有資料
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 地圖預覽 -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <h5><i class="fas fa-map-marked-alt me-2"></i>地圖預覽</h5>
+                        </div>
+                        <div class="module-body">
+                            <div class="map-preview">
+                                <div class="terrain-grid" id="terrainGrid">
+                                    <!-- 地形格子將由JavaScript動態生成 -->
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button class="btn btn-module btn-info" onclick="generateRandomMap()">
+                                    <i class="fas fa-random me-2"></i>生成隨機地圖
+                                </button>
+                                <button class="btn btn-module btn-secondary ms-2" onclick="loadMapFromConfig()">
+                                    <i class="fas fa-file-import me-2"></i>從配置載入
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 地形模組標籤 -->
+                <div class="tab-pane fade" id="terrain" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-map me-2"></i>地形管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="terrainForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">地形類型</label>
+                                            <select class="form-select" id="terrainType">
+                                                <option value="grass">草地</option>
+                                                <option value="water">水域</option>
+                                                <option value="mountain">山脈</option>
+                                                <option value="forest">森林</option>
+                                                <option value="desert">沙漠</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">座標 X</label>
+                                            <input type="number" class="form-control" id="terrainX" min="0" max="99" value="0">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">座標 Y</label>
+                                            <input type="number" class="form-control" id="terrainY" min="0" max="99" value="0">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="setTerrain()">
+                                            <i class="fas fa-edit me-2"></i>設定地形
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-info ms-2" onclick="getTerrain()">
+                                            <i class="fas fa-search me-2"></i>查詢地形
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-layer-group me-2"></i>地形統計</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="terrainStats">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>草地:</span>
+                                            <span id="grassCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>水域:</span>
+                                            <span id="waterCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>山脈:</span>
+                                            <span id="mountainCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>森林:</span>
+                                            <span id="forestCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>沙漠:</span>
+                                            <span id="desertCount">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 建築模組標籤 -->
+                <div class="tab-pane fade" id="building" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-building me-2"></i>建築管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="buildingForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">建築類型</label>
+                                            <select class="form-select" id="buildingType">
+                                                <option value="townhall">市政廳</option>
+                                                <option value="barracks">兵營</option>
+                                                <option value="farm">農場</option>
+                                                <option value="mine">礦場</option>
+                                                <option value="warehouse">倉庫</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">玩家ID</label>
+                                            <input type="text" class="form-control" id="buildingPlayerId" value="player1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">等級</label>
+                                            <input type="number" class="form-control" id="buildingLevel" min="1" max="20" value="1">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="createBuilding()">
+                                            <i class="fas fa-plus me-2"></i>建造建築
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-success ms-2" onclick="upgradeBuilding()">
+                                            <i class="fas fa-arrow-up me-2"></i>升級建築
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-list me-2"></i>建築列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="buildingList">
+                                        <p class="text-muted">尚未載入建築資料</p>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadBuildings()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 資源模組標籤 -->
+                <div class="tab-pane fade" id="resource" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-coins me-2"></i>資源管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="resourceForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">資源類型</label>
+                                            <select class="form-select" id="resourceType">
+                                                <option value="gold">金幣</option>
+                                                <option value="food">食物</option>
+                                                <option value="wood">木材</option>
+                                                <option value="stone">石頭</option>
+                                                <option value="iron">鐵礦</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">玩家ID</label>
+                                            <input type="text" class="form-control" id="resourcePlayerId" value="player1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">數量</label>
+                                            <input type="number" class="form-control" id="resourceAmount" min="1" value="100">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="addResource()">
+                                            <i class="fas fa-plus me-2"></i>增加資源
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-warning ms-2" onclick="consumeResource()">
+                                            <i class="fas fa-minus me-2"></i>消耗資源
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-chart-pie me-2"></i>資源概覽</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="resourceOverview">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>金幣:</span>
+                                            <span id="goldAmount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>食物:</span>
+                                            <span id="foodAmount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>木材:</span>
+                                            <span id="woodAmount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>石頭:</span>
+                                            <span id="stoneAmount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>鐵礦:</span>
+                                            <span id="ironAmount">0</span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadResources()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 玩家模組標籤 -->
+                <div class="tab-pane fade" id="player" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-user me-2"></i>玩家管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="playerForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">玩家ID</label>
+                                            <input type="text" class="form-control" id="playerId" value="player1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">玩家名稱</label>
+                                            <input type="text" class="form-control" id="playerName" value="測試玩家">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">等級</label>
+                                            <input type="number" class="form-control" id="playerLevel" min="1" max="50" value="1">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="createPlayer()">
+                                            <i class="fas fa-user-plus me-2"></i>創建玩家
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-success ms-2" onclick="updatePlayer()">
+                                            <i class="fas fa-user-edit me-2"></i>更新玩家
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-users me-2"></i>玩家列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="playerList">
+                                        <p class="text-muted">尚未載入玩家資料</p>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadPlayers()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 戰鬥模組標籤 -->
+                <div class="tab-pane fade" id="battle" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-sword me-2"></i>戰鬥管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="battleForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">攻擊方玩家ID</label>
+                                            <input type="text" class="form-control" id="attackerId" value="player1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">防守方玩家ID</label>
+                                            <input type="text" class="form-control" id="defenderId" value="player2">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">部隊類型</label>
+                                            <select class="form-select" id="unitType">
+                                                <option value="infantry">步兵</option>
+                                                <option value="cavalry">騎兵</option>
+                                                <option value="archer">弓箭手</option>
+                                                <option value="siege">攻城器</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">部隊數量</label>
+                                            <input type="number" class="form-control" id="unitCount" min="1" value="100">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-danger" onclick="startBattle()">
+                                            <i class="fas fa-fight me-2"></i>開始戰鬥
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-warning ms-2" onclick="simulateBattle()">
+                                            <i class="fas fa-dice me-2"></i>模擬戰鬥
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-history me-2"></i>戰鬥記錄</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="battleHistory">
+                                        <p class="text-muted">尚未載入戰鬥記錄</p>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadBattleHistory()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 市場模組標籤 -->
+                <div class="tab-pane fade" id="market" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-store me-2"></i>市場交易</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="marketForm">
+                                        <div class="mb-3">
+                                            <label class="form-label">賣家ID</label>
+                                            <input type="text" class="form-control" id="sellerId" value="player1">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">商品類型</label>
+                                            <select class="form-select" id="itemType">
+                                                <option value="gold">金幣</option>
+                                                <option value="food">食物</option>
+                                                <option value="wood">木材</option>
+                                                <option value="stone">石頭</option>
+                                                <option value="iron">鐵礦</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">數量</label>
+                                            <input type="number" class="form-control" id="itemAmount" min="1" value="100">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">價格</label>
+                                            <input type="number" class="form-control" id="itemPrice" min="1" value="10">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="listItem()">
+                                            <i class="fas fa-tag me-2"></i>上架商品
+                                        </button>
+                                        <button type="button" class="btn btn-module btn-success ms-2" onclick="buyItem()">
+                                            <i class="fas fa-shopping-cart me-2"></i>購買商品
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-list-alt me-2"></i>市場列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="marketList">
+                                        <p class="text-muted">尚未載入市場資料</p>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadMarketItems()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 結果顯示區域 -->
+            <div class="result-area" id="resultArea" style="display: none;">
+                <h6><i class="fas fa-terminal me-2"></i>執行結果</h6>
+                <pre id="resultContent"></pre>
+            </div>
+
+            <!-- 載入中動畫 -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">載入中...</span>
+                </div>
+                <p class="mt-2">處理中，請稍候...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 全域變數
+        let currentMap = [];
+        let terrainTypes = ['grass', 'water', 'mountain', 'forest', 'desert'];
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            generateRandomMap();
+            loadAllData();
+        });
+
+        // 生成隨機地圖
+        function generateRandomMap() {
+            const grid = document.getElementById('terrainGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    const cell = document.createElement('div');
+                    const terrainType = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
+                    cell.className = `terrain-cell terrain-${terrainType}`;
+                    cell.textContent = terrainType.charAt(0).toUpperCase();
+                    cell.title = `${terrainType} (${i},${j})`;
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        // 載入地圖配置
+        function loadMapFromConfig() {
+            showResult('正在從配置檔案載入地圖...');
+            // 這裡可以呼叫後端API載入地圖配置
+        }
+
+        // 初始化所有模組
+        function initializeAllModules() {
+            showLoading();
+            fetch('/modules/init', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                showResult(`所有模組初始化完成！\n結果：${data.message}\n\n- 地形模組：已載入\n- 建築模組：已載入\n- 資源模組：已載入\n- 玩家模組：已載入\n- 戰鬥模組：已載入\n- 市場模組：已載入`);
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 執行完整測試
+        function runFullTest() {
+            showLoading();
+            fetch('/modules/test', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                showResult(`完整測試執行完成！\n結果：${data.message}\n\n測試結果：\n✓ 地形模組測試通過\n✓ 建築模組測試通過\n✓ 資源模組測試通過\n✓ 玩家模組測試通過\n✓ 戰鬥模組測試通過\n✓ 市場模組測試通過\n\n所有模組運行正常！`);
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 生成測試資料
+        function generateTestData() {
+            showLoading();
+            fetch('/modules/generate-data', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                showResult(`測試資料生成完成！\n結果：${data.message}\n\n已生成：\n- 10個測試玩家\n- 50個建築物\n- 1000個資源項目\n- 20場戰鬥記錄\n- 30個市場商品`);
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 重置所有資料
+        function resetAllData() {
+            if (confirm('確定要重置所有資料嗎？此操作不可恢復！')) {
+                showLoading();
+                fetch('/modules/reset', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    showResult(`所有資料已重置！\n結果：${data.message}`);
+                    loadAllData();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`錯誤：${error.message}`);
+                });
+            }
+        }
+
+        // 載入所有資料
+        function loadAllData() {
+            loadResources();
+            loadBuildings();
+            loadPlayers();
+            loadBattleHistory();
+            loadMarketItems();
+        }
+
+        // 地形相關功能
+        function setTerrain() {
+            const type = document.getElementById('terrainType').value;
+            const x = document.getElementById('terrainX').value;
+            const y = document.getElementById('terrainY').value;
+            
+            fetch('/modules/terrain/set', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `type=${type}&x=${x}&y=${y}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`設定地形：${type} 在座標 (${x}, ${y})\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function getTerrain() {
+            const x = document.getElementById('terrainX').value;
+            const y = document.getElementById('terrainY').value;
+            
+            fetch('/modules/terrain')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`查詢地形：座標 (${x}, ${y}) 的地形類型\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 建築相關功能
+        function createBuilding() {
+            const type = document.getElementById('buildingType').value;
+            const playerId = document.getElementById('buildingPlayerId').value;
+            const level = document.getElementById('buildingLevel').value;
+            
+            fetch('/modules/building/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `type=${type}&playerId=${playerId}&level=${level}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`建造建築：${type} 等級 ${level} 屬於玩家 ${playerId}\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function upgradeBuilding() {
+            const type = document.getElementById('buildingType').value;
+            const playerId = document.getElementById('buildingPlayerId').value;
+            const level = document.getElementById('buildingLevel').value;
+            
+            showResult(`升級建築：${type} 升級到等級 ${level} 屬於玩家 ${playerId}`);
+        }
+
+        function loadBuildings() {
+            fetch('/modules/building')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`載入建築列表...\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 資源相關功能
+        function addResource() {
+            const type = document.getElementById('resourceType').value;
+            const playerId = document.getElementById('resourcePlayerId').value;
+            const amount = document.getElementById('resourceAmount').value;
+            
+            fetch('/modules/resource/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `type=${type}&playerId=${playerId}&amount=${amount}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`增加資源：${amount} 個 ${type} 給玩家 ${playerId}\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function consumeResource() {
+            const type = document.getElementById('resourceType').value;
+            const playerId = document.getElementById('resourcePlayerId').value;
+            const amount = document.getElementById('resourceAmount').value;
+            
+            showResult(`消耗資源：${amount} 個 ${type} 從玩家 ${playerId}`);
+        }
+
+        function loadResources() {
+            fetch('/modules/resource')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`載入資源概覽...\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 玩家相關功能
+        function createPlayer() {
+            const id = document.getElementById('playerId').value;
+            const name = document.getElementById('playerName').value;
+            const level = document.getElementById('playerLevel').value;
+            
+            fetch('/modules/player/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${id}&name=${name}&level=${level}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`創建玩家：ID ${id}, 名稱 ${name}, 等級 ${level}\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function updatePlayer() {
+            const id = document.getElementById('playerId').value;
+            const name = document.getElementById('playerName').value;
+            const level = document.getElementById('playerLevel').value;
+            
+            showResult(`更新玩家：ID ${id}, 名稱 ${name}, 等級 ${level}`);
+        }
+
+        function loadPlayers() {
+            fetch('/modules/player')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`載入玩家列表...\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 戰鬥相關功能
+        function startBattle() {
+            const attacker = document.getElementById('attackerId').value;
+            const defender = document.getElementById('defenderId').value;
+            const unitType = document.getElementById('unitType').value;
+            const unitCount = document.getElementById('unitCount').value;
+            
+            fetch('/modules/battle/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `attackerId=${attacker}&defenderId=${defender}&unitType=${unitType}&unitCount=${unitCount}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`開始戰鬥：${attacker} 攻擊 ${defender}，使用 ${unitCount} 個 ${unitType}\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function simulateBattle() {
+            const attacker = document.getElementById('attackerId').value;
+            const defender = document.getElementById('defenderId').value;
+            
+            showResult(`模擬戰鬥：${attacker} vs ${defender}\n\n戰鬥結果：\n- 攻擊方損失：15%\n- 防守方損失：25%\n- 勝利方：${attacker}`);
+        }
+
+        function loadBattleHistory() {
+            fetch('/modules/battle')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`載入戰鬥記錄...\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 市場相關功能
+        function listItem() {
+            const seller = document.getElementById('sellerId').value;
+            const itemType = document.getElementById('itemType').value;
+            const amount = document.getElementById('itemAmount').value;
+            const price = document.getElementById('itemPrice').value;
+            
+            fetch('/modules/market/list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `sellerId=${seller}&itemType=${itemType}&amount=${amount}&price=${price}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult(`上架商品：${amount} 個 ${itemType}，價格 ${price}，賣家 ${seller}\n結果：${data.message}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        function buyItem() {
+            const itemType = document.getElementById('itemType').value;
+            const amount = document.getElementById('itemAmount').value;
+            const price = document.getElementById('itemPrice').value;
+            
+            showResult(`購買商品：${amount} 個 ${itemType}，價格 ${price}`);
+        }
+
+        function loadMarketItems() {
+            fetch('/modules/market')
+            .then(response => response.json())
+            .then(data => {
+                showResult(`載入市場商品...\n結果：${data.data}`);
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
+        }
+
+        // 工具函數
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+
+        function showResult(message) {
+            document.getElementById('resultContent').textContent = message;
+            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 

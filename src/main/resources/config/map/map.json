@@ -1,0 +1,22 @@
+{
+    "width": 100,
+    "height": 100,
+    "tiles": [
+      {
+        "x": 0,
+        "y": 0,
+        "terrainId": "plains_001",
+        "ownerId": null,
+        "buildingId": null,
+        "unitIds": []
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "terrainId": "mountain_001",
+        "ownerId": null,
+        "buildingId": null,
+        "unitIds": []
+      }
+    ]
+  }
