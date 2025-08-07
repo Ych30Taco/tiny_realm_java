@@ -1,7 +1,6 @@
 package com.taco.TinyRealm.module.buildingModule.model;
 
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -71,6 +70,12 @@ public class Building {
      * 例如：建造時間、升級成本、生產速率等
      */
     private List<LevelData> levels;
+    /**
+     * 允許建築的地形類型
+     * 
+     * 定義該建築可以建造的地形，例如：平地、山地等
+     */
+    private List<String> allowedTerrains; 
 }
 
 

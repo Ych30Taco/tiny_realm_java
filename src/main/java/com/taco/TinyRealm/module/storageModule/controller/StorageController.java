@@ -32,6 +32,7 @@ public class StorageController {
         try {
             GameState gameState = storageService.loadGameState(playerId,false);
             if (gameState == null) return ResponseEntity.status(404).body(null);
+            System.out.println("---- 已載入玩家 " + playerId + "----");
             return ResponseEntity.ok(gameState);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

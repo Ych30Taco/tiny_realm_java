@@ -1,9 +1,8 @@
 package com.taco.TinyRealm.module.playerModule.service;
 
-import com.taco.TinyRealm.module.buildingModule.model.Building;
+
 import com.taco.TinyRealm.module.buildingModule.model.BuildingStatus;
 import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
-import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
@@ -15,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
+
 
 @Service
 public class PlayerService {
@@ -28,8 +25,6 @@ public class PlayerService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
-    @Autowired
-    private BuildingService buildingService;
 
     private Map<String, PlayerResource> playerResources;
     
@@ -90,7 +85,7 @@ public class PlayerService {
         for (Resource type : resourceService.getAllResourceTypes()) {
            nowAmount.put(type.getId(),  type.getNowAmount());
            maxAmount.put(type.getId(), type.getMaxAmount());
-           productionRates.put(type.getId(), 0); // 初始生產速率為 0
+           productionRates.put(type.getId(), type.getBaseProductionRate()); // 初始生產速率
         }
         playerResource.setNowAmount(nowAmount);
         playerResource.setMaxAmount(maxAmount);

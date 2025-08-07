@@ -1,9 +1,6 @@
 package com.taco.TinyRealm.module.storageModule.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taco.TinyRealm.model.Alliance;
-import com.taco.TinyRealm.model.MarketListing;
-import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import org.springframework.stereotype.Service;

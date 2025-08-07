@@ -1,8 +1,0 @@
-{
-  "width": 10,
-  "height": 10,
-  "initialState": "empty",
-  "maxOccupancy": 100,
-  "blockedPositions": [[0, 0], [9, 9]],
-  "description": "10x10 grid for building placement"
-}

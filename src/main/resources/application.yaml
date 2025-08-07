@@ -11,5 +11,6 @@ spring:
 app:
   data:
     config-resource-path: classpath:config/resource/
-    resource-path: classpath:config/resource/resource.json
-    building-path: classpath:config/building/building.json
+    resource-path:  classpath:config/resource/resource.json
+    building-path:  classpath:config/building/building.json
+    terrain-path:   classpath:config/terrains/terrain.json

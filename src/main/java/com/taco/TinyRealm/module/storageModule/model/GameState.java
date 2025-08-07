@@ -6,14 +6,13 @@ import com.taco.TinyRealm.model.GameEvent;
 import com.taco.TinyRealm.model.Item;
 import com.taco.TinyRealm.model.Task;
 import com.taco.TinyRealm.model.Technology;
-import com.taco.TinyRealm.model.Terrain;
 import com.taco.TinyRealm.model.Trade;
 import com.taco.TinyRealm.model.Unit;
-import com.taco.TinyRealm.module.buildingModule.model.Building;
 import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
-import com.taco.TinyRealm.module.resourceModule.model.Resource;
+import com.taco.TinyRealm.module.terrainModule.model.Terrain;
+
 import java.util.Map;
 
 import java.util.ArrayList;

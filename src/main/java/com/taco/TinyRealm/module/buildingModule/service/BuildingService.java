@@ -7,9 +7,7 @@ import com.taco.TinyRealm.module.buildingModule.model.BuildingStatus;
 import com.taco.TinyRealm.module.buildingModule.model.LevelData;
 import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
-import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
-import com.taco.TinyRealm.module.resourceModule.service.ResourceProductionService;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 
@@ -21,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,8 +35,6 @@ public class BuildingService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
-    @Autowired
-    private ResourceProductionService productionService;
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
@@ -66,7 +63,7 @@ public class BuildingService {
             e.printStackTrace(); // 印出詳細錯誤
             throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
         }
-        System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
+        System.out.println("---- 應用程式啟動中，載入建築模組完成 ----");
     }
     public List<Building> getAllbuilding() {
         return buildingsList;
@@ -100,6 +97,7 @@ public class BuildingService {
                     .anyMatch(t -> t.getType().equals("basic_military"));
             if (!hasTech) throw new IllegalArgumentException("Basic military technology required");
         }*/
+        
         if(gameState.getBuildings().containsKey(buildingId)){
             throw new IllegalArgumentException("Building already exists: " + buildingId);
         }
@@ -137,15 +135,11 @@ public class BuildingService {
         playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
 
         gameState.getBuildings().put(buildingId, playerBuilding);
+        gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));//更新資源生產速率
         storageService.saveGameState(playerId, gameState, isTest);
+        
 
-        // 更新資源生產速率
-        try {
-            productionService.updatePlayerResources(playerId, isTest);
-        } catch (Exception e) {
-            System.err.println("更新資源生產速率時發生錯誤: " + e.getMessage());
-        }
-
+        
         /*eventService.addEvent(playerId, "building_created", "Created " + buildingId + " at (" + x + "," + y + ")", isTest);
 
         // 更新任務進度
@@ -197,18 +191,67 @@ public class BuildingService {
         playerBuilding.setBuildStartTime(System.currentTimeMillis());
         playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
         gameState.getBuildings().put(buildingId, playerBuilding);
+        gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));//更新資源生產速率
         storageService.saveGameState(playerId, gameState, isTest);
 
-        // 更新資源生產速率
-        try {
-            productionService.updatePlayerResources(playerId, isTest);
-        } catch (Exception e) {
-            System.err.println("更新資源生產速率時發生錯誤: " + e.getMessage());
-        }
-
-        //eventService.addEvent(playerId, "building_upgraded", "Upgraded " + building.getType() + " to level " + building.getLevel(), isTest);
+        //eventService.addEvent(playerId, "building_upgraded", "Upgraded " + buildingId + " to level " + playerBuilding.getLevel(), isTest);
         return gameState;
     }
+
+    /**
+     * 計算玩家的資源生產速率
+     */
+    public Map<String, Integer> calculateProductionRates(String playerId, boolean isTest) throws IOException {
+        Map<String, Integer> productionRates = new HashMap<>();
+        
+        // 獲取玩家建築
+        GameState gameState = storageService.getGameStateList(playerId);
+        if (gameState == null || gameState.getBuildings() == null) {
+            return productionRates;
+        }
+        productionRates = gameState.getResources().getProductionRates();   
+        Map<String, PlayerBuliding> playerBuildings = gameState.getBuildings();
+        
+        // 遍歷玩家建築，計算總生產速率
+        for (Map.Entry<String, PlayerBuliding> entry : playerBuildings.entrySet()) {
+            String buildingId = entry.getKey();
+            PlayerBuliding playerBuilding = entry.getValue();
+            
+            // 獲取建築類型定義
+            Building buildingType = getBuildingById(buildingId);
+            if (buildingType == null) {
+                continue;
+            }
+            
+            // 檢查建築是否生產資源
+            String resourceType = buildingType.getResourceType();
+            if (resourceType != null && !resourceType.isEmpty() && resourceType.equals(resourceType)) {
+                // 根據建築等級獲取生產速率
+                int level = playerBuilding.getLevel();
+                int rate = getBuildingProductionRate(buildingType, level);
+                // 累加生產速率
+                productionRates.put(resourceType, rate);
+            }
+        }
+        return productionRates;
+    }
+
+        /**
+     * 根據建築類型和等級獲取生產速率
+     */
+    private int getBuildingProductionRate(Building buildingType, int level) {
+        // 根據建築等級獲取生產速率
+        if (buildingType.getLevels() != null) {
+            for (LevelData levelData : buildingType.getLevels()) {
+                if (levelData.getLevel() == level) {
+                    return levelData.getProductionRate();
+                }
+            }
+        }
+        return 0;
+    }
+
+
     @Scheduled(initialDelay = 0, fixedRate = 1000) // 每1分鐘
     public void updateAllPlayersBulidingStatus() {
         //獲取所有上線玩家ID

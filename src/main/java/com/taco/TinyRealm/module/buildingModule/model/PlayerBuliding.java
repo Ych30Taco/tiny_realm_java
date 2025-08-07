@@ -1,8 +1,5 @@
 package com.taco.TinyRealm.module.buildingModule.model;
 
-
-import java.time.LocalDateTime;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +16,4 @@ public class PlayerBuliding {
     private long buildEndTime;
     private int positionX;
     private int positionY;
-
-    
 }
-

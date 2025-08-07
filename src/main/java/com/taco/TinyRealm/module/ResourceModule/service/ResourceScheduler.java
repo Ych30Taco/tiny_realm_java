@@ -4,8 +4,6 @@ import com.taco.TinyRealm.module.storageModule.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 import java.util.List;
 
 /**

@@ -10,19 +10,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 
 
@@ -112,7 +108,6 @@ public class ResourceService {
             
         } catch (Exception e) {
             e.printStackTrace();
-            // TODO: handle exception
         }
         return gameState;
     }
@@ -140,14 +135,7 @@ public class ResourceService {
             storageService.saveGameState(playerId, gameState, isTest);
         } catch (Exception e) {
             e.printStackTrace();
-            // TODO: handle exception
         }
         return gameState;
     }
-    /*
-    public Resource getResources(String playerId, boolean isTest) throws IOException {
-        GameState gameState = storageService.loadGameState(playerId, isTest);
-        return gameState != null ? gameState.getResources() : null;
-    }
-    */
 }

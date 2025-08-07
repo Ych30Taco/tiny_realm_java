@@ -1,0 +1,140 @@
+[
+  {
+    "id": "plain",
+    "name": "平原",
+    "movementCost": {
+      "infantry": 1.0,
+      "cavalry": 0.8,
+      "vehicle": 1.2
+    },
+    "resourceType": null,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": 0,
+    "buildable": true,
+    "description": "平坦地形，適合快速移動和建造村莊"
+  },
+  {
+    "id": "forest",
+    "name": "森林",
+    "movementCost": {
+      "infantry": 1.5,
+      "cavalry": 2.0,
+      "vehicle": 2.5
+    },
+    "resourceType": "wood",
+    "resourceAmount": 1000,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": 1,
+    "buildable": false,
+    "description": "樹木茂密，提供木材資源"
+  },
+  {
+    "id": "mountain",
+    "name": "高山",
+    "movementCost": {
+      "infantry": 3.0,
+      "cavalry": 999,
+      "vehicle": 999
+    },
+    "resourceType": null,
+    "isPassable": true,
+    "isRoadRequired": true,
+    "defenseBonus": 2,
+    "buildable": true,
+    "description": "崎嶇地形，僅步兵可通過，需道路"
+  },
+  {
+    "id": "iron_mine",
+    "name": "鐵礦",
+    "movementCost": {
+      "infantry": 2.0,
+      "cavalry": 2.5,
+      "vehicle": 2.0
+    },
+    "resourceType": "iron",
+    "resourceAmount": 1500,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": 1,
+    "buildable": false,
+    "description": "提供鐵資源，移動稍受阻"
+  },
+  {
+    "id": "stone_mine",
+    "name": "石礦",
+    "movementCost": {
+      "infantry": 2.0,
+      "cavalry": 2.5,
+      "vehicle": 2.0
+    },
+    "resourceType": "stone",
+    "resourceAmount": 1500,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": 1,
+    "buildable": false,
+    "description": "提供石材資源，移動稍受阻"
+  },
+  {
+    "id": "waterfront",
+    "name": "水邊",
+    "movementCost": {
+      "infantry": 2.5,
+      "cavalry": 3.0,
+      "vehicle": 999
+    },
+    "resourceType": null,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": -1,
+    "buildable": false,
+    "description": "濕滑地形，降低防禦"
+  },
+  {
+    "id": "river",
+    "name": "河流",
+    "movementCost": {
+      "infantry": 999,
+      "cavalry": 999,
+      "vehicle": 999
+    },
+    "resourceType": null,
+    "isPassable": false,
+    "isRoadRequired": true,
+    "defenseBonus": 0,
+    "buildable": false,
+    "description": "無法直接通過，需橋樑"
+  },
+  {
+    "id": "grassland",
+    "name": "草原",
+    "movementCost": {
+      "infantry": 0.9,
+      "cavalry": 0.7,
+      "vehicle": 1.1
+    },
+    "resourceType": null,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": 0,
+    "buildable": true,
+    "description": "開闊地形，騎兵移動效率高"
+  },
+  {
+    "id": "desert",
+    "name": "沙漠",
+    "movementCost": {
+      "infantry": 2.0,
+      "cavalry": 2.5,
+      "vehicle": 3.0
+    },
+    "resourceType": null,
+    "isPassable": true,
+    "isRoadRequired": false,
+    "defenseBonus": -1,
+    "buildable": false,
+    "description": "乾燥地形，降低防禦"
+  }
+]
