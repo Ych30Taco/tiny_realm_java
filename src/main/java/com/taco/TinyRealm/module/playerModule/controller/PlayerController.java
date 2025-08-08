@@ -43,7 +43,6 @@ public class PlayerController {
     public ResponseEntity<?> logOutPlayer(@RequestBody Map<String, Object> body) {
         try {
             String playerId = (String) body.get("playerId");
-            System.out.println("playerId");
             GameState playdata = playerService.logOutPlayer(playerId,false);
             return ResponseEntity.ok(playdata);
         } catch (IOException e) {

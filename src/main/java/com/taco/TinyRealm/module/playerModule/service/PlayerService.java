@@ -119,7 +119,7 @@ public class PlayerService {
         player.setLastLogoutTime(System.currentTimeMillis());
         gameState.setPlayer(player);
         storageService.saveGameState(playerId, gameState, isTest);
-        storageService.logOutGameState(playerId, isTest);
+        //storageService.logOutGameState(playerId, isTest);
         return gameState;
     }
     public GameState logInPlayer(String playerId, boolean isTest) throws IOException {

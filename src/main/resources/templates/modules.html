@@ -123,6 +123,47 @@
             font-size: 12px;
             color: white;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .terrain-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
+        .terrain-cell.selected {
+            border: 3px solid #ffc107;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+        }
+        
+        .terrain-cell.occupied {
+            border: 2px solid #dc3545;
+        }
+        
+        .terrain-cell.owned {
+            border: 2px solid #28a745;
+        }
+        
+        .tile-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .terrain-cell:hover .tile-tooltip {
+            opacity: 1;
         }
         .terrain-plain { background-color: #a2d149; }         /* 平原：淡綠 */
         .terrain-forest { background-color: #228B22; }        /* 森林：深綠 */
@@ -189,20 +230,31 @@
                                 <div class="module-body">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <span>玩家模組</span>
-                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                        <span id="playerModuleStatus">
+                                            <span class="status-indicator status-loading"></span>檢查中...
+                                        </span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <span>資源模組</span>
-                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                        <span id="resourceModuleStatus">
+                                            <span class="status-indicator status-loading"></span>檢查中...
+                                        </span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <span>建築模組</span>
-                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                        <span id="buildingModuleStatus">
+                                            <span class="status-indicator status-loading"></span>檢查中...
+                                        </span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <span>地形地圖模組</span>
-                                        <span><span class="status-indicator status-active"></span>運行中</span>
+                                        <span id="terrainMapModuleStatus">
+                                            <span class="status-indicator status-loading"></span>檢查中...
+                                        </span>
                                     </div>
+                                    <button class="btn btn-module btn-info w-100 mt-3" onclick="checkModuleStatus()">
+                                        <i class="fas fa-sync me-2"></i>重新檢查狀態
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -229,34 +281,41 @@
                         </div>
                     </div>
                     
-                    <!-- 地圖預覽 -->
-                    <div class="module-card">
-                        <div class="module-header">
-                            <h5><i class="fas fa-map-marked-alt me-2"></i>地圖預覽</h5>
-                        </div>
-                        <div class="module-body">
-                            <div class="map-preview">
-                                <div class="terrain-grid" id="terrainGrid">
-                                    <!-- 地形格子將由JavaScript動態生成 -->
-                                </div>
-                            </div>
-                            <div class="text-center mt-3">
-                                <button class="btn btn-module btn-info" onclick="generateRandomMap()">
-                                    <i class="fas fa-random me-2"></i>生成隨機地圖
-                                </button>
-                                <button class="btn btn-module btn-secondary ms-2" onclick="loadMapFromConfig()">
-                                    <i class="fas fa-file-import me-2"></i>從配置載入
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 <!-- 地形模組標籤 -->
                 <div class="tab-pane fade" id="terrain" role="tabpanel">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
+                            <!-- 地圖預覽 -->
                             <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-map-marked-alt me-2"></i>地圖預覽</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div class="map-preview">
+                                        <div class="terrain-grid" id="terrainGrid">
+                                            <!-- 地形格子將由JavaScript動態生成 -->
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-module btn-info" onclick="generateRandomMap()">
+                                            <i class="fas fa-random me-2"></i>生成隨機地圖
+                                        </button>
+                                        <button class="btn btn-module btn-secondary ms-2" onclick="loadMapFromConfig()">
+                                            <i class="fas fa-file-import me-2"></i>從配置載入
+                                        </button>
+                                        <button class="btn btn-module btn-warning ms-2" onclick="clearMapSelection()">
+                                            <i class="fas fa-times me-2"></i>清除選擇
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- 地形管理 -->
+                            <div class="module-card mb-3">
                                 <div class="module-header">
                                     <h5><i class="fas fa-map me-2"></i>地形管理</h5>
                                 </div>
@@ -265,20 +324,24 @@
                                         <div class="mb-3">
                                             <label class="form-label">地形類型</label>
                                             <select class="form-select" id="terrainType">
-                                                <option value="grass">草地</option>
-                                                <option value="water">水域</option>
-                                                <option value="mountain">山脈</option>
+                                                <option value="plain">平原</option>
                                                 <option value="forest">森林</option>
+                                                <option value="mountain">山脈</option>
+                                                <option value="iron_mine">鐵礦</option>
+                                                <option value="stone_mine">石礦</option>
+                                                <option value="waterfront">水岸</option>
+                                                <option value="river">河流</option>
+                                                <option value="grassland">草原</option>
                                                 <option value="desert">沙漠</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">座標 X</label>
-                                            <input type="number" class="form-control" id="terrainX" min="0" max="99" value="0">
+                                            <input type="number" class="form-control" id="terrainX" min="0" max="9" value="0">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">座標 Y</label>
-                                            <input type="number" class="form-control" id="terrainY" min="0" max="99" value="0">
+                                            <input type="number" class="form-control" id="terrainY" min="0" max="9" value="0">
                                         </div>
                                         <button type="button" class="btn btn-module btn-primary" onclick="setTerrain()">
                                             <i class="fas fa-edit me-2"></i>設定地形
@@ -289,8 +352,8 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                            
+                            <!-- 地形統計 -->
                             <div class="module-card">
                                 <div class="module-header">
                                     <h5><i class="fas fa-layer-group me-2"></i>地形統計</h5>
@@ -298,20 +361,36 @@
                                 <div class="module-body">
                                     <div id="terrainStats">
                                         <div class="d-flex justify-content-between mb-2">
-                                            <span>草地:</span>
-                                            <span id="grassCount">0</span>
+                                            <span>平原:</span>
+                                            <span id="plainCount">0</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
-                                            <span>水域:</span>
-                                            <span id="waterCount">0</span>
+                                            <span>森林:</span>
+                                            <span id="forestCount">0</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
                                             <span>山脈:</span>
                                             <span id="mountainCount">0</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
-                                            <span>森林:</span>
-                                            <span id="forestCount">0</span>
+                                            <span>鐵礦:</span>
+                                            <span id="iron_mineCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>石礦:</span>
+                                            <span id="stone_mineCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>水岸:</span>
+                                            <span id="waterfrontCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>河流:</span>
+                                            <span id="riverCount">0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>草原:</span>
+                                            <span id="grasslandCount">0</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
                                             <span>沙漠:</span>
@@ -319,6 +398,21 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 選中的格子資訊 -->
+                    <div class="module-card mt-3" id="selectedTileInfo" style="display: none;">
+                        <div class="module-header">
+                            <h5><i class="fas fa-info-circle me-2"></i>選中格子資訊</h5>
+                        </div>
+                        <div class="module-body">
+                            <div id="tileInfoContent">
+                                <!-- 格子資訊將在這裡顯示 -->
+                            </div>
+                            <div class="mt-3" id="tileActions">
+                                <!-- 操作按鈕將在這裡顯示 -->
                             </div>
                         </div>
                     </div>
@@ -634,39 +728,239 @@
     <script>
         // 全域變數
         let currentMap = [];
+        let selectedTile = null;
         let terrainTypes = [
-    'plain',       // 平原
-    'forest',      // 森林
-    'mountain',    // 山脈
-    'iron_mine',   // 鐵礦
-    'stone_mine',  // 石礦
-    'waterfront',  // 水岸
-    'river',       // 河流
-    'grassland',   // 草原
-    'desert'       // 沙漠
-];
+            'plain',       // 平原
+            'forest',      // 森林
+            'mountain',    // 山脈
+            'iron_mine',   // 鐵礦
+            'stone_mine',  // 石礦
+            'waterfront',  // 水岸
+            'river',       // 河流
+            'grassland',   // 草原
+            'desert'       // 沙漠
+        ];
+        
+        // 地形資訊
+        const terrainInfo = {
+            'plain': { name: '平原', description: '適合建造基礎建築', canBuild: true, canOccupy: true },
+            'forest': { name: '森林', description: '提供木材資源', canBuild: true, canOccupy: true },
+            'mountain': { name: '山脈', description: '難以建造，但可開採礦石', canBuild: false, canOccupy: true },
+            'iron_mine': { name: '鐵礦', description: '可開採鐵礦資源', canBuild: false, canOccupy: true },
+            'stone_mine': { name: '石礦', description: '可開採石頭資源', canBuild: false, canOccupy: true },
+            'waterfront': { name: '水岸', description: '適合建造港口', canBuild: true, canOccupy: true },
+            'river': { name: '河流', description: '提供水源，適合農業', canBuild: false, canOccupy: false },
+            'grassland': { name: '草原', description: '適合農業和畜牧', canBuild: true, canOccupy: true },
+            'desert': { name: '沙漠', description: '資源稀少，難以開發', canBuild: false, canOccupy: true }
+        };
 
         // 頁面載入完成後初始化
         document.addEventListener('DOMContentLoaded', function() {
             generateRandomMap();
             loadAllData();
+            checkModuleStatus(); // 檢查模組狀態
         });
 
         // 生成隨機地圖
         function generateRandomMap() {
             const grid = document.getElementById('terrainGrid');
             grid.innerHTML = '';
+            currentMap = [];
+            
+            for (let i = 0; i < 10; i++) {
+                currentMap[i] = [];
+                for (let j = 0; j < 10; j++) {
+                    const terrainType = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
+                    const cell = createTerrainCell(i, j, terrainType);
+                    grid.appendChild(cell);
+                    currentMap[i][j] = {
+                        x: j,
+                        y: i,
+                        terrainType: terrainType,
+                        owner: null,
+                        building: null,
+                        occupied: false
+                    };
+                }
+            }
+            updateTerrainStats();
+        }
+        
+        // 創建地形格子
+        function createTerrainCell(y, x, terrainType) {
+            const cell = document.createElement('div');
+            cell.className = `terrain-cell terrain-${terrainType}`;
+            cell.textContent = terrainType.charAt(0).toUpperCase();
+            cell.dataset.x = x;
+            cell.dataset.y = y;
+            
+            // 添加工具提示
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tile-tooltip';
+            tooltip.textContent = `${terrainInfo[terrainType].name} (${x},${y})`;
+            cell.appendChild(tooltip);
+            
+            // 添加點擊事件
+            cell.addEventListener('click', function() {
+                selectTile(x, y);
+            });
+            
+            return cell;
+        }
+        
+        // 選擇格子
+        function selectTile(x, y) {
+            // 清除之前的選擇
+            if (selectedTile) {
+                const prevCell = document.querySelector(`[data-x="${selectedTile.x}"][data-y="${selectedTile.y}"]`);
+                if (prevCell) {
+                    prevCell.classList.remove('selected');
+                }
+            }
+            
+            // 設置新的選擇
+            selectedTile = currentMap[y][x];
+            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            if (cell) {
+                cell.classList.add('selected');
+            }
+            
+            // 顯示格子資訊
+            showTileInfo(selectedTile);
+        }
+        
+        // 顯示格子資訊
+        function showTileInfo(tile) {
+            const infoDiv = document.getElementById('selectedTileInfo');
+            const contentDiv = document.getElementById('tileInfoContent');
+            const actionsDiv = document.getElementById('tileActions');
+            
+            const terrain = terrainInfo[tile.terrainType];
+            
+            contentDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>基本資訊</h6>
+                        <p><strong>座標:</strong> (${tile.x}, ${tile.y})</p>
+                        <p><strong>地形:</strong> ${terrain.name}</p>
+                        <p><strong>描述:</strong> ${terrain.description}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>狀態資訊</h6>
+                        <p><strong>擁有者:</strong> ${tile.owner || '無'}</p>
+                        <p><strong>建築:</strong> ${tile.building || '無'}</p>
+                        <p><strong>佔領狀態:</strong> ${tile.occupied ? '已佔領' : '未佔領'}</p>
+                    </div>
+                </div>
+            `;
+            
+            // 生成操作按鈕
+            let actionsHtml = '<div class="btn-group-vertical w-100" role="group">';
+            
+            if (!tile.occupied && terrain.canOccupy) {
+                actionsHtml += `
+                    <button class="btn btn-module btn-success mb-2" onclick="occupyTile(${tile.x}, ${tile.y})">
+                        <i class="fas fa-flag me-2"></i>佔領此地
+                    </button>
+                `;
+            }
+            
+            if (tile.occupied && !tile.building && terrain.canBuild) {
+                actionsHtml += `
+                    <button class="btn btn-module btn-primary mb-2" onclick="buildOnTile(${tile.x}, ${tile.y})">
+                        <i class="fas fa-hammer me-2"></i>建造建築
+                    </button>
+                `;
+            }
+            
+            if (tile.occupied && tile.owner) {
+                actionsHtml += `
+                    <button class="btn btn-module btn-warning mb-2" onclick="abandonTile(${tile.x}, ${tile.y})">
+                        <i class="fas fa-times me-2"></i>放棄此地
+                    </button>
+                `;
+            }
+            
+            actionsHtml += '</div>';
+            actionsDiv.innerHTML = actionsHtml;
+            
+            infoDiv.style.display = 'block';
+        }
+        
+        // 清除地圖選擇
+        function clearMapSelection() {
+            if (selectedTile) {
+                const cell = document.querySelector(`[data-x="${selectedTile.x}"][data-y="${selectedTile.y}"]`);
+                if (cell) {
+                    cell.classList.remove('selected');
+                }
+                selectedTile = null;
+            }
+            document.getElementById('selectedTileInfo').style.display = 'none';
+        }
+        
+        // 佔領格子
+        function occupyTile(x, y) {
+            const tile = currentMap[y][x];
+            tile.occupied = true;
+            tile.owner = 'player1'; // 這裡可以設置為當前玩家ID
+            
+            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            if (cell) {
+                cell.classList.add('owned');
+            }
+            
+            showResult(`成功佔領座標 (${x}, ${y}) 的 ${terrainInfo[tile.terrainType].name}`);
+            showTileInfo(tile);
+        }
+        
+        // 在格子上建造
+        function buildOnTile(x, y) {
+            const tile = currentMap[y][x];
+            tile.building = 'townhall'; // 這裡可以讓玩家選擇建築類型
+            
+            showResult(`在座標 (${x}, ${y}) 建造了市政廳`);
+            showTileInfo(tile);
+        }
+        
+        // 放棄格子
+        function abandonTile(x, y) {
+            const tile = currentMap[y][x];
+            tile.occupied = false;
+            tile.owner = null;
+            tile.building = null;
+            
+            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            if (cell) {
+                cell.classList.remove('owned');
+            }
+            
+            showResult(`放棄了座標 (${x}, ${y}) 的 ${terrainInfo[tile.terrainType].name}`);
+            showTileInfo(tile);
+        }
+        
+        // 更新地形統計
+        function updateTerrainStats() {
+            const stats = {};
+            terrainTypes.forEach(type => {
+                stats[type] = 0;
+            });
             
             for (let i = 0; i < 10; i++) {
                 for (let j = 0; j < 10; j++) {
-                    const cell = document.createElement('div');
-                    const terrainType = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-                    cell.className = `terrain-cell terrain-${terrainType}`;
-                    cell.textContent = terrainType.charAt(0).toUpperCase();
-                    cell.title = `${terrainType} (${i},${j})`;
-                    grid.appendChild(cell);
+                    if (currentMap[i] && currentMap[i][j]) {
+                        const type = currentMap[i][j].terrainType;
+                        stats[type]++;
+                    }
                 }
             }
+            
+            terrainTypes.forEach(type => {
+                const element = document.getElementById(`${type}Count`);
+                if (element) {
+                    element.textContent = stats[type] || 0;
+                }
+            });
         }
 
         // 載入地圖配置
@@ -953,14 +1247,30 @@
                 if (Array.isArray(allPlayers) && allPlayers.length > 0) {
                     html += '<ul class="list-group mb-3">';
                     allPlayers.forEach(id => {
+                        // 檢查 GameState 和 Player 是否存在
+                        if (!allGameStates[id] || !allGameStates[id].player) {
+                            html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>玩家 ${id} (資料不完整)</span>
+                                <span>
+                                    <button class="btn btn-sm btn-success me-1" onclick="setPlayerOnline('${id}')">上線</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="setPlayerOffline('${id}')">下線</button>
+                                </span>
+                            </li>`;
+                            return;
+                        }
+                        
                         // 取得狀態
                         let status = 0;
-                        if (allGameStates[id] && allGameStates[id].player && typeof allGameStates[id].player.status === 'number') {
+                        if (typeof allGameStates[id].player.status === 'number') {
                             status = allGameStates[id].player.status;
                         }
+                        
+                        // 取得玩家名稱，如果沒有則使用 ID
+                        const playerName = allGameStates[id].player.name || `玩家 ${id}`;
+                        
                         // 狀態 1=上線, 0=下線
                         html += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>${allGameStates[id].player.name}</span>
+                            <span>${playerName}</span>
                             <span>
                                 <button class="btn btn-sm btn-success me-1" onclick="setPlayerOnline('${id}')" ${status === 1 ? 'disabled' : ''}>上線</button>
                                 <button class="btn btn-sm btn-secondary" onclick="setPlayerOffline('${id}')" ${status === 0 ? 'disabled' : ''}>下線</button>
@@ -991,7 +1301,7 @@
             .then(response => response.json())
             .then(data => {
                 showResult(`玩家 ${playerId} 已上線\n${JSON.stringify(data)}`);
-                loadPlayers();
+                loadPlayers(); // 重新載入玩家列表
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1000,7 +1310,7 @@
 
         // 玩家下線
         function setPlayerOffline(playerId) {
-            fetch(`/api/player/logout`, {
+            fetch(`/api/player/logOut`, {
                 method: 'POST', 
                 headers: {
                     'Content-Type': 'application/json',
@@ -1010,7 +1320,7 @@
             .then(response => response.json())
             .then(data => {
                 showResult(`玩家 ${playerId} 已下線\n${JSON.stringify(data)}`);
-                loadPlayers();
+                loadPlayers(); // 重新載入玩家列表
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1098,6 +1408,41 @@
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
             });
+        }
+
+        // 檢查模組狀態
+        function checkModuleStatus() {
+            fetch('/modules/status')
+                .then(response => response.json())
+                .then(data => {
+                    updateModuleStatus('playerModuleStatus', data.playerModule, '玩家模組');
+                    updateModuleStatus('resourceModuleStatus', data.resourceModule, '資源模組');
+                    updateModuleStatus('buildingModuleStatus', data.buildingModule, '建築模組');
+                    updateModuleStatus('terrainMapModuleStatus', data.terrainMapModule, '地形地圖模組');
+                })
+                .catch(error => {
+                    console.error('檢查模組狀態失敗:', error);
+                    // 如果檢查失敗，將所有模組標記為失敗
+                    updateModuleStatus('playerModuleStatus', false, '玩家模組');
+                    updateModuleStatus('resourceModuleStatus', false, '資源模組');
+                    updateModuleStatus('buildingModuleStatus', false, '建築模組');
+                    updateModuleStatus('terrainMapModuleStatus', false, '地形地圖模組');
+                });
+        }
+
+        // 更新模組狀態顯示
+        function updateModuleStatus(elementId, isActive, moduleName) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const indicator = element.querySelector('.status-indicator');
+                if (isActive) {
+                    indicator.className = 'status-indicator status-active';
+                    element.innerHTML = `<span class="status-indicator status-active"></span>運行中`;
+                } else {
+                    indicator.className = 'status-indicator status-inactive';
+                    element.innerHTML = `<span class="status-indicator status-inactive"></span>運行失敗`;
+                }
+            }
         }
 
         // 工具函數

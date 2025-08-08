@@ -1,16 +1,111 @@
 package com.taco.TinyRealm.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.taco.TinyRealm.module.storageModule.service.StorageService;
+import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
+import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
+import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+import com.taco.TinyRealm.module.playerModule.service.PlayerService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/modules")
 public class ModuleTestController {
 
+    @Autowired
+    private StorageService storageService;
+    
+    @Autowired
+    private TerrainMapService terrainMapService;
+    
+    @Autowired
+    private BuildingService buildingService;
+    
+    @Autowired
+    private ResourceService resourceService;
+    
+    @Autowired
+    private PlayerService playerService;
+
     @GetMapping
     public String showModulesPage(Model model) {
         return "modules";
+    }
+
+    @GetMapping("/status")
+    @ResponseBody
+    public Map<String, Object> getModuleStatus() {
+        Map<String, Object> status = new HashMap<>();
+        
+        try {
+            // 檢查玩家模組狀態
+            boolean playerModuleStatus = checkPlayerModuleStatus();
+            status.put("playerModule", playerModuleStatus);
+            
+            // 檢查資源模組狀態
+            boolean resourceModuleStatus = checkResourceModuleStatus();
+            status.put("resourceModule", resourceModuleStatus);
+            
+            // 檢查建築模組狀態
+            boolean buildingModuleStatus = checkBuildingModuleStatus();
+            status.put("buildingModule", buildingModuleStatus);
+            
+            // 檢查地形地圖模組狀態
+            boolean terrainMapModuleStatus = checkTerrainMapModuleStatus();
+            status.put("terrainMapModule", terrainMapModuleStatus);
+            
+            status.put("success", true);
+        } catch (Exception e) {
+            status.put("success", false);
+            status.put("error", e.getMessage());
+        }
+        
+        return status;
+    }
+    
+    private boolean checkPlayerModuleStatus() {
+        try {
+            // 嘗試獲取玩家列表來檢查玩家模組是否正常
+            storageService.getAllPlayerIdList();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private boolean checkResourceModuleStatus() {
+        try {
+            // 嘗試獲取資源配置來檢查資源模組是否正常
+            resourceService.getAllResourceTypes();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private boolean checkBuildingModuleStatus() {
+        try {
+            // 嘗試獲取建築配置來檢查建築模組是否正常
+            buildingService.getAllbuilding();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private boolean checkTerrainMapModuleStatus() {
+        try {
+            // 嘗試獲取地圖資料來檢查地形地圖模組是否正常
+            terrainMapService.getGameMap();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @GetMapping("/terrain")
