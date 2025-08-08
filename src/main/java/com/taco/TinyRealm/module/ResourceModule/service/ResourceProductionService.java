@@ -62,7 +62,7 @@ public class ResourceProductionService {
      */
     public void updatePlayerResources(String playerId, boolean isTest) throws IOException {
         // 獲取玩家遊戲狀態
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) {
             throw new IllegalArgumentException("Player not found: " + playerId);
         }

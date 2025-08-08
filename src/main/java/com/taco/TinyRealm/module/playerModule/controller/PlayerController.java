@@ -40,12 +40,24 @@ public class PlayerController {
         }
     }
     @PostMapping("/logOut")
-    public void logOutPlayer(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> logOutPlayer(@RequestBody Map<String, Object> body) {
         try {
             String playerId = (String) body.get("playerId");
-            playerService.logOutPlayer(playerId,false);
+            System.out.println("playerId");
+            GameState playdata = playerService.logOutPlayer(playerId,false);
+            return ResponseEntity.ok(playdata);
         } catch (IOException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    @PostMapping("/login")
+    public ResponseEntity<?>logInPlayer(@RequestBody Map<String, Object> body) {
+        try {
+            String playerId = (String) body.get("playerId");
+            GameState playdata = playerService.logInPlayer(playerId,false);
+            return ResponseEntity.ok(playdata);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
         }
     }   
 }

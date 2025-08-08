@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/storage")
@@ -38,4 +39,26 @@ public class StorageController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/playerList")
+    public ResponseEntity<List<String>> listAllFiles() {
+        List<String> files = storageService.listAllFiles();
+        return ResponseEntity.ok(files);
+    }
+    @GetMapping("/onlinePlayers")
+    public ResponseEntity<List<String>> getOnlineGameStateIdList() {
+        List<String> onlinePlayers = storageService.getOnlineGameStateIdList();
+        return ResponseEntity.ok(onlinePlayers);
+    }
+    @GetMapping("/offlinePlayers")
+    public ResponseEntity<List<String>> getOfflineGameStateIdList() {
+        List<String> offlinePlayers = storageService.getOfflineGameStateIdList();
+        return ResponseEntity.ok(offlinePlayers);
+    }
+    @GetMapping("/allGameStateList")
+    public ResponseEntity<Map<String, GameState>> getAllGameStateList() {
+        Map<String, GameState> allGameStates = storageService.getAllGameStateList();
+        return ResponseEntity.ok(allGameStates);
+    }
+
 }

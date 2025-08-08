@@ -10,6 +10,7 @@ spring:
 
 app:
   data:
+    storagePath: game_data/
     config-resource-path: classpath:config/resource/
     resource-path:  classpath:config/resource/resource.json
     building-path:  classpath:config/building/building.json

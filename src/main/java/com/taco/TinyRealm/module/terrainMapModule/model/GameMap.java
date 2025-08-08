@@ -1,31 +1,35 @@
-package com.taco.TinyRealm.module.terrainModule.model;
+package com.taco.TinyRealm.module.terrainMapModule.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameMap {
+    private String id; // 地圖ID
     private int width; // 地圖寬度
     private int height; // 地圖高度
-    private Map<String, MapTile> tiles; // 座標 (x,y) -> MapTile，key 為 "x,y"
+    private List<MapTile> tiles; // 地圖磚塊清單
 
     public GameMap(int width, int height) {
         this.width = width;
         this.height = height;
-        this.tiles = new HashMap<>();
+        this.tiles = new ArrayList<>();
     }
 
-    public MapTile getTile(int x, int y) {
-        return tiles.get(x + "," + y);
+    public List<MapTile> getTiles() {
+        return tiles;
     }
 
-    public void setTile(int x, int y, MapTile tile) {
-        tiles.put(x + "," + y, tile);
+    public void setTiles(List<MapTile> tiles) {
+        this.tiles = tiles;
     }
 
 }

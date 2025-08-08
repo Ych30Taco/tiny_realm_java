@@ -1,4 +1,4 @@
-package com.taco.TinyRealm.module.terrainModule.model;
+package com.taco.TinyRealm.module.terrainMapModule.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

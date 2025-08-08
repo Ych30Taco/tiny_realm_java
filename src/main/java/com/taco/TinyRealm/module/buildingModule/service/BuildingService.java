@@ -87,7 +87,7 @@ public class BuildingService {
     
     
     public GameState createBuilding(String playerId, String buildingId, int x, int y, boolean isTest) throws IOException {
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         // 檢查地形位置
         //if (!terrainService.isPositionValid(playerId, x, y)) throw new IllegalArgumentException("Invalid or occupied position");
@@ -160,7 +160,7 @@ public class BuildingService {
     }
      
     public GameState upgradeBuilding(String playerId, String buildingId, boolean isTest) throws IOException {
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
         if(!gameState.getBuildings().containsKey(buildingId)){
             throw new IllegalArgumentException("Building does not exist: " + buildingId);
@@ -205,7 +205,7 @@ public class BuildingService {
         Map<String, Integer> productionRates = new HashMap<>();
         
         // 獲取玩家建築
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null || gameState.getBuildings() == null) {
             return productionRates;
         }
@@ -255,7 +255,7 @@ public class BuildingService {
     @Scheduled(initialDelay = 0, fixedRate = 1000) // 每1分鐘
     public void updateAllPlayersBulidingStatus() {
         //獲取所有上線玩家ID
-        for (String playerId : storageService.getGameStateIdList()) {
+        for (String playerId : storageService.getOnlineGameStateIdList()) {
             try {
                 updatePlayerBuildingStatus(playerId);
             } catch (IOException e) {
@@ -264,7 +264,7 @@ public class BuildingService {
         }
     }
     private void updatePlayerBuildingStatus(String playerId) throws IOException {
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) {
             throw new IllegalArgumentException("Player not found");
         }

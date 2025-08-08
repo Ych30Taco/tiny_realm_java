@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,8 +32,8 @@ public class PlayerService {
     public Player createPlayer(String name, boolean isTest) throws IOException {
         Player player = new Player();
         
-        //player.setId(UUID.randomUUID().toString());
-        player.setId("9f917eb2-de3a-420b-ae3b-0a493264072a");
+        player.setId(UUID.randomUUID().toString());
+        //player.setId("9f917eb2-de3a-420b-ae3b-0a493264072a");
         player.setName(name);
         player.setLevel(1);
         player.setExperience(0);
@@ -61,11 +62,10 @@ public class PlayerService {
     }
 
     public GameState getPlayer(String playerId, boolean isTest) throws IOException {
-        //GameState gameState = storageService.loadGameState(id, isTest);
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         return gameState != null ? gameState : null;
     }
-
+/* 
     public Player updatePlayer(String id, String name, int level, boolean isTest) throws IOException {
         GameState gameState = storageService.loadGameState(id, isTest);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
@@ -74,7 +74,7 @@ public class PlayerService {
         player.setLevel(level);
         storageService.saveGameState(id, gameState, isTest);
         return player;
-    }
+    }*/
 
     public PlayerResource initializePlayerResources() {
         PlayerResource playerResource = new PlayerResource();
@@ -112,13 +112,40 @@ public class PlayerService {
     public PlayerResource getPlayerResources(String playerId) {
         return playerResources.get(playerId);
     }
-    public void logOutPlayer(String playerId, boolean isTest) throws IOException{
-        GameState gameState = storageService.getGameStateList(playerId);
+    public GameState logOutPlayer(String playerId, boolean isTest) throws IOException{
+        GameState gameState = storageService.getGameStateListById(playerId);
         Player player = gameState.getPlayer();
         player.setStatus(0); // 設置玩家狀態為離線
         player.setLastLogoutTime(System.currentTimeMillis());
         gameState.setPlayer(player);
         storageService.saveGameState(playerId, gameState, isTest);
         storageService.logOutGameState(playerId, isTest);
+        return gameState;
+    }
+    public GameState logInPlayer(String playerId, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateListById(playerId);
+        if (gameState == null) return null;
+        Player player = gameState.getPlayer();
+        player.setStatus(1); // 設置玩家狀態為上線
+        player.setLastLoginTime(System.currentTimeMillis());
+        gameState.setPlayer(player);
+        storageService.saveGameState(playerId, gameState, isTest);
+        return gameState;
+    }
+
+
+    private Map<String, Object> createResponse(String code, String stringCode, String message, String messageEN , List<Map<String, Object>> dataList) {
+        //logger.warn("創建回應: code={}, message={}, messageEN={}", code, message, messageEN);
+        Map<String, Object> errorResponse = new HashMap<>();
+        Map<String, Object> status = new HashMap<>();
+        status.put("version", 1);
+        status.put("status", true);
+        status.put("code", code);
+        status.put("stringCode", stringCode);
+        status.put("message", message);
+        status.put("messageEN", messageEN);
+        errorResponse.put("status", status);
+        errorResponse.put("dataList", dataList);
+        return errorResponse;
     }
 }

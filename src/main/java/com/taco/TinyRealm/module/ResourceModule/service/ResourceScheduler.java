@@ -51,7 +51,7 @@ public class ResourceScheduler {
     public void updateAllPlayerResources() {
         try {
             // 獲取所有在線玩家的ID列表
-            List<String> playerIds = storageService.getGameStateIdList();
+            List<String> playerIds = storageService.getOnlineGameStateIdList();
             System.out.println("開始更新 " + playerIds.size() + " 個玩家的資源...");
             
             // 逐個更新每個玩家的資源
@@ -78,7 +78,7 @@ public class ResourceScheduler {
     @Scheduled(fixedRate = 3600000) // 3600000 毫秒 = 1 小時
     public void hourlyResourceUpdate() {
         try {
-            List<String> playerIds = storageService.getGameStateIdList();
+            List<String> playerIds = storageService.getOnlineGameStateIdList();
             System.out.println("執行每小時資源更新，玩家數量: " + playerIds.size());
             
             for (String playerId : playerIds) {

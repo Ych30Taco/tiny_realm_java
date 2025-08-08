@@ -11,7 +11,7 @@ import com.taco.TinyRealm.model.Unit;
 import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
-import com.taco.TinyRealm.module.terrainModule.model.Terrain;
+import com.taco.TinyRealm.module.terrainMapModule.model.Terrain;
 
 import java.util.Map;
 

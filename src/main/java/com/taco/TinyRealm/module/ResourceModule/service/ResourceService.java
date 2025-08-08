@@ -89,7 +89,7 @@ public class ResourceService {
 
 
     public GameState addResources(String playerId, Map<String, Integer>  addResource, boolean isTest) throws IOException {
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         try {
             Map<String, Integer> resources = gameState.getResources().getNowAmount();
             if (resources == null) {
@@ -112,7 +112,7 @@ public class ResourceService {
         return gameState;
     }
     public GameState dedResources(String playerId, Map<String, Integer>  dedResource, boolean isTest) throws IOException {
-        GameState gameState = storageService.getGameStateList(playerId);
+        GameState gameState = storageService.getGameStateListById(playerId);
         try {
             Map<String, Integer> resources = gameState.getResources().getNowAmount();
             if (resources == null) {
