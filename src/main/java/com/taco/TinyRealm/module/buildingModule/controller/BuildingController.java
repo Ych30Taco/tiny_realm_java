@@ -18,13 +18,13 @@ public class BuildingController {
 
     @GetMapping("/types")
     public ResponseEntity<?> getAllResourceTypes() {
-        return ResponseEntity.ok(buildingService.getAllbuilding());
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取建築類型成功", "data", buildingService.getAllbuilding()));
     }
 
     @PostMapping("/typeById")
     public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
         String buildingID = (String) body.get("buildingID");
-        return ResponseEntity.ok(buildingService.getBuildingById(buildingID ));
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取建築類型成功", "data", buildingService.getBuildingById(buildingID)));
     }
      
     @PostMapping("/create")
@@ -34,12 +34,12 @@ public class BuildingController {
         int x = (int) body.get("x");
         int y = (int) body.get("y");
         try {
-            GameState playerBuliding = buildingService.createBuilding(playerId, buildingId, x, y,false);
-            return ResponseEntity.ok(playerBuliding);
+            GameState playerBuliding = buildingService.createBuilding(playerId, buildingId, x, y, false);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築建造成功", "data", playerBuliding));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage(), "data", null));
         }
     }
     
@@ -48,12 +48,12 @@ public class BuildingController {
         String playerId = (String) body.get("playerId");
         String buildingId = (String) body.get("buildingId");
         try {
-            GameState building = buildingService.upgradeBuilding(playerId, buildingId,false);
-            return ResponseEntity.ok(building);
+            GameState building = buildingService.upgradeBuilding(playerId, buildingId, false);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築升級成功", "data", building));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage(), "data", null));
         }
     }
     
@@ -68,9 +68,9 @@ public class BuildingController {
             GameState result = buildingService.removeBuilding(playerId, buildingId, false);
             return ResponseEntity.ok(Map.of("success", true, "message", "建築拆除成功", "data", result));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤"));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage()));
+            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage(), "data", null));
         }
     }
     

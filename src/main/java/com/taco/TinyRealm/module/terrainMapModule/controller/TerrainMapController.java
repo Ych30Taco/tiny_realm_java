@@ -21,16 +21,18 @@ public class TerrainMapController {
 
     @GetMapping("/types")
     public ResponseEntity<?> getAllterrain() {
-        return ResponseEntity.ok(terrainMapService.getAllterrain());
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取地形類型成功", "data", terrainMapService.getAllterrain()));
     }
+    
     @PostMapping("/typeById")
     public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
         String terrainID = (String) body.get("terrainID");
-        return ResponseEntity.ok(terrainMapService.getTerrainTypeById(terrainID ));
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取地形類型成功", "data", terrainMapService.getTerrainTypeById(terrainID)));
     }
+    
     @GetMapping("/gameMap")
     public ResponseEntity<?> getgameMap() {
-        return ResponseEntity.ok(terrainMapService.getGameMap());
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取遊戲地圖成功", "data", terrainMapService.getGameMap()));
     }
     
     /**
@@ -44,12 +46,12 @@ public class TerrainMapController {
             String playerId = (String) body.get("playerId");
             
             if (terrainMapService.occupyPosition(x, y, playerId)) {
-                return ResponseEntity.ok(Map.of("success", true, "message", "位置佔領成功"));
+                return ResponseEntity.ok(Map.of("success", true, "message", "位置佔領成功", "data", null));
             } else {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "位置無法佔領"));
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "位置無法佔領", "data", null));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("success", false, "message", "佔領失敗: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "佔領失敗: " + e.getMessage(), "data", null));
         }
     }
     
@@ -64,12 +66,12 @@ public class TerrainMapController {
             String playerId = (String) body.get("playerId");
             
             if (terrainMapService.releasePosition(x, y, playerId)) {
-                return ResponseEntity.ok(Map.of("success", true, "message", "位置釋放成功"));
+                return ResponseEntity.ok(Map.of("success", true, "message", "位置釋放成功", "data", null));
             } else {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "位置無法釋放"));
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "位置無法釋放", "data", null));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("success", false, "message", "釋放失敗: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "釋放失敗: " + e.getMessage(), "data", null));
         }
     }
     
@@ -84,9 +86,9 @@ public class TerrainMapController {
             String playerId = (String) body.get("playerId");
             
             boolean canOccupy = terrainMapService.canOccupyPosition(x, y, playerId);
-            return ResponseEntity.ok(Map.of("canOccupy", canOccupy));
+            return ResponseEntity.ok(Map.of("success", true, "message", "檢查完成", "data", Map.of("canOccupy", canOccupy)));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "檢查失敗: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "檢查失敗: " + e.getMessage(), "data", null));
         }
     }
     
@@ -98,9 +100,9 @@ public class TerrainMapController {
         try {
             String playerId = (String) body.get("playerId");
             List<MapTile> positions = terrainMapService.getPlayerOccupiedPositions(playerId);
-            return ResponseEntity.ok(positions);
+            return ResponseEntity.ok(Map.of("success", true, "message", "獲取玩家位置成功", "data", positions));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "獲取失敗: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "獲取失敗: " + e.getMessage(), "data", null));
         }
     }
     
@@ -115,7 +117,7 @@ public class TerrainMapController {
             
             MapTile tile = terrainMapService.getTileAt(x, y);
             if (tile == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "位置不存在"));
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "位置不存在", "data", null));
             }
             
             Map<String, Object> status = Map.of(
@@ -129,9 +131,9 @@ public class TerrainMapController {
                 "canBuild", tile.getTerrain().getBuildable()
             );
             
-            return ResponseEntity.ok(status);
+            return ResponseEntity.ok(Map.of("success", true, "message", "獲取位置狀態成功", "data", status));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", "檢查失敗: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "檢查失敗: " + e.getMessage(), "data", null));
         }
     }
 }

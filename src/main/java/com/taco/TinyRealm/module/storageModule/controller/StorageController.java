@@ -20,45 +20,49 @@ public class StorageController {
     @PostMapping("/save")
     public ResponseEntity<?> saveGame(@PathVariable String playerId, @RequestBody GameState gameState) {
         try {
-            storageService.saveGameState(playerId, gameState,false);
-            return ResponseEntity.ok("Game state saved successfully");
+            storageService.saveGameState(playerId, gameState, false);
+            return ResponseEntity.ok(Map.of("success", true, "message", "遊戲狀態保存成功", "data", null));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Failed to save game state: " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "保存遊戲狀態失敗: " + e.getMessage(), "data", null));
         }
     }
 
     @GetMapping("/load")
-    public ResponseEntity<?> loadGame(@RequestBody Map<String, Object> body ) {
+    public ResponseEntity<?> loadGame(@RequestBody Map<String, Object> body) {
         String playerId = (String) body.get("playerId");
         try {
-            GameState gameState = storageService.loadGameState(playerId,false);
-            if (gameState == null) return ResponseEntity.status(404).body(null);
+            GameState gameState = storageService.loadGameState(playerId, false);
+            if (gameState == null) {
+                return ResponseEntity.status(404).body(Map.of("success", false, "message", "遊戲狀態不存在", "data", null));
+            }
             System.out.println("---- 已載入玩家 " + playerId + "----");
-            return ResponseEntity.ok(gameState);
+            return ResponseEntity.ok(Map.of("success", true, "message", "遊戲狀態載入成功", "data", gameState));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         }
     }
 
     @GetMapping("/playerList")
-    public ResponseEntity<List<String>> listAllFiles() {
+    public ResponseEntity<?> listAllFiles() {
         List<String> files = storageService.listAllFiles();
-        return ResponseEntity.ok(files);
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取玩家列表成功", "data", files));
     }
+    
     @GetMapping("/onlinePlayers")
-    public ResponseEntity<List<String>> getOnlineGameStateIdList() {
+    public ResponseEntity<?> getOnlineGameStateIdList() {
         List<String> onlinePlayers = storageService.getOnlineGameStateIdList();
-        return ResponseEntity.ok(onlinePlayers);
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取在線玩家列表成功", "data", onlinePlayers));
     }
+    
     @GetMapping("/offlinePlayers")
-    public ResponseEntity<List<String>> getOfflineGameStateIdList() {
+    public ResponseEntity<?> getOfflineGameStateIdList() {
         List<String> offlinePlayers = storageService.getOfflineGameStateIdList();
-        return ResponseEntity.ok(offlinePlayers);
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取離線玩家列表成功", "data", offlinePlayers));
     }
+    
     @GetMapping("/allGameStateList")
-    public ResponseEntity<Map<String, GameState>> getAllGameStateList() {
+    public ResponseEntity<?> getAllGameStateList() {
         Map<String, GameState> allGameStates = storageService.getAllGameStateList();
-        return ResponseEntity.ok(allGameStates);
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取所有遊戲狀態成功", "data", allGameStates));
     }
-
 }
