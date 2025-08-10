@@ -7,7 +7,7 @@ import com.taco.TinyRealm.model.Item;
 import com.taco.TinyRealm.model.Task;
 import com.taco.TinyRealm.model.Technology;
 import com.taco.TinyRealm.model.Trade;
-import com.taco.TinyRealm.model.Unit;
+import com.taco.TinyRealm.module.unitModule.model.Unit;
 import com.taco.TinyRealm.module.buildingModule.model.PlayerBuliding;
 import com.taco.TinyRealm.module.playerModule.model.Player;
 import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;

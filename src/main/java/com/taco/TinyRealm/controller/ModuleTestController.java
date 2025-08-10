@@ -9,6 +9,7 @@ import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
 import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
 import com.taco.TinyRealm.module.playerModule.service.PlayerService;
+import com.taco.TinyRealm.module.unitModule.service.UnitService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class ModuleTestController {
     
     @Autowired
     private PlayerService playerService;
+    
+    @Autowired
+    private UnitService unitService;
 
     @GetMapping
     public String showModulesPage(Model model) {
@@ -62,6 +66,10 @@ public class ModuleTestController {
             // 檢查地形地圖模組狀態
             boolean terrainMapModuleStatus = checkTerrainMapModuleStatus();
             status.put("terrainMapModule", terrainMapModuleStatus);
+            
+            // 檢查部隊模組狀態
+            boolean unitModuleStatus = checkUnitModuleStatus();
+            status.put("unitModule", unitModuleStatus);
             
             status.put("success", true);
         } catch (Exception e) {
@@ -116,6 +124,16 @@ public class ModuleTestController {
         try {
             // 嘗試獲取地圖資料來檢查地形地圖模組是否正常
             terrainMapService.getGameMap();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private boolean checkUnitModuleStatus() {
+        try {
+            // 嘗試獲取部隊類型來檢查部隊模組是否正常
+            unitService.getAllUnitTypes();
             return true;
         } catch (Exception e) {
             return false;
@@ -341,6 +359,80 @@ public class ModuleTestController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "清除測試資料失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    // ==================== 部隊模組測試端點 ====================
+    
+    @GetMapping("/unit")
+    @ResponseBody
+    public Map<String, Object> getUnitData() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<com.taco.TinyRealm.module.unitModule.model.UnitType> unitTypes = unitService.getAllUnitTypes();
+            response.put("success", true);
+            response.put("message", "獲取部隊類型成功");
+            response.put("data", unitTypes);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取部隊類型失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @PostMapping("/unit/create")
+    @ResponseBody
+    public Map<String, Object> createUnit(@RequestParam String playerId,
+                                         @RequestParam String type,
+                                         @RequestParam int count,
+                                         @RequestParam int x,
+                                         @RequestParam int y) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            com.taco.TinyRealm.module.unitModule.model.Unit unit = unitService.createUnit(playerId, type, count, x, y, false);
+            response.put("success", true);
+            response.put("message", "部隊創建成功");
+            response.put("data", unit);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "部隊創建失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/unit/player/{playerId}")
+    @ResponseBody
+    public Map<String, Object> getPlayerUnits(@PathVariable String playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<com.taco.TinyRealm.module.unitModule.model.Unit> units = unitService.getPlayerUnits(playerId, false);
+            response.put("success", true);
+            response.put("message", "獲取玩家部隊成功");
+            response.put("data", units);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取玩家部隊失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/unit/stats/{playerId}")
+    @ResponseBody
+    public Map<String, Object> getUnitStats(@PathVariable String playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = unitService.getUnitStats(playerId, false);
+            response.put("success", true);
+            response.put("message", "獲取部隊統計成功");
+            response.put("data", stats);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取部隊統計失敗: " + e.getMessage());
             response.put("data", null);
         }
         return response;
