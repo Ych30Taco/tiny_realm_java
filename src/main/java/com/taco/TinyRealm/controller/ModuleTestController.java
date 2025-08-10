@@ -43,6 +43,10 @@ public class ModuleTestController {
         Map<String, Object> status = new HashMap<>();
         
         try {
+            // 檢查存儲模組狀態
+            boolean storageModuleStatus = checkStorageModuleStatus();
+            status.put("storageModule", storageModuleStatus);
+            
             // 檢查玩家模組狀態
             boolean playerModuleStatus = checkPlayerModuleStatus();
             status.put("playerModule", playerModuleStatus);
@@ -66,6 +70,16 @@ public class ModuleTestController {
         }
         
         return status;
+    }
+    
+    private boolean checkStorageModuleStatus() {
+        try {
+            // 嘗試獲取存儲統計資訊來檢查存儲模組是否正常
+            storageService.getStorageStats();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     private boolean checkPlayerModuleStatus() {
@@ -220,5 +234,115 @@ public class ModuleTestController {
     public String resetAllData() {
         // 這裡可以重置所有資料
         return "{\"status\": \"success\", \"message\": \"All data reset successfully\"}";
+    }
+
+    // ==================== 存儲模組測試端點 ====================
+    
+    @GetMapping("/storage")
+    @ResponseBody
+    public Map<String, Object> getStorageData() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = storageService.getStorageStats();
+            response.put("success", true);
+            response.put("message", "獲取存儲統計資訊成功");
+            response.put("data", stats);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取存儲統計資訊失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/storage/players")
+    @ResponseBody
+    public Map<String, Object> getPlayerList() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            java.util.List<String> players = storageService.getAllPlayerIdList();
+            response.put("success", true);
+            response.put("message", "獲取玩家列表成功");
+            response.put("data", players);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取玩家列表失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/storage/online")
+    @ResponseBody
+    public Map<String, Object> getOnlinePlayers() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            java.util.List<String> onlinePlayers = storageService.getOnlineGameStateIdList();
+            response.put("success", true);
+            response.put("message", "獲取在線玩家列表成功");
+            response.put("data", onlinePlayers);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取在線玩家列表失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/storage/offline")
+    @ResponseBody
+    public Map<String, Object> getOfflinePlayers() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            java.util.List<String> offlinePlayers = storageService.getOfflineGameStateIdList();
+            response.put("success", true);
+            response.put("message", "獲取離線玩家列表成功");
+            response.put("data", offlinePlayers);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取離線玩家列表失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/storage/gameState/{playerId}")
+    @ResponseBody
+    public Map<String, Object> getGameStateById(@PathVariable String playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            com.taco.TinyRealm.module.storageModule.model.GameState gameState = storageService.getGameStateListById(playerId);
+            if (gameState != null) {
+                response.put("success", true);
+                response.put("message", "獲取玩家遊戲狀態成功");
+                response.put("data", gameState);
+            } else {
+                response.put("success", false);
+                response.put("message", "玩家遊戲狀態不存在");
+                response.put("data", null);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取玩家遊戲狀態失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+
+    @PostMapping("/storage/clearTestData")
+    @ResponseBody
+    public Map<String, Object> clearTestData() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            storageService.clearTestData();
+            response.put("success", true);
+            response.put("message", "測試資料清除成功");
+            response.put("data", null);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "清除測試資料失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
     }
 } 
