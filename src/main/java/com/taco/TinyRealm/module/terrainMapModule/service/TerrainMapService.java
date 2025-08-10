@@ -130,4 +130,196 @@ public class TerrainMapService {
         System.out.println("---- 應用程式啟動中，創建新地圖成功 ----");
     }
 
+    /**
+     * 檢查指定位置是否可被佔領
+     * @param x X 座標
+     * @param y Y 座標
+     * @param playerId 玩家ID
+     * @return 是否可佔領
+     */
+    public boolean canOccupyPosition(int x, int y, String playerId) {
+        if (x < 0 || x >= gameMap.getWidth() || y < 0 || y >= gameMap.getHeight()) {
+            return false; // 超出地圖範圍
+        }
+        
+        MapTile tile = getTileAt(x, y);
+        if (tile == null) {
+            return false; // 地圖瓦片不存在
+        }
+        
+        // 檢查地形是否可建造
+        if (!tile.getTerrain().getBuildable()) {
+            return false; // 地形不可建造
+        }
+        
+        // 檢查是否已被其他玩家佔領
+        if (tile.getOwnerId() != null && !tile.getOwnerId().equals(playerId)) {
+            return false; // 已被其他玩家佔領
+        }
+        
+        // 檢查是否已有建築
+        if (tile.getBuildingId() != null) {
+            return false; // 已有建築
+        }
+        
+        return true;
+    }
+    
+    /**
+     * 佔領指定位置
+     * @param x X 座標
+     * @param y Y 座標
+     * @param playerId 玩家ID
+     * @return 是否成功佔領
+     */
+    public boolean occupyPosition(int x, int y, String playerId) {
+        if (!canOccupyPosition(x, y, playerId)) {
+            return false;
+        }
+        
+        MapTile tile = getTileAt(x, y);
+        tile.setOwnerId(playerId);
+        
+        // 保存地圖狀態
+        try {
+            saveGameMap();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 釋放指定位置
+     * @param x X 座標
+     * @param y Y 座標
+     * @param playerId 玩家ID
+     * @return 是否成功釋放
+     */
+    public boolean releasePosition(int x, int y, String playerId) {
+        MapTile tile = getTileAt(x, y);
+        if (tile == null || !playerId.equals(tile.getOwnerId())) {
+            return false; // 不是該玩家的地盤或地圖瓦片不存在
+        }
+        
+        tile.setOwnerId(null);
+        
+        // 保存地圖狀態
+        try {
+            saveGameMap();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 在指定位置建造建築
+     * @param x X 座標
+     * @param y Y 座標
+     * @param buildingId 建築ID
+     * @param playerId 玩家ID
+     * @return 是否成功建造
+     */
+    public boolean buildOnPosition(int x, int y, String buildingId, String playerId) {
+        if (!canOccupyPosition(x, y, playerId)) {
+            return false;
+        }
+        
+        MapTile tile = getTileAt(x, y);
+        tile.setOwnerId(playerId);
+        tile.setBuildingId(buildingId);
+        
+        // 保存地圖狀態
+        try {
+            saveGameMap();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 移除指定位置的建築
+     * @param x X 座標
+     * @param y Y 座標
+     * @param playerId 玩家ID
+     * @return 是否成功移除
+     */
+    public boolean removeBuildingFromPosition(int x, int y, String playerId) {
+        MapTile tile = getTileAt(x, y);
+        if (tile == null || !playerId.equals(tile.getOwnerId())) {
+            return false; // 不是該玩家的地盤或地圖瓦片不存在
+        }
+        
+        tile.setBuildingId(null);
+        
+        // 保存地圖狀態
+        try {
+            saveGameMap();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * 獲取指定位置的瓦片
+     * @param x X 座標
+     * @param y Y 座標
+     * @return 地圖瓦片
+     */
+    public MapTile getTileAt(int x, int y) {
+        return gameMap.getTiles().stream()
+                .filter(tile -> tile.getX() == x && tile.getY() == y)
+                .findFirst()
+                .orElse(null);
+    }
+    
+    /**
+     * 獲取玩家佔領的所有位置
+     * @param playerId 玩家ID
+     * @return 玩家佔領的位置列表
+     */
+    public List<MapTile> getPlayerOccupiedPositions(String playerId) {
+        return gameMap.getTiles().stream()
+                .filter(tile -> playerId.equals(tile.getOwnerId()))
+                .collect(java.util.stream.Collectors.toList());
+    }
+    
+    /**
+     * 檢查位置是否被佔用
+     * @param x X 座標
+     * @param y Y 座標
+     * @return 是否被佔用
+     */
+    public boolean isPositionOccupied(int x, int y) {
+        MapTile tile = getTileAt(x, y);
+        return tile != null && tile.getOwnerId() != null;
+    }
+    
+    /**
+     * 檢查位置是否有建築
+     * @param x X 座標
+     * @param y Y 座標
+     * @return 是否有建築
+     */
+    public boolean hasBuilding(int x, int y) {
+        MapTile tile = getTileAt(x, y);
+        return tile != null && tile.getBuildingId() != null;
+    }
+    
+    /**
+     * 保存地圖到文件
+     */
+    private void saveGameMap() throws IOException {
+        File dir = new File(MAP_FILE_PATH);
+        if (!dir.exists()) dir.mkdirs();
+        objectMapper.writeValue(new File(MAP_FILE_PATH + "map.json"), gameMap);
+    }
+
 }

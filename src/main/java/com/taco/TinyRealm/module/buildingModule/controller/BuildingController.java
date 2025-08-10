@@ -56,6 +56,24 @@ public class BuildingController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+    
+    /**
+     * 拆除建築
+     */
+    @DeleteMapping("/remove")
+    public ResponseEntity<?> removeBuilding(@RequestBody Map<String, Object> body) {
+        String playerId = (String) body.get("playerId");
+        String buildingId = (String) body.get("buildingId");
+        try {
+            GameState result = buildingService.removeBuilding(playerId, buildingId, false);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築拆除成功", "data", result));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+    
     //@PostMapping("/accelerate")
 
     /*

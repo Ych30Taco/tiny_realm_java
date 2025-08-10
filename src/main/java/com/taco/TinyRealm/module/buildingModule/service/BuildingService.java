@@ -10,6 +10,7 @@ import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
+import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
 
 import jakarta.annotation.PostConstruct;
 
@@ -35,6 +36,8 @@ public class BuildingService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private TerrainMapService terrainMapService;
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
@@ -89,8 +92,12 @@ public class BuildingService {
     public GameState createBuilding(String playerId, String buildingId, int x, int y, boolean isTest) throws IOException {
         GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) throw new IllegalArgumentException("Player not found");
-        // 檢查地形位置
-        //if (!terrainService.isPositionValid(playerId, x, y)) throw new IllegalArgumentException("Invalid or occupied position");
+        
+        // 檢查地形位置是否可建造
+        if (!terrainMapService.canOccupyPosition(x, y, playerId)) {
+            throw new IllegalArgumentException("Invalid or occupied position at (" + x + ", " + y + ")");
+        }
+        
         // 檢查科技要求
         /*if (buildingId.equals("barracks")) {
             boolean hasTech = gameState.getTechnologies().stream()
@@ -118,11 +125,13 @@ public class BuildingService {
             }
         });
         
-
-
-        
         resourceService.dedResources(playerId, buildingCost, isTest);
-        //terrainService.occupyPosition(playerId, x, y, isTest); // 佔用地形
+        
+        // 佔用地形位置
+        if (!terrainMapService.buildOnPosition(x, y, buildingId, playerId)) {
+            throw new IllegalArgumentException("Failed to occupy position at (" + x + ", " + y + ")");
+        }
+        
         PlayerBuliding playerBuilding = new PlayerBuliding();
         playerBuilding.setOwnerId(playerId);
         playerBuilding.setBuildingId(buildingId);
@@ -137,8 +146,6 @@ public class BuildingService {
         gameState.getBuildings().put(buildingId, playerBuilding);
         gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));//更新資源生產速率
         storageService.saveGameState(playerId, gameState, isTest);
-        
-
         
         /*eventService.addEvent(playerId, "building_created", "Created " + buildingId + " at (" + x + "," + y + ")", isTest);
 
@@ -276,6 +283,42 @@ public class BuildingService {
         });
         
         //storageService.saveGameState(playerId, gameState, false);
+    }
+
+    /**
+     * 拆除建築並釋放地形
+     * @param playerId 玩家ID
+     * @param buildingId 建築ID
+     * @param isTest 是否為測試模式
+     * @return 更新後的遊戲狀態
+     */
+    public GameState removeBuilding(String playerId, String buildingId, boolean isTest) throws IOException {
+        GameState gameState = storageService.getGameStateListById(playerId);
+        if (gameState == null) throw new IllegalArgumentException("Player not found");
+        
+        if (!gameState.getBuildings().containsKey(buildingId)) {
+            throw new IllegalArgumentException("Building does not exist: " + buildingId);
+        }
+        
+        PlayerBuliding playerBuilding = gameState.getBuildings().get(buildingId);
+        int x = playerBuilding.getPositionX();
+        int y = playerBuilding.getPositionY();
+        
+        // 從遊戲狀態中移除建築
+        gameState.getBuildings().remove(buildingId);
+        
+        // 釋放地形位置
+        if (!terrainMapService.removeBuildingFromPosition(x, y, playerId)) {
+            throw new IllegalArgumentException("Failed to release position at (" + x + ", " + y + ")");
+        }
+        
+        // 更新資源生產速率
+        gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));
+        
+        // 保存遊戲狀態
+        storageService.saveGameState(playerId, gameState, isTest);
+        
+        return gameState;
     }
 }
  
