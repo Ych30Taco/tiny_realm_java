@@ -1,3 +1,10 @@
+/* 
+ * 舊版戰鬥服務 - 已移至模組化結構
+ * 新版本位於: src/main/java/com/taco/TinyRealm/module/battleModule/service/BattleService.java
+ * 
+ * 此文件已停用，請使用新的模組化戰鬥系統
+ */
+
 /* package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Battle;

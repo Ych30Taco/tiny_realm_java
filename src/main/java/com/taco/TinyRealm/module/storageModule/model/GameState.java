@@ -1,7 +1,7 @@
 package com.taco.TinyRealm.module.storageModule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.model.Battle;
+import com.taco.TinyRealm.module.battleModule.model.Battle;
 import com.taco.TinyRealm.model.GameEvent;
 import com.taco.TinyRealm.module.inventoryModule.model.Item;
 import com.taco.TinyRealm.model.Task;

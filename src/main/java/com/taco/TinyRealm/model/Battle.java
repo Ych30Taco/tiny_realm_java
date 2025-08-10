@@ -1,3 +1,10 @@
+/* 
+ * 舊版戰鬥模型 - 已移至模組化結構
+ * 新版本位於: src/main/java/com/taco/TinyRealm/module/battleModule/model/Battle.java
+ * 
+ * 此文件已停用，請使用新的模組化戰鬥系統
+ */
+
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

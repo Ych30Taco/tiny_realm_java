@@ -1,3 +1,10 @@
+/* 
+ * 舊版戰鬥控制器 - 已移至模組化結構
+ * 新版本位於: src/main/java/com/taco/TinyRealm/module/battleModule/controller/BattleController.java
+ * 
+ * 此文件已停用，請使用新的模組化戰鬥系統
+ */
+
 /* package com.taco.TinyRealm.controller;
 
 import com.taco.TinyRealm.model.Battle;
