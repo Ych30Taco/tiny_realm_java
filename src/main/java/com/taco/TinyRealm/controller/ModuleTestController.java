@@ -12,6 +12,7 @@ import com.taco.TinyRealm.module.playerModule.service.PlayerService;
 import com.taco.TinyRealm.module.unitModule.service.UnitService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -35,6 +36,9 @@ public class ModuleTestController {
     
     @Autowired
     private UnitService unitService;
+    
+    @Autowired
+    private com.taco.TinyRealm.module.inventoryModule.service.InventoryService inventoryService;
 
     @GetMapping
     public String showModulesPage(Model model) {
@@ -70,6 +74,10 @@ public class ModuleTestController {
             // 檢查部隊模組狀態
             boolean unitModuleStatus = checkUnitModuleStatus();
             status.put("unitModule", unitModuleStatus);
+            
+            // 檢查背包模組狀態
+            boolean inventoryModuleStatus = checkInventoryModuleStatus();
+            status.put("inventoryModule", inventoryModuleStatus);
             
             status.put("success", true);
         } catch (Exception e) {
@@ -134,6 +142,16 @@ public class ModuleTestController {
         try {
             // 嘗試獲取部隊類型來檢查部隊模組是否正常
             unitService.getAllUnitTypes();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private boolean checkInventoryModuleStatus() {
+        try {
+            // 嘗試獲取物品類型來檢查背包模組是否正常
+            inventoryService.getAllItemTypes();
             return true;
         } catch (Exception e) {
             return false;
@@ -433,6 +451,78 @@ public class ModuleTestController {
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", "獲取部隊統計失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+    
+    // ==================== 背包模組測試端點 ====================
+    
+    @GetMapping("/inventory")
+    @ResponseBody
+    public Map<String, Object> getInventoryData() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, com.taco.TinyRealm.module.inventoryModule.model.ItemType> itemTypes = inventoryService.getAllItemTypes();
+            response.put("success", true);
+            response.put("message", "獲取物品類型成功");
+            response.put("data", itemTypes);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取物品類型失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+    
+    @PostMapping("/inventory/add")
+    @ResponseBody
+    public Map<String, Object> addInventoryItem(@RequestParam String playerId,
+                                               @RequestParam String type,
+                                               @RequestParam int quantity) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            com.taco.TinyRealm.module.inventoryModule.model.Item item = inventoryService.addItem(playerId, type, quantity, false);
+            response.put("success", true);
+            response.put("message", "物品添加成功");
+            response.put("data", item);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "物品添加失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+    
+    @GetMapping("/inventory/player/{playerId}")
+    @ResponseBody
+    public Map<String, Object> getPlayerInventory(@PathVariable String playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<com.taco.TinyRealm.module.inventoryModule.model.Item> inventory = inventoryService.getInventory(playerId, false);
+            response.put("success", true);
+            response.put("message", "獲取玩家背包成功");
+            response.put("data", inventory);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取玩家背包失敗: " + e.getMessage());
+            response.put("data", null);
+        }
+        return response;
+    }
+    
+    @GetMapping("/inventory/stats/{playerId}")
+    @ResponseBody
+    public Map<String, Object> getInventoryStats(@PathVariable String playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Map<String, Object> stats = inventoryService.getInventoryStats(playerId, false);
+            response.put("success", true);
+            response.put("message", "獲取背包統計成功");
+            response.put("data", stats);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "獲取背包統計失敗: " + e.getMessage());
             response.put("data", null);
         }
         return response;

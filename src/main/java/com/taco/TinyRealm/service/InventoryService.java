@@ -1,3 +1,4 @@
+/*
 package com.taco.TinyRealm.service;
 
 import com.taco.TinyRealm.model.Item;
@@ -63,3 +64,4 @@ public class InventoryService {
         return gameState.getInventory();
     }
 }
+*/

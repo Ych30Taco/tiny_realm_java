@@ -1,3 +1,4 @@
+/*
 package com.taco.TinyRealm.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,3 +18,4 @@ public class Item {
     public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
 }
+*/
