@@ -18,14 +18,14 @@ public class ResourceController {
 
     @GetMapping("/types")
     public ResponseEntity<?> getAllResourceTypes() {
-        return ResponseEntity.ok(resourceService.getAllResourceTypes());
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取資源類型成功", "data", resourceService.getAllResourceTypes()));
     }
+    
     @PostMapping("/typeById")
     public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
         String resourceID = (String) body.get("resourceID");
-        return ResponseEntity.ok(resourceService.getResourceTypeById(resourceID ));
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取資源類型成功", "data", resourceService.getResourceTypeById(resourceID)));
     }
-
 
     /**
      * 新增資源給指定玩家
@@ -48,22 +48,24 @@ public class ResourceController {
             String playerId = (String) body.get("playerId");
             Map<String, Integer> addResource = (Map<String, Integer>) body.get("resources");
             GameState resources = resourceService.addResources(playerId, addResource, false);
-            return ResponseEntity.ok(resources);
+            return ResponseEntity.ok(Map.of("success", true, "message", "資源添加成功", "data", resources));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         }
     }
+    
     @PostMapping("/ded")
     public ResponseEntity<?> dedResources(@RequestBody Map<String, Object> body) {
         try {
             String playerId = (String) body.get("playerId");
             Map<String, Integer> dedResource = (Map<String, Integer>) body.get("resources");
             GameState resources = resourceService.dedResources(playerId, dedResource, false);
-            return ResponseEntity.ok(resources);
+            return ResponseEntity.ok(Map.of("success", true, "message", "資源扣除成功", "data", resources));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
         }
     }
+    
 /* 
     @GetMapping("/{playerId}")
     public ResponseEntity<?> getResources(@PathVariable String playerId) {
@@ -75,6 +77,4 @@ public class ResourceController {
             return ResponseEntity.status(500).body(null);
         }
     }*/
-
-
 }
