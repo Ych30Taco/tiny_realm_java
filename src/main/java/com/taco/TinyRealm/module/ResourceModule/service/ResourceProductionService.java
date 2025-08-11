@@ -113,7 +113,7 @@ public class ResourceProductionService {
         playerResource.setLastUpdatedTime(currentTime);
         
         // 保存遊戲狀態到持久化儲存
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"更新玩家資源", isTest);
         
         System.out.println("已更新玩家 " + playerId + " 的資源，時間間隔: " + hoursPassed + " 小時");
     }

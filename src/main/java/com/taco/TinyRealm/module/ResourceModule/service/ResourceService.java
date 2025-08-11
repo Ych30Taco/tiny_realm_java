@@ -104,7 +104,7 @@ public class ResourceService {
                 resources.put(resourceId, resources.getOrDefault(resourceId, 0) + amountToAdd);
             }
             gameState.getResources().setLastUpdatedTime(System.currentTimeMillis());
-            storageService.saveGameState(playerId, gameState, isTest);
+            storageService.saveGameState(playerId, gameState,"增加玩家資源", isTest);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,10 +132,33 @@ public class ResourceService {
                 resources.put(resourceId, nowAmount - amountToDed);
             }
             gameState.getResources().setLastUpdatedTime(System.currentTimeMillis());
-            storageService.saveGameState(playerId, gameState, isTest);
+            storageService.saveGameState(playerId, gameState,"扣除玩家資源", isTest);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return gameState;
+    }
+
+    /**
+     * 檢查玩家資源是否足夠
+     * @param playerId 玩家ID
+     * @param requiredResources 所需資源 (key: 資源ID, value: 所需數量)
+     * @return 是否足夠
+     */
+    public boolean hasEnoughResources(String playerId, Map<String, Integer> requiredResources) {
+        GameState gameState = storageService.getGameStateListById(playerId);
+        if (gameState == null || gameState.getResources() == null || gameState.getResources().getNowAmount() == null) {
+            return false;
+        }
+        Map<String, Integer> nowAmount = gameState.getResources().getNowAmount();
+        for (Map.Entry<String, Integer> entry : requiredResources.entrySet()) {
+            String resourceId = entry.getKey();
+            int requiredAmount = entry.getValue();
+            int currentAmount = nowAmount.getOrDefault(resourceId, 0);
+            if (currentAmount < requiredAmount) {
+                return false;
+            }
+        }
+        return true;
     }
 }

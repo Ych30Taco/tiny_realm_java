@@ -20,13 +20,13 @@ public class MarketListing {
 /*     @JsonProperty("resource")
     private Resource resource; */
     /** 掛單物品內容（若為物品掛單） */
-    @JsonProperty("item")
-    private Item item;
+    //@JsonProperty("item")
+    //private Item item;
     /** 價格（資源型態） */
 /*     @JsonProperty("price")
     private Resource price; */
     /** 掛單狀態（ACTIVE/SOLD） */
-    @JsonProperty("status")
+    //@JsonProperty("status")
     private String status;
 
     /** 取得掛單 ID */
@@ -46,9 +46,9 @@ public class MarketListing {
     /** 設定資源內容 */
    // public void setResource(Resource resource) { this.resource = resource; }
     /** 取得物品內容 */
-    public Item getItem() { return item; }
+    //public Item getItem() { return item; }
     /** 設定物品內容 */
-    public void setItem(Item item) { this.item = item; }
+    //public void setItem(Item item) { this.item = item; }
     /** 取得價格 */
     //public Resource getPrice() { return price; }
     /** 設定價格 */

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -84,10 +84,10 @@ public class InventoryService {
         sword.setMaxQuantity(1);
         sword.setMaxDurability(100);
         sword.setLevel(1);
-        sword.setIsStackable(false);
+        /*sword.setIsStackable(false);
         sword.setIsTradeable(true);
         sword.setIsDroppable(true);
-        sword.setIsEquippable(true);
+        sword.setIsEquippable(true);*/
         sword.setEquipmentSlot("weapon");
         sword.setSellPrice(50);
         sword.setBuyPrice(100);
@@ -104,10 +104,10 @@ public class InventoryService {
         armor.setMaxQuantity(1);
         armor.setMaxDurability(100);
         armor.setLevel(1);
-        armor.setIsStackable(false);
+        /*armor.setIsStackable(false);
         armor.setIsTradeable(true);
         armor.setIsDroppable(true);
-        armor.setIsEquippable(true);
+        armor.setIsEquippable(true);*/
         armor.setEquipmentSlot("armor");
         armor.setSellPrice(40);
         armor.setBuyPrice(80);
@@ -124,10 +124,10 @@ public class InventoryService {
         potion.setMaxQuantity(99);
         potion.setMaxDurability(1);
         potion.setLevel(1);
-        potion.setIsStackable(true);
+        /*potion.setIsStackable(true);
         potion.setIsTradeable(true);
         potion.setIsDroppable(true);
-        potion.setIsConsumable(true);
+        potion.setIsConsumable(true);*/
         potion.setSellPrice(10);
         potion.setBuyPrice(20);
         potion.setUseEffect(Map.of("heal", 50));
@@ -143,9 +143,9 @@ public class InventoryService {
         wood.setMaxQuantity(999);
         wood.setMaxDurability(1);
         wood.setLevel(1);
-        wood.setIsStackable(true);
+        /*wood.setIsStackable(true);
         wood.setIsTradeable(true);
-        wood.setIsDroppable(true);
+        wood.setIsDroppable(true);*/
         wood.setSellPrice(2);
         wood.setBuyPrice(5);
         itemTypes.put("wood", wood);
@@ -210,14 +210,14 @@ public class InventoryService {
             }
             existingItem.setQuantity(newQuantity);
             eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + itemType.getName(), isTest);
-            storageService.saveGameState(playerId, gameState, isTest);
+            storageService.saveGameState(playerId, gameState,"堆疊到現有物品", isTest);
             return existingItem;
         } else {
             // 創建新物品
             Item newItem = createItemFromType(itemType, quantity);
             gameState.getInventory().add(newItem);
             eventService.addEvent(playerId, "item_added", "Added " + quantity + " " + itemType.getName(), isTest);
-            storageService.saveGameState(playerId, gameState, isTest);
+            storageService.saveGameState(playerId, gameState, "創建新物品",isTest);
             return newItem;
         }
     }
@@ -260,7 +260,7 @@ public class InventoryService {
         }
         
         eventService.addEvent(playerId, "item_removed", "Removed " + quantity + " " + item.getName(), isTest);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"從背包移除物品", isTest);
         return item;
     }
     
@@ -325,7 +325,7 @@ public class InventoryService {
         }
         
         eventService.addEvent(playerId, "item_used", "Used " + item.getName(), isTest);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"使用物品", isTest);
         
         return effects;
     }
@@ -360,7 +360,7 @@ public class InventoryService {
         
         item.repair(repairAmount);
         eventService.addEvent(playerId, "item_repaired", "Repaired " + item.getName(), isTest);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"修復物品", isTest);
         
         return item;
     }
@@ -430,11 +430,11 @@ public class InventoryService {
         item.setEffects(itemType.getEffects() != null ? new HashMap<>(itemType.getEffects()) : new HashMap<>());
         item.setCreatedTime(LocalDateTime.now());
         item.setLastUsedTime(null);
-        item.setIsStackable(itemType.isStackable());
+        /*item.setIsStackable(itemType.isStackable());
         item.setIsTradeable(itemType.isTradeable());
         item.setIsDroppable(itemType.isDroppable());
         item.setIsConsumable(itemType.isConsumable());
-        item.setIsEquippable(itemType.isEquippable());
+        item.setIsEquippable(itemType.isEquippable());*/
         item.setEquipmentSlot(itemType.getEquipmentSlot());
         item.setSellPrice(itemType.getSellPrice());
         item.setBuyPrice(itemType.getBuyPrice());

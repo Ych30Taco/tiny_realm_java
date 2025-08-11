@@ -22,14 +22,14 @@ public class Trade {
     /*@JsonProperty("offeredResources")
     private Resource offeredResources;*/
     /** 發起方提供的物品列表 */
-    @JsonProperty("offeredItems")
-    private List<Item> offeredItems;
+   // @JsonProperty("offeredItems")
+    //private List<Item> offeredItems;
     /** 發起方要求的資源 */
    /* @JsonProperty("requestedResources")
     private Resource requestedResources;*/
     /** 發起方要求的物品列表 */
-    @JsonProperty("requestedItems")
-    private List<Item> requestedItems;
+    //@JsonProperty("requestedItems")
+   // private List<Item> requestedItems;
     /** 交易狀態（PENDING/ACCEPTED/REJECTED） */
     @JsonProperty("status")
     private String status;
@@ -51,17 +51,17 @@ public class Trade {
     /** 設定發起方提供資源 */
    // public void setOfferedResources(Resource offeredResources) { this.offeredResources = offeredResources; }
     /** 取得發起方提供物品 */
-    public List<Item> getOfferedItems() { return offeredItems; }
+   // public List<Item> getOfferedItems() { return offeredItems; }
     /** 設定發起方提供物品 */
-    public void setOfferedItems(List<Item> offeredItems) { this.offeredItems = offeredItems; }
+    //public void setOfferedItems(List<Item> offeredItems) { this.offeredItems = offeredItems; }
     /** 取得要求資源 */
     //public Resource getRequestedResources() { return requestedResources; }
     /** 設定要求資源 */
     //public void setRequestedResources(Resource requestedResources) { this.requestedResources = requestedResources; }
     /** 取得要求物品 */
-    public List<Item> getRequestedItems() { return requestedItems; }
+    //public List<Item> getRequestedItems() { return requestedItems; }
     /** 設定要求物品 */
-    public void setRequestedItems(List<Item> requestedItems) { this.requestedItems = requestedItems; }
+    //public void setRequestedItems(List<Item> requestedItems) { this.requestedItems = requestedItems; }
     /** 取得交易狀態 */
     public String getStatus() { return status; }
     /** 設定交易狀態 */

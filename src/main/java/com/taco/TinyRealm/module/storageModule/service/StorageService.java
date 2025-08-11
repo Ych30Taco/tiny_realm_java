@@ -1,8 +1,6 @@
 package com.taco.TinyRealm.module.storageModule.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import jakarta.annotation.PostConstruct;
@@ -152,7 +150,7 @@ public class StorageService {
      * @param isTest 是否為測試模式
      * @throws IOException 檔案操作異常
      */
-    public void saveGameState(String playerId, GameState gameState, boolean isTest) throws IOException {
+    public void saveGameState(String playerId, GameState gameState,String message, boolean isTest) throws IOException {
         if (playerId == null || playerId.trim().isEmpty()) {
             throw new IllegalArgumentException("玩家ID不能為空");
         }
@@ -178,7 +176,7 @@ public class StorageService {
         // 更新記憶體快取
         gameStateList.put(playerId, gameState);
         
-        System.out.println("---- 已保存玩家 " + playerId + " 的遊戲狀態 ----");
+        System.out.println("---- 已保存玩家 " + playerId + " 的遊戲狀態, 來自" + message + " ----");
     }
 
     /**
@@ -223,7 +221,7 @@ public class StorageService {
      * @param isTest 是否為測試模式
      * @throws IOException 檔案操作異常
      */
-    public void logOutGameState(String playerId, boolean isTest) throws IOException {
+    /*public void logOutGameState(String playerId, boolean isTest) throws IOException {
         if (playerId == null || playerId.trim().isEmpty()) {
             throw new IllegalArgumentException("玩家ID不能為空");
         }
@@ -236,8 +234,8 @@ public class StorageService {
             System.out.println("Player " + playerId + " 退出並保存遊戲.");
         } else {
             System.out.println("Player " + playerId + " 未在遊戲狀態清單中找到");
-        }
-    }
+       }
+    }*/
 
     /**
      * 清除所有測試資料檔案

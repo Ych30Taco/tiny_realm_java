@@ -8,8 +8,8 @@ import com.taco.TinyRealm.module.storageModule.service.StorageService;
 import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
 import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+import com.taco.TinyRealm.module.soldierModule.service.SoldierService;
 import com.taco.TinyRealm.module.playerModule.service.PlayerService;
-import com.taco.TinyRealm.module.unitModule.service.UnitService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ModuleTestController {
     private PlayerService playerService;
     
     @Autowired
-    private UnitService unitService;
+    private SoldierService unitService;
     
     @Autowired
     private com.taco.TinyRealm.module.inventoryModule.service.InventoryService inventoryService;
@@ -72,8 +72,8 @@ public class ModuleTestController {
             status.put("terrainMapModule", terrainMapModuleStatus);
             
             // 檢查部隊模組狀態
-            boolean unitModuleStatus = checkUnitModuleStatus();
-            status.put("unitModule", unitModuleStatus);
+            /*boolean unitModuleStatus = checkUnitModuleStatus();
+            status.put("unitModule", unitModuleStatus);*/
             
             // 檢查背包模組狀態
             boolean inventoryModuleStatus = checkInventoryModuleStatus();
@@ -138,7 +138,7 @@ public class ModuleTestController {
         }
     }
     
-    private boolean checkUnitModuleStatus() {
+    /*private boolean checkUnitModuleStatus() {
         try {
             // 嘗試獲取部隊類型來檢查部隊模組是否正常
             unitService.getAllUnitTypes();
@@ -146,7 +146,7 @@ public class ModuleTestController {
         } catch (Exception e) {
             return false;
         }
-    }
+    }*/
     
     private boolean checkInventoryModuleStatus() {
         try {
@@ -384,12 +384,12 @@ public class ModuleTestController {
 
     // ==================== 部隊模組測試端點 ====================
     
-    @GetMapping("/unit")
+    /*@GetMapping("/unit")
     @ResponseBody
     public Map<String, Object> getUnitData() {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<com.taco.TinyRealm.module.unitModule.model.UnitType> unitTypes = unitService.getAllUnitTypes();
+            List<com.taco.TinyRealm.module.soldierModule.model.soldierType> unitTypes = unitService.getAllUnitTypes();
             response.put("success", true);
             response.put("message", "獲取部隊類型成功");
             response.put("data", unitTypes);
@@ -399,9 +399,9 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
+    }*/
 
-    @PostMapping("/unit/create")
+    /*@PostMapping("/unit/create")
     @ResponseBody
     public Map<String, Object> createUnit(@RequestParam String playerId,
                                          @RequestParam String type,
@@ -420,9 +420,9 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
+    }*/
 
-    @GetMapping("/unit/player/{playerId}")
+    /*@GetMapping("/unit/player/{playerId}")
     @ResponseBody
     public Map<String, Object> getPlayerUnits(@PathVariable String playerId) {
         Map<String, Object> response = new HashMap<>();
@@ -437,9 +437,9 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
+    }*/
 
-    @GetMapping("/unit/stats/{playerId}")
+    /*@GetMapping("/unit/stats/{playerId}")
     @ResponseBody
     public Map<String, Object> getUnitStats(@PathVariable String playerId) {
         Map<String, Object> response = new HashMap<>();
@@ -454,7 +454,7 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
+    }*/
     
     // ==================== 背包模組測試端點 ====================
     

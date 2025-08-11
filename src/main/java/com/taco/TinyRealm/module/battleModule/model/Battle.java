@@ -1,8 +1,8 @@
 package com.taco.TinyRealm.module.battleModule.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.taco.TinyRealm.module.unitModule.model.Unit;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
+//import com.taco.TinyRealm.module.soldierModule.model.Unit;
 
 import java.util.List;
 import java.util.Map;
@@ -26,12 +26,12 @@ public class Battle {
     private String enemyType;
     
     /** 玩家參戰單位列表 */
-    @JsonProperty("playerUnits")
-    private List<Unit> playerUnits;
+    /*@JsonProperty("playerUnits")
+    private List<Unit> playerUnits;*/
     
     /** 敵方單位列表 */
-    @JsonProperty("enemyUnits")
-    private List<Unit> enemyUnits;
+    /*@JsonProperty("enemyUnits")
+    private List<Unit> enemyUnits;*/
     
     /** 戰鬥結果（WIN/LOSE/DRAW） */
     @JsonProperty("result")
@@ -134,33 +134,33 @@ public class Battle {
      * 取得玩家單位列表
      * @return 玩家參戰單位列表
      */
-    public List<Unit> getPlayerUnits() { 
+    /*public List<Unit> getPlayerUnits() { 
         return playerUnits; 
-    }
+    }*/
     
     /**
      * 設定玩家單位列表
      * @param playerUnits 玩家參戰單位列表
      */
-    public void setPlayerUnits(List<Unit> playerUnits) { 
+   /*  public void setPlayerUnits(List<Unit> playerUnits) { 
         this.playerUnits = playerUnits; 
     }
-    
+    */
     /**
      * 取得敵方單位列表
      * @return 敵方單位列表
      */
-    public List<Unit> getEnemyUnits() { 
+    /*public List<Unit> getEnemyUnits() { 
         return enemyUnits; 
-    }
+    }*/
     
     /**
      * 設定敵方單位列表
      * @param enemyUnits 敵方單位列表
      */
-    public void setEnemyUnits(List<Unit> enemyUnits) { 
+   /* public void setEnemyUnits(List<Unit> enemyUnits) { 
         this.enemyUnits = enemyUnits; 
-    }
+    }*/
     
     /**
      * 取得戰鬥結果
@@ -358,23 +358,23 @@ public class Battle {
      * 計算玩家總戰力
      * @return 玩家總戰力
      */
-    public int getPlayerTotalStrength() {
+    /*public int getPlayerTotalStrength() {
         if (playerUnits == null) return 0;
         return playerUnits.stream()
                 .mapToInt(unit -> unit.getAttack() * unit.getLevel())
                 .sum();
-    }
+    }*/
     
     /**
      * 計算敵方總戰力
      * @return 敵方總戰力
      */
-    public int getEnemyTotalStrength() {
+    /*public int getEnemyTotalStrength() {
         if (enemyUnits == null) return 0;
         return enemyUnits.stream()
                 .mapToInt(unit -> unit.getAttack() * unit.getLevel())
                 .sum();
-    }
+    }*/
     
     /**
      * 添加統計數據

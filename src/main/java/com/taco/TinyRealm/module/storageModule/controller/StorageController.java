@@ -37,7 +37,7 @@ public class StorageController {
     @PostMapping("/save")
     public ResponseEntity<?> saveGame(@RequestParam String playerId, @RequestBody GameState gameState) {
         try {
-            storageService.saveGameState(playerId, gameState, false);
+            storageService.saveGameState(playerId, gameState,"保存遊戲狀態", false);
             return ResponseEntity.ok(Map.of(
                 "success", true, 
                 "message", "遊戲狀態保存成功", 
@@ -88,39 +88,6 @@ public class StorageController {
             return ResponseEntity.status(500).body(Map.of(
                 "success", false, 
                 "message", "載入遊戲狀態失敗: " + e.getMessage(), 
-                "data", null
-            ));
-        }
-    }
-
-    /**
-     * 玩家登出
-     * 
-     * @param body 包含 playerId 的請求體
-     * @return 登出結果
-     */
-    @PostMapping("/logout")
-    public ResponseEntity<?> logoutPlayer(@RequestBody Map<String, Object> body) {
-        String playerId = (String) body.get("playerId");
-        if (playerId == null || playerId.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "success", false, 
-                "message", "玩家ID不能為空", 
-                "data", null
-            ));
-        }
-        
-        try {
-            storageService.logOutGameState(playerId, false);
-            return ResponseEntity.ok(Map.of(
-                "success", true, 
-                "message", "玩家登出成功", 
-                "data", null
-            ));
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body(Map.of(
-                "success", false, 
-                "message", "玩家登出失敗: " + e.getMessage(), 
                 "data", null
             ));
         }

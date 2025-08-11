@@ -12,7 +12,8 @@ app:
   data:
     storagePath: game_data/
     config-resource-path: classpath:config/resource/
-    resource-path:  classpath:config/resource/resource.json
-    building-path:  classpath:config/building/building.json
-    terrain-path:   classpath:config/terrains/terrain.json
-    map-path:       classpath:config/map/map.json
+    resource-path:        classpath:config/resource/resource.json
+    building-path:        classpath:config/building/building.json
+    terrain-path:         classpath:config/terrains/terrain.json
+    map-path:             classpath:config/map/map.json
+    soldier-path:         classpath:config/soldier/soldier.json

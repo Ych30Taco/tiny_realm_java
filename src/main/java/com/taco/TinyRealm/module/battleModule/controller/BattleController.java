@@ -35,7 +35,7 @@ public class BattleController {
      * @param isTest 是否為測試模式（可選，預設false）
      * @return 戰鬥結果
      */
-    @PostMapping("/start")
+    /*@PostMapping("/start")
     public ResponseEntity<Map<String, Object>> startBattle(
             @RequestParam String playerId,
             @RequestParam String unitIds,
@@ -71,7 +71,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取玩家戰鬥記錄

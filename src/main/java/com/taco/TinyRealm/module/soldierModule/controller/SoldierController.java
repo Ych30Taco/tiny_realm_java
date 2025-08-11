@@ -1,12 +1,12 @@
-package com.taco.TinyRealm.module.unitModule.controller;
-
-import com.taco.TinyRealm.module.unitModule.model.Unit;
-import com.taco.TinyRealm.module.unitModule.model.UnitType;
-import com.taco.TinyRealm.module.unitModule.service.UnitService;
+package com.taco.TinyRealm.module.soldierModule.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.taco.TinyRealm.module.soldierModule.model.SoldierType;
+import com.taco.TinyRealm.module.soldierModule.service.SoldierService;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,11 +22,11 @@ import java.util.Map;
  * @version 1.0
  */
 @RestController
-@RequestMapping("/api/unit")
-public class UnitController {
+@RequestMapping("/api/soldier")
+public class SoldierController {
     
     @Autowired
-    private UnitService unitService;
+    private SoldierService soldierService;
 
     /**
      * 獲取所有部隊類型
@@ -34,13 +34,13 @@ public class UnitController {
      * @return 部隊類型列表
      */
     @GetMapping("/types")
-    public ResponseEntity<?> getAllUnitTypes() {
+    public ResponseEntity<?> getAllsoldierTypes() {
         try {
-            List<UnitType> unitTypes = unitService.getAllUnitTypes();
+            List<SoldierType> soldierTypes = soldierService.getAllsoldierType();
             return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "獲取部隊類型成功",
-                "data", unitTypes
+                "data", soldierTypes
             ));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of(
@@ -50,60 +50,27 @@ public class UnitController {
             ));
         }
     }
-
-    /**
-     * 根據類型獲取部隊配置
-     * 
-     * @param type 部隊類型
-     * @return 部隊配置
-     */
-    @GetMapping("/types/{type}")
-    public ResponseEntity<?> getUnitType(@PathVariable String type) {
-        try {
-            UnitType unitType = unitService.getUnitType(type);
-            if (unitType == null) {
-                return ResponseEntity.status(404).body(Map.of(
-                    "success", false,
-                    "message", "部隊類型不存在",
-                    "data", null
-                ));
-            }
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "獲取部隊配置成功",
-                "data", unitType
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of(
-                "success", false,
-                "message", "獲取部隊配置失敗: " + e.getMessage(),
-                "data", null
-            ));
-        }
+    @PostMapping("/typeById")
+    public ResponseEntity<?> getAllsoldierTypeById(@RequestBody Map<String, Object> body) {
+        String soldierID = (String) body.get("soldierID");
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取部隊類型成功", "data", soldierService.getSoldierTypeById(soldierID)));
     }
 
     /**
      * 創建部隊
-     * 
-     * @param playerId 玩家ID
-     * @param type 部隊類型
-     * @param count 部隊數量
-     * @param x X座標
-     * @param y Y座標
-     * @return 創建的部隊
      */
     @PostMapping("/create")
-    public ResponseEntity<?> createUnit(@RequestParam String playerId,
-                                       @RequestParam String type,
-                                       @RequestParam int count,
-                                       @RequestParam int x,
-                                       @RequestParam int y) {
+    public ResponseEntity<?> createSoldier(@RequestBody Map<String, Object> body) {
         try {
-            Unit unit = unitService.createUnit(playerId, type, count, x, y, false);
+            String playerId = (String) body.get("playerId");
+            String soldierID = (String) body.get("soldierID");
+            int count = (int) body.get("count");
+            
+            GameState gameState = soldierService.createSoldier(playerId, soldierID, count,false);
             return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "部隊創建成功",
-                "data", unit
+                "data", gameState
             ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -129,7 +96,7 @@ public class UnitController {
      * @param newY 新Y座標
      * @return 移動後的部隊
      */
-    @PutMapping("/move")
+    /*@PutMapping("/move")
     public ResponseEntity<?> moveUnit(@RequestParam String playerId,
                                      @RequestParam String unitId,
                                      @RequestParam int newX,
@@ -154,7 +121,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 獲取玩家的所有部隊
@@ -162,7 +129,7 @@ public class UnitController {
      * @param playerId 玩家ID
      * @return 部隊列表
      */
-    @GetMapping("/player/{playerId}")
+    /*@GetMapping("/player/{playerId}")
     public ResponseEntity<?> getPlayerUnits(@PathVariable String playerId) {
         try {
             List<Unit> units = unitService.getPlayerUnits(playerId, false);
@@ -184,7 +151,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 升級部隊
@@ -193,7 +160,7 @@ public class UnitController {
      * @param unitId 部隊ID
      * @return 升級後的部隊
      */
-    @PutMapping("/upgrade")
+    /*@PutMapping("/upgrade")
     public ResponseEntity<?> upgradeUnit(@RequestParam String playerId,
                                         @RequestParam String unitId) {
         try {
@@ -216,7 +183,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 治療部隊
@@ -226,7 +193,7 @@ public class UnitController {
      * @param healAmount 治療量
      * @return 治療後的部隊
      */
-    @PutMapping("/heal")
+    /*@PutMapping("/heal")
     public ResponseEntity<?> healUnit(@RequestParam String playerId,
                                      @RequestParam String unitId,
                                      @RequestParam int healAmount) {
@@ -250,7 +217,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 解散部隊
@@ -259,7 +226,7 @@ public class UnitController {
      * @param unitId 部隊ID
      * @return 解散結果
      */
-    @DeleteMapping("/disband")
+    /*@DeleteMapping("/disband")
     public ResponseEntity<?> disbandUnit(@RequestParam String playerId,
                                         @RequestParam String unitId) {
         try {
@@ -282,7 +249,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 獲取部隊統計資訊
@@ -290,7 +257,7 @@ public class UnitController {
      * @param playerId 玩家ID
      * @return 統計資訊
      */
-    @GetMapping("/stats/{playerId}")
+   /*@GetMapping("/stats/{playerId}")
     public ResponseEntity<?> getUnitStats(@PathVariable String playerId) {
         try {
             Map<String, Object> stats = unitService.getUnitStats(playerId, false);
@@ -312,7 +279,7 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 根據ID獲取部隊
@@ -321,7 +288,7 @@ public class UnitController {
      * @param unitId 部隊ID
      * @return 部隊資訊
      */
-    @GetMapping("/{playerId}/{unitId}")
+    /*@GetMapping("/{playerId}/{unitId}")
     public ResponseEntity<?> getUnitById(@PathVariable String playerId,
                                         @PathVariable String unitId) {
         try {
@@ -357,5 +324,5 @@ public class UnitController {
                 "data", null
             ));
         }
-    }
+    }*/
 }

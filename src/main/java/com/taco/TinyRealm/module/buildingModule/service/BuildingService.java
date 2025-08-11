@@ -64,7 +64,7 @@ public class BuildingService {
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入建築模組失敗 ----");
             e.printStackTrace(); // 印出詳細錯誤
-            throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to load building.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入建築模組完成 ----");
     }
@@ -145,7 +145,7 @@ public class BuildingService {
 
         gameState.getBuildings().put(buildingId, playerBuilding);
         gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));//更新資源生產速率
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState, "建造建築",isTest);
         
         /*eventService.addEvent(playerId, "building_created", "Created " + buildingId + " at (" + x + "," + y + ")", isTest);
 
@@ -199,7 +199,7 @@ public class BuildingService {
         playerBuilding.setBuildEndTime(System.currentTimeMillis() + levelData.getBuildTime());
         gameState.getBuildings().put(buildingId, playerBuilding);
         gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));//更新資源生產速率
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"升級建築", isTest);
 
         //eventService.addEvent(playerId, "building_upgraded", "Upgraded " + buildingId + " to level " + playerBuilding.getLevel(), isTest);
         return gameState;
@@ -316,7 +316,7 @@ public class BuildingService {
         gameState.getResources().setProductionRates(calculateProductionRates(playerId, isTest));
         
         // 保存遊戲狀態
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"拆除建築並釋放地形", isTest);
         
         return gameState;
     }

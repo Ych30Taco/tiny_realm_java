@@ -4,21 +4,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.taco.TinyRealm.module.battleModule.model.Battle;
 import com.taco.TinyRealm.module.battleModule.model.EnemyType;
-import com.taco.TinyRealm.module.unitModule.model.Unit;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+//import com.taco.TinyRealm.module.soldierModule.model.Unit;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
 import com.taco.TinyRealm.service.EventService;
-import com.taco.TinyRealm.service.TaskService;
-import com.taco.TinyRealm.util.ResourceLoader;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -42,11 +41,9 @@ public class BattleService {
     @Autowired
     private TerrainMapService terrainMapService;
     
-    @Autowired
-    private TaskService taskService;
+    /*@Autowired
+    private TaskService taskService;*/
     
-    @Autowired
-    private ResourceLoader resourceLoader;
     
     @Value("${game.config.resource-path:config/}")
     private String configResourcePath;
@@ -76,10 +73,10 @@ public class BattleService {
      */
     private void loadEnemyTypes() throws IOException {
         String configPath = configResourcePath + "enemies.json";
-        String jsonContent = resourceLoader.loadResource(configPath);
+        //String jsonContent = resourceLoader.loadResource(configPath);
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, EnemyType> loadedTypes = mapper.readValue(jsonContent, new TypeReference<Map<String, EnemyType>>() {});
-        enemyTypes.putAll(loadedTypes);
+        //Map<String, EnemyType> loadedTypes = mapper.readValue(jsonContent, new TypeReference<Map<String, EnemyType>>() {});
+        //enemyTypes.putAll(loadedTypes);
     }
 
     /**
@@ -93,7 +90,7 @@ public class BattleService {
      * @return 戰鬥結果
      * @throws IOException 操作失敗時拋出異常
      */
-    public Battle startBattle(String playerId, List<String> unitIds, String enemyType, 
+    /*public Battle startBattle(String playerId, List<String> unitIds, String enemyType, 
                              int locationX, int locationY, boolean isTest) throws IOException {
         // 驗證參數
         if (playerId == null || playerId.trim().isEmpty()) {
@@ -149,7 +146,7 @@ public class BattleService {
         recordBattleEvent(playerId, battle, isTest);
 
         return battle;
-    }
+    }*/
 
     /**
      * 獲取玩家單位
@@ -157,7 +154,7 @@ public class BattleService {
      * @param unitIds 單位ID列表
      * @return 玩家單位列表
      */
-    private List<Unit> getPlayerUnits(GameState gameState, List<String> unitIds) {
+    /*private List<Unit> getPlayerUnits(GameState gameState, List<String> unitIds) {
         List<Unit> playerUnits = new ArrayList<>();
         for (String unitId : unitIds) {
             Unit unit = gameState.getUnits().stream()
@@ -169,13 +166,14 @@ public class BattleService {
             }
         }
         return playerUnits;
-    }
+    }*/
 
     /**
      * 創建敵方單位
      * @param enemyConfig 敵方配置
      * @return 敵方單位列表
      */
+    /* 
     private List<Unit> createEnemyUnits(EnemyType enemyConfig) {
         List<Unit> enemyUnits = new ArrayList<>();
         for (var unitConfig : enemyConfig.getUnits()) {
@@ -194,7 +192,7 @@ public class BattleService {
             enemyUnits.add(enemyUnit);
         }
         return enemyUnits;
-    }
+    }*/
 
     /**
      * 執行戰鬥邏輯
@@ -207,7 +205,7 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @return 戰鬥結果
      */
-    private Battle executeBattle(String playerId, List<Unit> playerUnits, List<Unit> enemyUnits,
+   /* private Battle executeBattle(String playerId, List<Unit> playerUnits, List<Unit> enemyUnits,
                                 EnemyType enemyConfig, int locationX, int locationY, boolean isTest) {
         Battle battle = new Battle();
         battle.setId(UUID.randomUUID().toString());
@@ -265,18 +263,18 @@ public class BattleService {
         battle.addStatistic("finalEnemyStrength", finalEnemyStrength);
 
         return battle;
-    }
+    }*/
 
     /**
      * 計算總戰力
      * @param units 單位列表
      * @return 總戰力
      */
-    private int calculateTotalStrength(List<Unit> units) {
+    /*private int calculateTotalStrength(List<Unit> units) {
         return units.stream()
                 .mapToInt(unit -> unit.getAttack() * unit.getLevel() * unit.getHealth() / unit.getMaxHealth())
                 .sum();
-    }
+    }*/
 
     /**
      * 計算單位損失
@@ -284,7 +282,7 @@ public class BattleService {
      * @param enemyUnits 敵方單位
      * @param result 戰鬥結果
      */
-    private void calculateUnitLosses(List<Unit> playerUnits, List<Unit> enemyUnits, String result) {
+    /*private void calculateUnitLosses(List<Unit> playerUnits, List<Unit> enemyUnits, String result) {
         if ("WIN".equals(result)) {
             // 玩家勝利，單位損失較少
             for (Unit unit : playerUnits) {
@@ -304,7 +302,7 @@ public class BattleService {
                 unit.takeDamage(damage);
             }
         }
-    }
+    }*/
 
     /**
      * 更新戰鬥後的遊戲狀態
@@ -314,14 +312,14 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    private void updateGameStateAfterBattle(GameState gameState, List<Unit> playerUnits, 
+    /*private void updateGameStateAfterBattle(GameState gameState, List<Unit> playerUnits, 
                                           Battle battle, boolean isTest) throws IOException {
         // 移除已死亡的單位並釋放地形
         Iterator<Unit> iterator = gameState.getUnits().iterator();
         while (iterator.hasNext()) {
             Unit unit = iterator.next();
             if (!unit.isAlive()) {
-                terrainMapService.releasePosition(battle.getPlayerId(), unit.getX(), unit.getY());
+                //terrainMapService.releasePosition(battle.getPlayerId(), unit.getX(), unit.getY());
                 iterator.remove();
             }
         }
@@ -334,7 +332,7 @@ public class BattleService {
 
         // 保存遊戲狀態
         storageService.saveGameState(battle.getPlayerId(), gameState, isTest);
-    }
+    }*/
 
     /**
      * 發放獎勵
@@ -343,12 +341,12 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    private void distributeRewards(String playerId, Resource rewards, boolean isTest) throws IOException {
+    /*private void distributeRewards(String playerId, Resource rewards, boolean isTest) throws IOException {
         if (rewards != null) {
             resourceService.addResources(playerId, rewards.getGold(), rewards.getWood(), 
                                        rewards.getStone(), rewards.getIron(), rewards.getFood(), isTest);
         }
-    }
+    }*/
 
     /**
      * 更新任務進度
@@ -357,6 +355,7 @@ public class BattleService {
      * @param gameState 遊戲狀態
      * @param isTest 是否測試模式
      */
+    /*
     private void updateTaskProgress(String playerId, String enemyType, GameState gameState, boolean isTest) {
         if (gameState.getTasks() != null) {
             gameState.getTasks().stream()
@@ -369,7 +368,7 @@ public class BattleService {
                     }
                 });
         }
-    }
+    }*/
 
     /**
      * 記錄戰鬥事件
@@ -478,7 +477,7 @@ public class BattleService {
         GameState gameState = storageService.loadGameState(playerId, isTest);
         if (gameState != null) {
             gameState.setBattles(new ArrayList<>());
-            storageService.saveGameState(playerId, gameState, isTest);
+            storageService.saveGameState(playerId, gameState,"清理測試數據", isTest);
         }
     }
 }

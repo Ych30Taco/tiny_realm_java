@@ -57,7 +57,7 @@ public class PlayerService {
         gameState.setEvents(new java.util.ArrayList<>());
         gameState.setTerrains(new java.util.ArrayList<>());*/
         System.out.println("---- 應用程式啟動中，已建立玩家 " + player.getId().toString() + " ----");
-        storageService.saveGameState(player.getId(), gameState, isTest);
+        storageService.saveGameState(player.getId(), gameState,"建立玩家", isTest);
         return player;
     }
 
@@ -118,7 +118,7 @@ public class PlayerService {
         player.setStatus(0); // 設置玩家狀態為離線
         player.setLastLogoutTime(System.currentTimeMillis());
         gameState.setPlayer(player);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"玩家離線", isTest);
         //storageService.logOutGameState(playerId, isTest);
         return gameState;
     }
@@ -129,7 +129,7 @@ public class PlayerService {
         player.setStatus(1); // 設置玩家狀態為上線
         player.setLastLoginTime(System.currentTimeMillis());
         gameState.setPlayer(player);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"玩家上線", isTest);
         return gameState;
     }
 

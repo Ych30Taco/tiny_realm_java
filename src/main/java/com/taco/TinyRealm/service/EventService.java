@@ -28,7 +28,7 @@ public class EventService {
         event.setMessage(message);
         event.setTimestamp(System.currentTimeMillis());
         gameState.getEvents().add(event);
-        storageService.saveGameState(playerId, gameState, isTest);
+        storageService.saveGameState(playerId, gameState,"addEvent", isTest);
         if (messagingTemplate != null) {
             messagingTemplate.convertAndSend("/topic/events/" + playerId, event);
         }
