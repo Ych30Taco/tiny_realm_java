@@ -15,10 +15,12 @@ import com.taco.TinyRealm.service.EventService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -41,12 +43,11 @@ public class BattleService {
     @Autowired
     private TerrainMapService terrainMapService;
     
-    /*@Autowired
-    private TaskService taskService;*/
+    @Autowired
+    private ResourceLoader resourceLoader;
     
-    
-    @Value("${game.config.resource-path:config/}")
-    private String configResourcePath;
+    @Value("${app.data.enemies-path:classpath:config/enemies.json}")
+    private org.springframework.core.io.Resource enemiesPath;
     
     /** 敵人類型配置 */
     private Map<String, EnemyType> enemyTypes = new HashMap<>();
@@ -60,7 +61,7 @@ public class BattleService {
     @PostConstruct
     public void init() {
         try {
-            loadEnemyTypes();
+            loadEnemyTypes(enemiesPath);
             System.out.println("BattleService initialized with " + enemyTypes.size() + " enemy types");
         } catch (Exception e) {
             System.err.println("Failed to initialize BattleService: " + e.getMessage());
@@ -69,14 +70,29 @@ public class BattleService {
 
     /**
      * 載入敵人類型配置
+     * @param resource 配置文件的資源
      * @throws IOException 載入失敗時拋出異常
      */
-    private void loadEnemyTypes() throws IOException {
-        String configPath = configResourcePath + "enemies.json";
-        //String jsonContent = resourceLoader.loadResource(configPath);
-        ObjectMapper mapper = new ObjectMapper();
-        //Map<String, EnemyType> loadedTypes = mapper.readValue(jsonContent, new TypeReference<Map<String, EnemyType>>() {});
-        //enemyTypes.putAll(loadedTypes);
+    private void loadEnemyTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, EnemyType> loaded = mapper.readValue(is, new TypeReference<Map<String, EnemyType>>() {});
+            enemyTypes.clear();
+            enemyTypes.putAll(loaded);
+        }
+    }
+
+    /**
+     * 重新載入敵人類型配置
+     * @param overridePath 覆蓋預設路徑的配置文件路徑
+     * @throws IOException 載入失敗時拋出異常
+     */
+    public void reloadEnemies(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = enemiesPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        loadEnemyTypes(target);
     }
 
     /**

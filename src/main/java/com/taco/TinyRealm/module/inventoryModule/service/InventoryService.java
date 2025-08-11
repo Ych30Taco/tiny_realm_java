@@ -45,7 +45,7 @@ public class InventoryService {
     @PostConstruct
     public void init() {
         try {
-            loadItemTypes();
+            loadItemTypes(configResourcePath);
             System.out.println("InventoryService initialized with " + itemTypes.size() + " item types");
         } catch (Exception e) {
             System.err.println("Failed to initialize InventoryService: " + e.getMessage());
@@ -55,9 +55,9 @@ public class InventoryService {
     /**
      * 載入物品類型配置
      */
-    private void loadItemTypes() throws IOException {
+    private void loadItemTypes(String path) throws IOException {
         try {
-            String content = new String(resourceLoader.getResource(configResourcePath).getInputStream().readAllBytes());
+            String content = new String(resourceLoader.getResource(path).getInputStream().readAllBytes());
             List<ItemType> types = objectMapper.readValue(content, new TypeReference<List<ItemType>>() {});
             itemTypes.clear();
             for (ItemType type : types) {
@@ -69,7 +69,12 @@ public class InventoryService {
             createDefaultItemTypes();
         }
     }
-    
+
+    public void reloadItemTypes(String overridePath) throws IOException {
+        String path = (overridePath != null && !overridePath.isBlank()) ? overridePath : configResourcePath;
+        loadItemTypes(path);
+    }
+
     /**
      * 創建默認物品類型
      */

@@ -13,6 +13,7 @@ import com.taco.TinyRealm.module.terrainMapModule.model.Terrain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -30,6 +31,9 @@ public class TerrainMapService {
     private GameMap gameMap = new GameMap(); // 讓 gameMap 預設存在記憶體
     @Autowired
     private StorageService storageService;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Value("${app.data.terrain-path}")
     private org.springframework.core.io.Resource terrainPath;
@@ -76,6 +80,27 @@ public class TerrainMapService {
         System.out.println("---- 應用程式啟動中，載入地形地圖模組完成 ----");
 
     }
+
+    public void reloadTerrains(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = terrainPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        try (InputStream is = target.getInputStream()) {
+            terrainsList = objectMapper.readValue(is, new TypeReference<List<Terrain>>() {});
+        }
+    }
+
+    public void reloadMap(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = mapPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        try (InputStream is = target.getInputStream()){
+            gameMap = objectMapper.readValue(is, new TypeReference<GameMap>(){});
+        }
+    }
+
     public String getTerrainName() {
         List<Terrain> resourceList = terrainsList;
         String terrain_name = "";

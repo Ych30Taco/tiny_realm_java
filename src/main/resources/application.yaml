@@ -17,3 +17,4 @@ app:
     terrain-path:         classpath:config/terrains/terrain.json
     map-path:             classpath:config/map/map.json
     soldier-path:         classpath:config/soldier/soldier.json
+    enemies-path:         classpath:config/enemies.json

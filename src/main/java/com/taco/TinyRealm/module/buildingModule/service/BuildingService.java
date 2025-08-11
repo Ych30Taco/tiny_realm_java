@@ -16,6 +16,7 @@ import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
@@ -38,6 +39,9 @@ public class BuildingService {
     private ResourceService resourceService;
     @Autowired
     private TerrainMapService terrainMapService;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
@@ -68,6 +72,17 @@ public class BuildingService {
         }
         System.out.println("---- 應用程式啟動中，載入建築模組完成 ----");
     }
+
+    public void reloadBuildings(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = buildingPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        try (InputStream is = target.getInputStream()) {
+            buildingsList = objectMapper.readValue(is, new TypeReference<List<Building>>() {});
+        }
+    }
+
     public List<Building> getAllbuilding() {
         return buildingsList;
     }

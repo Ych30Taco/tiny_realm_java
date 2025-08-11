@@ -71,7 +71,18 @@ public class SoldierService {
         }
         System.out.println("---- 應用程式啟動中，載入士兵模組完成 ----");
     }
-        /**
+
+    public void reloadSoldierTypes(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = soldierPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        try (InputStream is = target.getInputStream()) {
+            soldierTypeList = objectMapper.readValue(is, new TypeReference<List<SoldierType>>() {});
+        }
+    }
+
+    /**
      * 獲取所有士兵類型
      * 
      * @return 士兵類型列表

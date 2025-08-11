@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 
@@ -32,6 +33,9 @@ public class ResourceService {
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.resource-path}")
     private org.springframework.core.io.Resource resourcePath;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Autowired
     private StorageService storageService;
@@ -62,6 +66,16 @@ public class ResourceService {
         System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
     }
 
+    public void reloadResources(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = resourcePath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        try (InputStream is = target.getInputStream()) {
+            resourcesList = objectMapper.readValue(is, new TypeReference<List<Resource>>() {});
+        }
+    }
+
     public List<Resource> getAllResourceTypes() {
         return resourcesList;
     }
@@ -82,11 +96,6 @@ public class ResourceService {
         resource_name+= "共"+resourceList.size()+"種資源";
         return resource_name;
     }
-
-    
-
-
-
 
     public GameState addResources(String playerId, Map<String, Integer>  addResource, boolean isTest) throws IOException {
         GameState gameState = storageService.getGameStateListById(playerId);
@@ -111,6 +120,7 @@ public class ResourceService {
         }
         return gameState;
     }
+
     public GameState dedResources(String playerId, Map<String, Integer>  dedResource, boolean isTest) throws IOException {
         GameState gameState = storageService.getGameStateListById(playerId);
         try {
@@ -139,12 +149,6 @@ public class ResourceService {
         return gameState;
     }
 
-    /**
-     * 檢查玩家資源是否足夠
-     * @param playerId 玩家ID
-     * @param requiredResources 所需資源 (key: 資源ID, value: 所需數量)
-     * @return 是否足夠
-     */
     public boolean hasEnoughResources(String playerId, Map<String, Integer> requiredResources) {
         GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null || gameState.getResources() == null || gameState.getResources().getNowAmount() == null) {
