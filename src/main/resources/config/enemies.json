@@ -3,361 +3,143 @@
     "type": "bandit",
     "name": "強盜",
     "description": "一群兇狠的強盜，經常襲擊過往的商隊",
-    "level": 1,
+    "level": 5,
     "units": [
       {
-        "type": "bandit",
-        "count": 5,
-        "level": 1,
-        "attack": 15,
-        "defense": 8,
-        "health": 50
-      },
-      {
-        "type": "bandit_leader",
-        "count": 1,
-        "level": 2,
+        "type": "bandit_warrior",
+        "count": 3,
+        "level": 5,
         "attack": 25,
-        "defense": 12,
+        "defense": 15,
         "health": 80
       }
     ],
     "rewards": {
-      "gold": 50,
-      "wood": 20,
-      "stone": 10,
-      "iron": 5,
-      "food": 15
+      "id": "bandit_rewards",
+      "name": {"zh-TW": "強盜戰利品"},
+      "description": {"zh-TW": "從強盜身上搜刮的戰利品"},
+      "resourceIconURL": "",
+      "isPremium": false,
+      "stackable": true,
+      "category": "loot",
+      "sortOrder": 1,
+      "nowAmount": 100,
+      "maxAmount": 1000,
+      "protectedStoragePercentage": 0.1,
+      "protectedStorageMaxAmount": 100,
+      "acquisitionMethods": ["battle"],
+      "baseProductionRate": 0
     },
     "difficulty": "EASY",
-    "minPlayerLevel": 1,
-    "battleDuration": 60,
+    "minPlayerLevel": 3,
+    "battleDuration": 300,
     "skills": {
-      "ambush": true,
-      "retreat": 0.3
+      "stealth": 0.3,
+      "ambush": 0.2
     },
     "spawnChance": 0.8,
     "isBoss": false,
-    "battleDescription": "你遇到了一群強盜！他們看起來很兇狠，準備戰鬥吧！"
+    "battleDescription": "在荒涼的山路上，你遭遇了一群兇狠的強盜。他們手持武器，眼神兇狠，顯然不打算放過任何獵物。"
   },
   "wolf_pack": {
     "type": "wolf_pack",
     "name": "狼群",
-    "description": "一群飢餓的野狼，非常危險",
-    "level": 2,
+    "description": "一群兇猛的野狼，在夜晚特別危險",
+    "level": 8,
     "units": [
-      {
-        "type": "wolf",
-        "count": 8,
-        "level": 1,
-        "attack": 20,
-        "defense": 5,
-        "health": 60
-      },
       {
         "type": "alpha_wolf",
         "count": 1,
-        "level": 3,
+        "level": 8,
         "attack": 35,
-        "defense": 10,
-        "health": 100
+        "defense": 20,
+        "health": 120
+      },
+      {
+        "type": "wolf",
+        "count": 4,
+        "level": 6,
+        "attack": 28,
+        "defense": 18,
+        "health": 90
       }
     ],
     "rewards": {
-      "gold": 30,
-      "wood": 30,
-      "stone": 5,
-      "iron": 10,
-      "food": 40
+      "id": "wolf_rewards",
+      "name": {"zh-TW": "狼皮戰利品"},
+      "description": {"zh-TW": "從野狼身上獲得的珍貴毛皮"},
+      "resourceIconURL": "",
+      "isPremium": false,
+      "stackable": true,
+      "category": "loot",
+      "sortOrder": 2,
+      "nowAmount": 150,
+      "maxAmount": 1000,
+      "protectedStoragePercentage": 0.1,
+      "protectedStorageMaxAmount": 100,
+      "acquisitionMethods": ["battle"],
+      "baseProductionRate": 0
     },
     "difficulty": "MEDIUM",
-    "minPlayerLevel": 2,
-    "battleDuration": 90,
+    "minPlayerLevel": 6,
+    "battleDuration": 420,
     "skills": {
-      "pack_tactics": true,
-      "howl": 0.4
+      "pack_tactics": 0.4,
+      "night_vision": 0.5
     },
     "spawnChance": 0.6,
     "isBoss": false,
-    "battleDescription": "遠處傳來狼嚎聲！一群野狼正在接近，它們的眼睛閃爍著飢餓的光芒。"
+    "battleDescription": "在月光下，你聽到遠處傳來狼嚎聲。很快，一雙雙綠色的眼睛在黑暗中閃爍，狼群正在包圍你。"
   },
   "goblin_raiders": {
     "type": "goblin_raiders",
     "name": "哥布林突襲者",
-    "description": "一群狡猾的哥布林，喜歡偷襲和掠奪",
-    "level": 3,
+    "description": "一群狡猾的哥布林，擅長偷襲和游擊戰",
+    "level": 12,
     "units": [
       {
         "type": "goblin_warrior",
-        "count": 6,
-        "level": 2,
-        "attack": 18,
-        "defense": 6,
-        "health": 45
-      },
-      {
-        "type": "goblin_archer",
-        "count": 4,
-        "level": 2,
-        "attack": 25,
-        "defense": 3,
-        "health": 35
-      },
-      {
-        "type": "goblin_shaman",
-        "count": 1,
-        "level": 3,
-        "attack": 30,
-        "defense": 8,
-        "health": 70
-      }
-    ],
-    "rewards": {
-      "gold": 80,
-      "wood": 25,
-      "stone": 15,
-      "iron": 20,
-      "food": 25
-    },
-    "difficulty": "MEDIUM",
-    "minPlayerLevel": 3,
-    "battleDuration": 120,
-    "skills": {
-      "stealth": true,
-      "poison_arrows": 0.5,
-      "healing": 0.3
-    },
-    "spawnChance": 0.7,
-    "isBoss": false,
-    "battleDescription": "哥布林突襲者從陰影中出現！他們手持簡陋的武器，但數量眾多。"
-  },
-  "orc_warband": {
-    "type": "orc_warband",
-    "name": "獸人戰團",
-    "description": "一支訓練有素的獸人軍隊，戰鬥力強悍",
-    "level": 5,
-    "units": [
-      {
-        "type": "orc_warrior",
-        "count": 4,
-        "level": 3,
-        "attack": 30,
-        "defense": 15,
-        "health": 80
-      },
-      {
-        "type": "orc_berserker",
-        "count": 2,
-        "level": 4,
+        "count": 5,
+        "level": 12,
         "attack": 40,
-        "defense": 8,
-        "health": 90
-      },
-      {
-        "type": "orc_warlord",
-        "count": 1,
-        "level": 5,
-        "attack": 50,
-        "defense": 20,
-        "health": 150
-      }
-    ],
-    "rewards": {
-      "gold": 150,
-      "wood": 40,
-      "stone": 30,
-      "iron": 50,
-      "food": 60
-    },
-    "difficulty": "HARD",
-    "minPlayerLevel": 5,
-    "battleDuration": 180,
-    "skills": {
-      "battle_rage": true,
-      "war_cry": 0.6,
-      "berserker_fury": 0.4
-    },
-    "spawnChance": 0.4,
-    "isBoss": false,
-    "battleDescription": "獸人戰團的戰鼓聲響起！這些強大的戰士們準備與你決一死戰。"
-  },
-  "undead_horde": {
-    "type": "undead_horde",
-    "name": "不死軍團",
-    "description": "由骷髏和殭屍組成的恐怖軍團",
-    "level": 4,
-    "units": [
-      {
-        "type": "skeleton_warrior",
-        "count": 8,
-        "level": 2,
-        "attack": 20,
-        "defense": 10,
-        "health": 60
-      },
-      {
-        "type": "zombie",
-        "count": 6,
-        "level": 2,
-        "attack": 25,
-        "defense": 15,
+        "defense": 25,
         "health": 100
       },
       {
-        "type": "necromancer",
-        "count": 1,
-        "level": 4,
-        "attack": 35,
-        "defense": 12,
-        "health": 80
-      }
-    ],
-    "rewards": {
-      "gold": 100,
-      "wood": 20,
-      "stone": 40,
-      "iron": 25,
-      "food": 10
-    },
-    "difficulty": "HARD",
-    "minPlayerLevel": 4,
-    "battleDuration": 150,
-    "skills": {
-      "raise_dead": true,
-      "fear_aura": 0.5,
-      "life_drain": 0.3
-    },
-    "spawnChance": 0.3,
-    "isBoss": false,
-    "battleDescription": "死亡的氣息瀰漫在空氣中！不死軍團從地底爬出，準備吞噬一切生命。"
-  },
-  "dragon": {
-    "type": "dragon",
-    "name": "巨龍",
-    "description": "傳說中的巨龍，擁有毀滅性的力量",
-    "level": 10,
-    "units": [
-      {
-        "type": "young_dragon",
-        "count": 1,
+        "type": "goblin_archer",
+        "count": 3,
         "level": 10,
-        "attack": 100,
-        "defense": 50,
-        "health": 500
-      }
-    ],
-    "rewards": {
-      "gold": 1000,
-      "wood": 200,
-      "stone": 300,
-      "iron": 500,
-      "food": 100
-    },
-    "difficulty": "LEGENDARY",
-    "minPlayerLevel": 10,
-    "battleDuration": 300,
-    "skills": {
-      "fire_breath": true,
-      "wing_buffet": 0.7,
-      "fear": 0.8,
-      "regeneration": 0.4
-    },
-    "spawnChance": 0.1,
-    "isBoss": true,
-    "battleDescription": "天空被巨大的陰影籠罩！一隻巨龍降落在你面前，它的眼中燃燒著毀滅的火焰。"
-  },
-  "troll_king": {
-    "type": "troll_king",
-    "name": "巨魔之王",
-    "description": "強大的巨魔首領，擁有驚人的再生能力",
-    "level": 8,
-    "units": [
-      {
-        "type": "troll_warrior",
-        "count": 3,
-        "level": 6,
         "attack": 45,
-        "defense": 25,
-        "health": 120
-      },
-      {
-        "type": "troll_king",
-        "count": 1,
-        "level": 8,
-        "attack": 70,
-        "defense": 40,
-        "health": 300
-      }
-    ],
-    "rewards": {
-      "gold": 500,
-      "wood": 100,
-      "stone": 150,
-      "iron": 200,
-      "food": 200
-    },
-    "difficulty": "EPIC",
-    "minPlayerLevel": 8,
-    "battleDuration": 240,
-    "skills": {
-      "regeneration": true,
-      "stone_skin": 0.6,
-      "earthquake": 0.5,
-      "berserker_rage": 0.4
-    },
-    "spawnChance": 0.2,
-    "isBoss": true,
-    "battleDescription": "大地在震動！巨魔之王帶領著他的戰士們向你衝來，他們的眼中充滿了野性的憤怒。"
-  },
-  "dark_elf_assassins": {
-    "type": "dark_elf_assassins",
-    "name": "黑暗精靈刺客",
-    "description": "精通暗殺技巧的黑暗精靈，行動詭秘",
-    "level": 6,
-    "units": [
-      {
-        "type": "dark_elf_warrior",
-        "count": 3,
-        "level": 4,
-        "attack": 35,
-        "defense": 12,
+        "defense": 15,
         "health": 70
-      },
-      {
-        "type": "dark_elf_archer",
-        "count": 3,
-        "level": 4,
-        "attack": 40,
-        "defense": 8,
-        "health": 60
-      },
-      {
-        "type": "dark_elf_assassin",
-        "count": 2,
-        "level": 5,
-        "attack": 50,
-        "defense": 6,
-        "health": 80
       }
     ],
     "rewards": {
-      "gold": 200,
-      "wood": 60,
-      "stone": 40,
-      "iron": 80,
-      "food": 50
+      "id": "goblin_rewards",
+      "name": {"zh-TW": "哥布林戰利品"},
+      "description": {"zh-TW": "從哥布林身上搜刮的各種物品"},
+      "resourceIconURL": "",
+      "isPremium": false,
+      "stackable": true,
+      "category": "loot",
+      "sortOrder": 3,
+      "nowAmount": 200,
+      "maxAmount": 1000,
+      "protectedStoragePercentage": 0.1,
+      "protectedStorageMaxAmount": 100,
+      "acquisitionMethods": ["battle"],
+      "baseProductionRate": 0
     },
     "difficulty": "HARD",
-    "minPlayerLevel": 6,
-    "battleDuration": 120,
+    "minPlayerLevel": 10,
+    "battleDuration": 600,
     "skills": {
-      "stealth": true,
-      "poison_daggers": 0.7,
-      "shadow_step": 0.5,
-      "critical_strike": 0.6
+      "stealth": 0.6,
+      "trap_mastery": 0.4,
+      "poison_weapons": 0.3
     },
-    "spawnChance": 0.5,
+    "spawnChance": 0.4,
     "isBoss": false,
-    "battleDescription": "陰影中閃過黑色的身影！黑暗精靈刺客們從四面八方包圍了你。"
+    "battleDescription": "在茂密的森林中，你突然聽到樹葉沙沙作響。哥布林們從四面八方湧出，他們手持塗毒的武器，準備發動突襲。"
   }
 }

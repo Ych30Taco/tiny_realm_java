@@ -1,21 +1,15 @@
 [
   {
-    "id" : "sword",
     "type": "sword",
     "name": "鐵劍",
-    "description": "鋒利的鐵製長劍，適合近戰戰鬥",
+    "description": "一把鋒利的鐵製長劍，適合近戰戰鬥",
     "rarity": "common",
     "category": "weapon",
-    "maxQuantity": 1,
-    "maxDurability": 100,
     "level": 1,
+    "maxDurability": 100,
     "attributes": {
       "attack": 15,
-      "speed": 1.0,
-      "weight": 3
-    },
-    "effects": {
-      "critical_chance": 0.05
+      "speed": 1.0
     },
     "stackable": false,
     "tradeable": true,
@@ -25,406 +19,44 @@
     "equipmentSlot": "weapon",
     "sellPrice": 50,
     "buyPrice": 100,
-    "craftingRecipe": {
-      "iron": 5,
-      "wood": 2
-    },
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.1,
-    "useEffect": null
+    "useEffect": {
+      "attack_boost": 15
+    }
   },
   {
-    "id" : "steel_sword",
-    "type": "steel_sword",
-    "name": "鋼劍",
-    "description": "堅固的鋼製長劍，比鐵劍更加鋒利",
-    "rarity": "uncommon",
-    "category": "weapon",
-    "maxQuantity": 1,
-    "maxDurability": 150,
-    "level": 5,
-    "attributes": {
-      "attack": 25,
-      "speed": 1.1,
-      "weight": 4
-    },
-    "effects": {
-      "critical_chance": 0.08
-    },
-    "stackable": false,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": true,
-    "equipmentSlot": "weapon",
-    "sellPrice": 120,
-    "buyPrice": 250,
-    "craftingRecipe": {
-      "steel": 8,
-      "iron": 3
-    },
-    "requiredLevel": 5,
-    "requiredTech": "steel_forging",
-    "dropRate": 0.05,
-    "useEffect": null
-  },
-  {
-    "id" : "leather_armor",
-    "type": "leather_armor",
-    "name": "皮甲",
-    "description": "輕便的皮革護甲，提供基本防護",
+    "type": "shield",
+    "name": "木盾",
+    "description": "堅固的木製盾牌，提供良好的防禦",
     "rarity": "common",
     "category": "armor",
-    "maxQuantity": 1,
-    "maxDurability": 80,
     "level": 1,
+    "maxDurability": 80,
     "attributes": {
-      "defense": 8,
-      "weight": 2,
-      "mobility": 1.2
-    },
-    "effects": {
-      "dodge_chance": 0.03
+      "defense": 12,
+      "block_chance": 0.2
     },
     "stackable": false,
     "tradeable": true,
     "droppable": true,
     "consumable": false,
     "equippable": true,
-    "equipmentSlot": "armor",
+    "equipmentSlot": "shield",
     "sellPrice": 30,
     "buyPrice": 60,
-    "craftingRecipe": {
-      "leather": 6,
-      "thread": 2
-    },
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.15,
-    "useEffect": null
+    "useEffect": {
+      "defense_boost": 12
+    }
   },
   {
-    "id" : "iron_armor",
-    "type": "iron_armor",
-    "name": "鐵甲",
-    "description": "堅固的鐵製護甲，提供優秀防護",
-    "rarity": "uncommon",
-    "category": "armor",
-    "maxQuantity": 1,
-    "maxDurability": 120,
-    "level": 3,
-    "attributes": {
-      "defense": 15,
-      "weight": 8,
-      "mobility": 0.9
-    },
-    "effects": {
-      "damage_reduction": 0.1
-    },
-    "stackable": false,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": true,
-    "equipmentSlot": "armor",
-    "sellPrice": 80,
-    "buyPrice": 160,
-    "craftingRecipe": {
-      "iron": 12,
-      "leather": 4
-    },
-    "requiredLevel": 3,
-    "requiredTech": "iron_working",
-    "dropRate": 0.08,
-    "useEffect": null
-  },
-  {
-    "id" : "health_potion",
     "type": "health_potion",
     "name": "生命藥水",
-    "description": "恢復生命值的紅色藥水",
+    "description": "恢復生命值的魔法藥水",
     "rarity": "common",
     "category": "consumable",
-    "maxQuantity": 99,
-    "maxDurability": 1,
     "level": 1,
-    "attributes": {
-      "heal_amount": 50
-    },
-    "effects": {
-      "instant_heal": true
-    },
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": true,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 10,
-    "buyPrice": 20,
-    "craftingRecipe": {
-      "herb": 3,
-      "water": 1
-    },
-    "requiredLevel": 1,
-    "requiredTech": "alchemy",
-    "dropRate": 0.2,
-    "useEffect": {
-      "heal": 50
-    }
-  },
-  {
-    "id" : "mana_potion",
-    "type": "mana_potion",
-    "name": "魔力藥水",
-    "description": "恢復魔力的藍色藥水",
-    "rarity": "common",
-    "category": "consumable",
-    "maxQuantity": 99,
     "maxDurability": 1,
-    "level": 1,
     "attributes": {
-      "mana_amount": 30
-    },
-    "effects": {
-      "instant_mana": true
-    },
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": true,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 15,
-    "buyPrice": 30,
-    "craftingRecipe": {
-      "magic_herb": 2,
-      "water": 1
-    },
-    "requiredLevel": 1,
-    "requiredTech": "alchemy",
-    "dropRate": 0.15,
-    "useEffect": {
-      "mana": 30
-    }
-  },
-  {
-    "id" : "wood",
-    "type": "wood",
-    "name": "木材",
-    "description": "用於建造和製作的基本材料",
-    "rarity": "common",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "quality": 1
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 2,
-    "buyPrice": 5,
-    "craftingRecipe": null,
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.8,
-    "useEffect": null
-  },
-  {
-    "id" : "stone",
-    "type": "stone",
-    "name": "石頭",
-    "description": "堅硬的石頭，用於建造和製作",
-    "rarity": "common",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "quality": 1
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 3,
-    "buyPrice": 6,
-    "craftingRecipe": null,
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.7,
-    "useEffect": null
-  },
-  {
-    "id" : "iron_ore",
-    "type": "iron_ore",
-    "name": "鐵礦石",
-    "description": "未加工的鐵礦石，需要冶煉",
-    "rarity": "common",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "quality": 1
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 5,
-    "buyPrice": 10,
-    "craftingRecipe": null,
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.4,
-    "useEffect": null
-  },
-  {
-    "id" : "iron_ingot",
-    "type": "iron_ingot",
-    "name": "鐵錠",
-    "description": "冶煉後的鐵錠，用於製作武器和工具",
-    "rarity": "uncommon",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 2,
-    "attributes": {
-      "quality": 2
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 12,
-    "buyPrice": 25,
-    "craftingRecipe": {
-      "iron_ore": 2,
-      "coal": 1
-    },
-    "requiredLevel": 2,
-    "requiredTech": "smelting",
-    "dropRate": 0.2,
-    "useEffect": null
-  },
-  {
-    "id" : "leather",
-    "type": "leather",
-    "name": "皮革",
-    "description": "處理過的動物皮革，用於製作護甲",
-    "rarity": "common",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "quality": 1
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 4,
-    "buyPrice": 8,
-    "craftingRecipe": {
-      "raw_hide": 1
-    },
-    "requiredLevel": 1,
-    "requiredTech": "leather_working",
-    "dropRate": 0.3,
-    "useEffect": null
-  },
-  {
-    "id" : "herb",
-    "type": "herb",
-    "name": "藥草",
-    "description": "常見的藥用植物，用於製作藥水",
-    "rarity": "common",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "quality": 1
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 3,
-    "buyPrice": 6,
-    "craftingRecipe": null,
-    "requiredLevel": 1,
-    "requiredTech": null,
-    "dropRate": 0.5,
-    "useEffect": null
-  },
-  {
-    "id" : "magic_herb",
-    "type": "magic_herb",
-    "name": "魔法藥草",
-    "description": "蘊含魔力的稀有藥草",
-    "rarity": "uncommon",
-    "category": "material",
-    "maxQuantity": 999,
-    "maxDurability": 1,
-    "level": 3,
-    "attributes": {
-      "quality": 2
-    },
-    "effects": null,
-    "stackable": true,
-    "tradeable": true,
-    "droppable": true,
-    "consumable": false,
-    "equippable": false,
-    "equipmentSlot": null,
-    "sellPrice": 8,
-    "buyPrice": 16,
-    "craftingRecipe": null,
-    "requiredLevel": 3,
-    "requiredTech": null,
-    "dropRate": 0.2,
-    "useEffect": null
-  },
-  {
-    "id" : "repair_kit",
-    "type": "repair_kit",
-    "name": "修復工具包",
-    "description": "用於修復裝備的工具包",
-    "rarity": "common",
-    "category": "consumable",
-    "maxQuantity": 99,
-    "maxDurability": 1,
-    "level": 1,
-    "attributes": {
-      "repair_amount": 25
-    },
-    "effects": {
-      "repair_durability": true
+      "healing": 50
     },
     "stackable": true,
     "tradeable": true,
@@ -434,47 +66,52 @@
     "equipmentSlot": null,
     "sellPrice": 20,
     "buyPrice": 40,
-    "craftingRecipe": {
-      "iron_ingot": 1,
-      "leather": 1
-    },
-    "requiredLevel": 2,
-    "requiredTech": "crafting",
-    "dropRate": 0.1,
     "useEffect": {
-      "repair": 25
+      "heal": 50
     }
   },
   {
-    "id" : "treasure_map",
-    "type": "treasure_map",
-    "name": "藏寶圖",
-    "description": "記載著寶藏位置的古老地圖",
-    "rarity": "rare",
-    "category": "quest",
-    "maxQuantity": 1,
+    "type": "iron_ore",
+    "name": "鐵礦石",
+    "description": "用於冶煉的鐵礦石",
+    "rarity": "common",
+    "category": "material",
+    "level": 1,
     "maxDurability": 1,
-    "level": 5,
     "attributes": {
-      "treasure_level": 1
+      "quality": 1
     },
-    "effects": {
-      "reveals_treasure": true
-    },
-    "stackable": false,
+    "stackable": true,
     "tradeable": true,
     "droppable": true,
+    "consumable": false,
+    "equippable": false,
+    "equipmentSlot": null,
+    "sellPrice": 5,
+    "buyPrice": 10,
+    "useEffect": {}
+  },
+  {
+    "type": "magic_scroll",
+    "name": "魔法卷軸",
+    "description": "記載著神秘魔法的古老卷軸",
+    "rarity": "rare",
+    "category": "quest",
+    "level": 5,
+    "maxDurability": 1,
+    "attributes": {
+      "magic_power": 25
+    },
+    "stackable": false,
+    "tradeable": false,
+    "droppable": false,
     "consumable": true,
     "equippable": false,
     "equipmentSlot": null,
-    "sellPrice": 100,
-    "buyPrice": 200,
-    "craftingRecipe": null,
-    "requiredLevel": 5,
-    "requiredTech": null,
-    "dropRate": 0.02,
+    "sellPrice": 0,
+    "buyPrice": 0,
     "useEffect": {
-      "reveal_treasure": true
+      "learn_spell": "fireball"
     }
   }
 ]

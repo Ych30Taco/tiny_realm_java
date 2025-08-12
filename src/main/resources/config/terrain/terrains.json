@@ -1,140 +1,120 @@
 [
   {
-    "id": "plain",
+    "id": "plains",
     "name": "平原",
-    "movementCost": {
-      "infantry": 1.0,
-      "cavalry": 0.8,
-      "vehicle": 1.2
-    },
-    "resourceType": null,
-    "isPassable": true,
-    "isRoadRequired": false,
+    "description": "廣闊的平原，適合建造和農業",
+    "movementCost": 1,
     "defenseBonus": 0,
-    "buildable": true,
-    "description": "平坦地形，適合快速移動和建造村莊"
+    "canOccupy": true,
+    "canBuild": true,
+    "resourceBonus": {
+      "food": 1.2,
+      "wood": 0.8
+    },
+    "icon": "/images/terrains/plains.png",
+    "color": "#90EE90"
   },
   {
     "id": "forest",
     "name": "森林",
-    "movementCost": {
-      "infantry": 1.5,
-      "cavalry": 2.0,
-      "vehicle": 2.5
+    "description": "茂密的森林，提供豐富的木材資源",
+    "movementCost": 2,
+    "defenseBonus": 2,
+    "canOccupy": true,
+    "canBuild": true,
+    "resourceBonus": {
+      "food": 0.9,
+      "wood": 1.5
     },
-    "resourceType": "wood",
-    "resourceAmount": 1000,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": 1,
-    "buildable": false,
-    "description": "樹木茂密，提供木材資源"
+    "icon": "/images/terrains/forest.png",
+    "color": "#228B22"
+  },
+  {
+    "id": "hills",
+    "name": "丘陵",
+    "description": "起伏的丘陵，提供良好的防禦位置",
+    "movementCost": 2,
+    "defenseBonus": 3,
+    "canOccupy": true,
+    "canBuild": true,
+    "resourceBonus": {
+      "stone": 1.3,
+      "iron": 1.1
+    },
+    "icon": "/images/terrains/hills.png",
+    "color": "#8B4513"
   },
   {
     "id": "mountain",
-    "name": "高山",
-    "movementCost": {
-      "infantry": 3.0,
-      "cavalry": 999,
-      "vehicle": 999
+    "name": "山脈",
+    "description": "險峻的山脈，富含礦產資源",
+    "movementCost": 3,
+    "defenseBonus": 5,
+    "canOccupy": false,
+    "canBuild": false,
+    "resourceBonus": {
+      "stone": 1.5,
+      "iron": 1.4
     },
-    "resourceType": null,
-    "isPassable": true,
-    "isRoadRequired": true,
-    "defenseBonus": 2,
-    "buildable": true,
-    "description": "崎嶇地形，僅步兵可通過，需道路"
+    "icon": "/images/terrains/mountain.png",
+    "color": "#696969"
   },
   {
-    "id": "iron_mine",
-    "name": "鐵礦",
-    "movementCost": {
-      "infantry": 2.0,
-      "cavalry": 2.5,
-      "vehicle": 2.0
-    },
-    "resourceType": "iron",
-    "resourceAmount": 1500,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": 1,
-    "buildable": false,
-    "description": "提供鐵資源，移動稍受阻"
-  },
-  {
-    "id": "stone_mine",
-    "name": "石礦",
-    "movementCost": {
-      "infantry": 2.0,
-      "cavalry": 2.5,
-      "vehicle": 2.0
-    },
-    "resourceType": "stone",
-    "resourceAmount": 1500,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": 1,
-    "buildable": false,
-    "description": "提供石材資源，移動稍受阻"
-  },
-  {
-    "id": "waterfront",
-    "name": "水邊",
-    "movementCost": {
-      "infantry": 2.5,
-      "cavalry": 3.0,
-      "vehicle": 999
-    },
-    "resourceType": null,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": -1,
-    "buildable": false,
-    "description": "濕滑地形，降低防禦"
-  },
-  {
-    "id": "river",
-    "name": "河流",
-    "movementCost": {
-      "infantry": 999,
-      "cavalry": 999,
-      "vehicle": 999
-    },
-    "resourceType": null,
-    "isPassable": false,
-    "isRoadRequired": true,
+    "id": "water",
+    "name": "水域",
+    "description": "廣闊的水域，無法建造但可通行",
+    "movementCost": 2,
     "defenseBonus": 0,
-    "buildable": false,
-    "description": "無法直接通過，需橋樑"
-  },
-  {
-    "id": "grassland",
-    "name": "草原",
-    "movementCost": {
-      "infantry": 0.9,
-      "cavalry": 0.7,
-      "vehicle": 1.1
+    "canOccupy": false,
+    "canBuild": false,
+    "resourceBonus": {
+      "food": 1.1
     },
-    "resourceType": null,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": 0,
-    "buildable": true,
-    "description": "開闊地形，騎兵移動效率高"
+    "icon": "/images/terrains/water.png",
+    "color": "#4169E1"
   },
   {
     "id": "desert",
     "name": "沙漠",
-    "movementCost": {
-      "infantry": 2.0,
-      "cavalry": 2.5,
-      "vehicle": 3.0
+    "description": "荒涼的沙漠，資源稀少但戰略位置重要",
+    "movementCost": 1,
+    "defenseBonus": 1,
+    "canOccupy": true,
+    "canBuild": true,
+    "resourceBonus": {
+      "food": 0.5,
+      "stone": 1.2
     },
-    "resourceType": null,
-    "isPassable": true,
-    "isRoadRequired": false,
-    "defenseBonus": -1,
-    "buildable": false,
-    "description": "乾燥地形，降低防禦"
+    "icon": "/images/terrains/desert.png",
+    "color": "#F4A460"
+  },
+  {
+    "id": "swamp",
+    "name": "沼澤",
+    "description": "危險的沼澤地，移動困難但隱蔽性好",
+    "movementCost": 3,
+    "defenseBonus": 4,
+    "canOccupy": false,
+    "canBuild": false,
+    "resourceBonus": {
+      "food": 0.8
+    },
+    "icon": "/images/terrains/swamp.png",
+    "color": "#556B2F"
+  },
+  {
+    "id": "grassland",
+    "name": "草原",
+    "description": "肥沃的草原，適合畜牧和農業",
+    "movementCost": 1,
+    "defenseBonus": 0,
+    "canOccupy": true,
+    "canBuild": true,
+    "resourceBonus": {
+      "food": 1.3,
+      "wood": 0.9
+    },
+    "icon": "/images/terrains/grassland.png",
+    "color": "#7CFC00"
   }
 ]

@@ -1,200 +1,258 @@
 [
   {
-    "id": "mainHall",
-    "name": "主城",
-    "type": "function",
-    "resourceType": null,
-    "maxCount": 5,
-    "allowedTerrains": ["plain", "grassland","desert","mountain"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
-        "output": { },
-        "prerequisites": {},
-        "productionRate": 0
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
-        "output": { "food": 150 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 0
-      }
-    ]
+    "id": "town_hall",
+    "name": "市政廳",
+    "description": "城市的核心建築，控制其他建築的等級上限",
+    "category": "government",
+    "level": 1,
+    "maxLevel": 10,
+    "cost": {
+      "gold": 0,
+      "food": 0,
+      "wood": 0,
+      "stone": 0,
+      "iron": 0
+    },
+    "upgradeCost": {
+      "gold": 1000,
+      "food": 500,
+      "wood": 300,
+      "stone": 200,
+      "iron": 100
+    },
+    "buildTime": 300,
+    "upgradeTime": 600,
+    "requirements": {},
+    "effects": {
+      "population_capacity": 100,
+      "building_slots": 5
+    },
+    "icon": "/images/buildings/town_hall.png"
   },
   {
     "id": "barracks",
     "name": "兵營",
-    "type": "military",
-    "resourceType": null,
-    "maxCount": 2,
-    "allowedTerrains": ["plain", "grassland", "desert", "mountain"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": {  "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
-        "output": { "soldierCapacity": 50 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 0
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": {  "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 0 },
-        "output": { "soldierCapacity": 100 },
-        "prerequisites": { "barracks": 1 },
-        "productionRate": 0
-      },{
-        "level": 3,
-        "buildTime": 600000,
-        "cost": {  "FOOD": 1500,"WOOD": 1500,"IRON": 1500,"STONE": 1500 },
-        "output": { "soldierCapacity": 150 },
-        "prerequisites": { "barracks": 2 },
-        "productionRate": 0
-      }
-    ]
+    "description": "訓練步兵和基礎軍事單位",
+    "category": "military",
+    "level": 1,
+    "maxLevel": 5,
+    "cost": {
+      "gold": 200,
+      "food": 100,
+      "wood": 150,
+      "stone": 50,
+      "iron": 25
+    },
+    "upgradeCost": {
+      "gold": 400,
+      "food": 200,
+      "wood": 300,
+      "stone": 100,
+      "iron": 50
+    },
+    "buildTime": 180,
+    "upgradeTime": 360,
+    "requirements": {
+      "town_hall": 2
+    },
+    "effects": {
+      "training_speed": 1.0,
+      "unit_capacity": 50
+    },
+    "icon": "/images/buildings/barracks.png"
+  },
+  {
+    "id": "archery_range",
+    "name": "射箭場",
+    "description": "訓練弓箭手和遠程單位",
+    "category": "military",
+    "level": 1,
+    "maxLevel": 5,
+    "cost": {
+      "gold": 250,
+      "food": 80,
+      "wood": 200,
+      "stone": 60,
+      "iron": 30
+    },
+    "upgradeCost": {
+      "gold": 500,
+      "food": 160,
+      "wood": 400,
+      "stone": 120,
+      "iron": 60
+    },
+    "buildTime": 240,
+    "upgradeTime": 480,
+    "requirements": {
+      "town_hall": 3,
+      "barracks": 2
+    },
+    "effects": {
+      "training_speed": 1.0,
+      "unit_capacity": 40
+    },
+    "icon": "/images/buildings/archery_range.png"
+  },
+  {
+    "id": "stable",
+    "name": "馬廄",
+    "description": "訓練騎兵和機動單位",
+    "category": "military",
+    "level": 1,
+    "maxLevel": 5,
+    "cost": {
+      "gold": 300,
+      "food": 150,
+      "wood": 100,
+      "stone": 80,
+      "iron": 50
+    },
+    "upgradeCost": {
+      "gold": 600,
+      "food": 300,
+      "wood": 200,
+      "stone": 160,
+      "iron": 100
+    },
+    "buildTime": 300,
+    "upgradeTime": 600,
+    "requirements": {
+      "town_hall": 4,
+      "barracks": 3
+    },
+    "effects": {
+      "training_speed": 1.0,
+      "unit_capacity": 30
+    },
+    "icon": "/images/buildings/stable.png"
   },
   {
     "id": "farm",
-    "name": "農田",
-    "type": "resource",
-    "resourceType": "FOOD",
-    "maxCount": 5,
-    "allowedTerrains": ["plain", "grassland"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
-        "output": { "food": 100 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 100
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
-        "output": { "food": 150 },
-        "prerequisites": { "farm": 1 },
-        "productionRate": 150
-      },
-      {
-        "level": 3,
-        "buildTime": 600000,
-        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
-        "output": { "food": 200 },
-        "prerequisites": { "farm": 2 },
-        "productionRate": 200
-      }
-    ]
+    "name": "農場",
+    "description": "生產食物，維持城市人口",
+    "category": "production",
+    "level": 1,
+    "maxLevel": 10,
+    "cost": {
+      "gold": 50,
+      "food": 0,
+      "wood": 100,
+      "stone": 20,
+      "iron": 0
+    },
+    "upgradeCost": {
+      "gold": 100,
+      "food": 0,
+      "wood": 200,
+      "stone": 40,
+      "iron": 0
+    },
+    "buildTime": 120,
+    "upgradeTime": 240,
+    "requirements": {
+      "town_hall": 1
+    },
+    "effects": {
+      "food_production": 50,
+      "storage_capacity": 1000
+    },
+    "icon": "/images/buildings/farm.png"
   },
   {
-    "id": "lumberMill",
+    "id": "lumber_mill",
     "name": "伐木場",
-    "type": "resource",
-    "resourceType": "WOOD",
-    "maxCount": 5,
-    "allowedTerrains": ["forest"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
-        "output": { "wood": 100 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 100
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
-        "output": { "wood": 150 },
-        "prerequisites": { "lumberMill": 1 },
-        "productionRate": 150
-      },
-      {
-        "level": 3,
-        "buildTime": 600000,
-        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
-        "output": { "stone": 200 },
-        "prerequisites": { "lumberMill": 2 },
-        "productionRate": 200
-      }
-
-    ]
-  }
-  ,
+    "description": "生產木材，用於建造和升級",
+    "category": "production",
+    "level": 1,
+    "maxLevel": 10,
+    "cost": {
+      "gold": 60,
+      "food": 20,
+      "wood": 0,
+      "stone": 30,
+      "iron": 10
+    },
+    "upgradeCost": {
+      "gold": 120,
+      "food": 40,
+      "wood": 0,
+      "stone": 60,
+      "iron": 20
+    },
+    "buildTime": 150,
+    "upgradeTime": 300,
+    "requirements": {
+      "town_hall": 1
+    },
+    "effects": {
+      "wood_production": 30,
+      "storage_capacity": 800
+    },
+    "icon": "/images/buildings/lumber_mill.png"
+  },
   {
-    "id": "stoneQuarry",
+    "id": "quarry",
     "name": "採石場",
-    "type": "resource",
-    "resourceType": "STONE",
-    "maxCount": 5,
-    "allowedTerrains": ["stone_mine"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 100},
-        "output": { "stone": 100 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 100
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 500},
-        "output": { "stone": 150 },
-        "prerequisites": { "stoneQuarry": 1 },
-        "productionRate": 150
-      },
-      {
-        "level": 3,
-        "buildTime": 600000,
-        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
-        "output": { "stone": 200 },
-        "prerequisites": { "stoneQuarry": 2 },
-        "productionRate": 200
-      }
-    ]
-  }
-  ,
+    "description": "開採石頭，用於高級建築",
+    "category": "production",
+    "level": 1,
+    "maxLevel": 8,
+    "cost": {
+      "gold": 80,
+      "food": 30,
+      "wood": 50,
+      "stone": 0,
+      "iron": 20
+    },
+    "upgradeCost": {
+      "gold": 160,
+      "food": 60,
+      "wood": 100,
+      "stone": 0,
+      "iron": 40
+    },
+    "buildTime": 180,
+    "upgradeTime": 360,
+    "requirements": {
+      "town_hall": 2
+    },
+    "effects": {
+      "stone_production": 20,
+      "storage_capacity": 600
+    },
+    "icon": "/images/buildings/quarry.png"
+  },
   {
-    "id": "ironQuarry",
-    "name": "採鐵場",
-    "type": "resource",
-    "resourceType": "IRON",
-    "maxCount": 5,
-    "allowedTerrains": ["iron_mine"],
-    "levels": [
-      {
-        "level": 1,
-        "buildTime": 60000,
-        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
-        "output": { "stone": 100 },
-        "prerequisites": { "mainHall": 1 },
-        "productionRate": 100
-      },
-      {
-        "level": 2,
-        "buildTime": 360000,
-        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
-        "output": { "stone": 150 },
-        "prerequisites": { "ironQuarry": 1 },
-        "productionRate": 150
-      },
-      {
-        "level": 3,
-        "buildTime": 600000,
-        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
-        "output": { "stone": 200 },
-        "prerequisites": { "ironQuarry": 2 },
-        "productionRate": 200
-      }
-    ]
+    "id": "iron_mine",
+    "name": "鐵礦場",
+    "description": "開採鐵礦，用於武器和工具",
+    "category": "production",
+    "level": 1,
+    "maxLevel": 8,
+    "cost": {
+      "gold": 100,
+      "food": 40,
+      "wood": 60,
+      "stone": 40,
+      "iron": 0
+    },
+    "upgradeCost": {
+      "gold": 200,
+      "food": 80,
+      "wood": 120,
+      "stone": 80,
+      "iron": 0
+    },
+    "buildTime": 240,
+    "upgradeTime": 480,
+    "requirements": {
+      "town_hall": 3
+    },
+    "effects": {
+      "iron_production": 15,
+      "storage_capacity": 500
+    },
+    "icon": "/images/buildings/iron_mine.png"
   }
 ]

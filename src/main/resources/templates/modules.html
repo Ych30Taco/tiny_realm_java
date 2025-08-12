@@ -599,31 +599,38 @@
                                 <div class="module-body">
                                     <form id="battleForm">
                                         <div class="mb-3">
-                                            <label class="form-label">攻擊方玩家ID</label>
-                                            <input type="text" class="form-control" id="attackerId" value="player1">
+                                            <label class="form-label">玩家ID</label>
+                                            <input type="text" class="form-control" id="battlePlayerId" value="player1">
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">防守方玩家ID</label>
-                                            <input type="text" class="form-control" id="defenderId" value="player2">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">部隊類型</label>
-                                            <select class="form-select" id="unitType">
-                                                <option value="infantry">步兵</option>
-                                                <option value="cavalry">騎兵</option>
-                                                <option value="archer">弓箭手</option>
-                                                <option value="siege">攻城器</option>
+                                            <label class="form-label">敵人類型</label>
+                                            <select class="form-select" id="enemyType">
+                                                <option value="">選擇敵人類型...</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">部隊數量</label>
-                                            <input type="number" class="form-control" id="unitCount" min="1" value="100">
+                                            <label class="form-label">參戰士兵ID (逗號分隔)</label>
+                                            <input type="text" class="form-control" id="soldierIds" placeholder="soldier1,soldier2,soldier3">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">戰鬥位置X</label>
+                                            <input type="number" class="form-control" id="battleLocationX" min="0" max="7" value="0">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">戰鬥位置Y</label>
+                                            <input type="number" class="form-control" id="battleLocationY" min="0" max="7" value="0">
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="battleIsTest">
+                                                <label class="form-check-label">測試模式</label>
+                                            </div>
                                         </div>
                                         <button type="button" class="btn btn-module btn-danger" onclick="startBattle()">
                                             <i class="fas fa-fight me-2"></i>開始戰鬥
                                         </button>
-                                        <button type="button" class="btn btn-module btn-warning ms-2" onclick="simulateBattle()">
-                                            <i class="fas fa-dice me-2"></i>模擬戰鬥
+                                        <button type="button" class="btn btn-module btn-info ms-2" onclick="loadEnemyTypes()">
+                                            <i class="fas fa-sync me-2"></i>載入敵人類型
                                         </button>
                                     </form>
                                 </div>
@@ -640,6 +647,26 @@
                                     </div>
                                     <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadBattleHistory()">
                                         <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                    <button type="button" class="btn btn-module btn-warning w-100 mt-2" onclick="clearTestBattles()">
+                                        <i class="fas fa-trash me-2"></i>清理測試數據
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-chart-bar me-2"></i>戰鬥統計</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="battleStats">
+                                        <p class="text-muted">尚未載入戰鬥統計</p>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-secondary w-100 mt-3" onclick="loadBattleStats()">
+                                        <i class="fas fa-chart-line me-2"></i>載入戰鬥統計
                                     </button>
                                 </div>
                             </div>
@@ -1425,12 +1452,55 @@
 
         // 戰鬥相關功能
         function startBattle() {
-            const attacker = document.getElementById('attackerId').value;
-            const defender = document.getElementById('defenderId').value;
-            const unitType = document.getElementById('unitType').value;
-            const unitCount = document.getElementById('unitCount').value;
+            const playerId = document.getElementById('battlePlayerId').value;
+            const enemyType = document.getElementById('enemyType').value;
+            const soldierIds = document.getElementById('soldierIds').value.split(',').map(id => id.trim()).filter(id => id);
+            const locationX = document.getElementById('battleLocationX').value;
+            const locationY = document.getElementById('battleLocationY').value;
+            const isTest = document.getElementById('battleIsTest').checked;
             
-            showResult(`開始戰鬥：${attacker} 攻擊 ${defender}，使用 ${unitCount} 個 ${unitType}\n注意：戰鬥功能目前被註解，請使用新的戰鬥模組 API`);
+            if (!enemyType) {
+                showResult('請選擇敵人類型！');
+                return;
+            }
+            if (soldierIds.length === 0) {
+                showResult('請選擇至少一個士兵參戰！');
+                return;
+            }
+            if (locationX < 0 || locationX > 7 || locationY < 0 || locationY > 7) {
+                showResult('戰鬥位置座標超出範圍！');
+                return;
+            }
+
+            showLoading();
+            fetch('/api/battle/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playerId: playerId,
+                    enemyType: enemyType,
+                    soldierIds: soldierIds,
+                    locationX: parseInt(locationX),
+                    locationY: parseInt(locationY),
+                    isTest: isTest
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showResult(`戰鬥開始成功！\n結果：${data.message}\n\n戰鬥 ID: ${data.data.id}`);
+                    loadBattleHistory(); // 重新載入戰鬥記錄
+                } else {
+                    showResult(`戰鬥開始失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`錯誤：${error.message}`);
+            });
         }
 
         function simulateBattle() {
@@ -1441,20 +1511,133 @@
         }
 
         function loadBattleHistory() {
-            const playerId = document.getElementById('attackerId').value;
+            const playerId = document.getElementById('battlePlayerId').value;
             
             fetch(`/api/battle/player/${playerId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showResult(`載入戰鬥記錄...\n結果：${JSON.stringify(data.data, null, 2)}`);
-                } else {
-                    showResult(`載入戰鬥記錄失敗：${data.message}`);
-                }
-            })
-            .catch(error => {
-                showResult(`錯誤：${error.message}`);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const historyDiv = document.getElementById('battleHistory');
+                        if (data.data && data.data.length > 0) {
+                            let historyHtml = '<div class="table-responsive"><table class="table table-sm">';
+                            historyHtml += '<thead><tr><th>戰鬥ID</th><th>敵人類型</th><th>結果</th><th>狀態</th></tr></thead><tbody>';
+                            data.data.forEach(battle => {
+                                historyHtml += `<tr>
+                                    <td>${battle.id}</td>
+                                    <td>${battle.enemyType}</td>
+                                    <td>${battle.result}</td>
+                                    <td>${battle.status}</td>
+                                </tr>`;
+                            });
+                            historyHtml += '</tbody></table></div>';
+                            historyDiv.innerHTML = historyHtml;
+                        } else {
+                            historyDiv.innerHTML = '<p class="text-muted">尚無戰鬥記錄</p>';
+                        }
+                    } else {
+                        showResult(`載入戰鬥記錄失敗：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    showResult(`錯誤：${error.message}`);
+                });
+        }
+
+        function clearTestBattles() {
+            const playerId = document.getElementById('battlePlayerId').value;
+            if (!playerId) {
+                showResult('請先輸入玩家ID！');
+                return;
+            }
+            
+            if (confirm('確定要清理所有測試戰鬥記錄嗎？此操作不可恢復！')) {
+                showLoading();
+                fetch(`/api/battle/clearTest/${playerId}?isTest=true`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        showResult(`已清理所有測試戰鬥記錄！\n結果：${data.message}`);
+                        loadBattleHistory();
+                    } else {
+                        showResult(`清理測試戰鬥記錄失敗：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`錯誤：${error.message}`);
+                });
+            }
+        }
+
+        function loadEnemyTypes() {
+            showLoading();
+            fetch('/api/battle/enemies')
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        const enemyTypeSelect = document.getElementById('enemyType');
+                        enemyTypeSelect.innerHTML = '<option value="">選擇敵人類型...</option>';
+                        
+                        if (data.data) {
+                            Object.keys(data.data).forEach(enemyType => {
+                                const enemy = data.data[enemyType];
+                                enemyTypeSelect.innerHTML += `<option value="${enemyType}">${enemy.name} (${enemy.difficulty})</option>`;
+                            });
+                        }
+                        showResult(`已載入 ${Object.keys(data.data || {}).length} 種敵人類型`);
+                    } else {
+                        showResult(`載入敵人類型失敗：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`錯誤：${error.message}`);
+                });
+        }
+
+        function loadBattleStats() {
+            const playerId = document.getElementById('battlePlayerId').value;
+            if (!playerId) {
+                showResult('請先輸入玩家ID！');
+                return;
+            }
+            
+            showLoading();
+            fetch(`/api/battle/stats/${playerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        const statsDiv = document.getElementById('battleStats');
+                        if (data.data) {
+                            const stats = data.data;
+                            let statsHtml = '<div class="row">';
+                            statsHtml += `<div class="col-md-3"><div class="text-center"><h4>${stats.totalBattles || 0}</h4><small>總戰鬥次數</small></div></div>`;
+                            statsHtml += `<div class="col-md-3"><div class="text-center"><h4 class="text-success">${stats.victories || 0}</h4><small>勝利次數</small></div></div>`;
+                            statsHtml += `<div class="col-md-3"><div class="text-center"><h4 class="text-danger">${stats.defeats || 0}</h4><small>失敗次數</small></div></div>`;
+                            statsHtml += `<div class="col-md-3"><div class="text-center"><h4 class="text-warning">${stats.draws || 0}</h4><small>平手次數</small></div></div>`;
+                            statsHtml += '</div>';
+                            
+                            if (stats.winRate !== undefined) {
+                                statsHtml += `<div class="mt-3"><div class="text-center"><h5>勝率: ${(stats.winRate * 100).toFixed(1)}%</h5></div></div>`;
+                            }
+                            
+                            statsDiv.innerHTML = statsHtml;
+                        } else {
+                            statsDiv.innerHTML = '<p class="text-muted">尚無戰鬥統計資料</p>';
+                        }
+                    } else {
+                        showResult(`載入戰鬥統計失敗：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`錯誤：${error.message}`);
+                });
         }
 
         // 市場相關功能

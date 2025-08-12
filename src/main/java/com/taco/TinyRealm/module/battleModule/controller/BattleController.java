@@ -27,28 +27,33 @@ public class BattleController {
      * 開始戰鬥
      * POST /api/battle/start
      * 
-     * @param playerId 玩家ID
-     * @param unitIds 參戰單位ID列表（逗號分隔）
-     * @param enemyType 敵人類型
-     * @param locationX 戰鬥位置X座標
-     * @param locationY 戰鬥位置Y座標
-     * @param isTest 是否為測試模式（可選，預設false）
+     * @param body 請求體，包含戰鬥參數
      * @return 戰鬥結果
      */
-    /*@PostMapping("/start")
-    public ResponseEntity<Map<String, Object>> startBattle(
-            @RequestParam String playerId,
-            @RequestParam String unitIds,
-            @RequestParam String enemyType,
-            @RequestParam(defaultValue = "0") int locationX,
-            @RequestParam(defaultValue = "0") int locationY,
-            @RequestParam(defaultValue = "false") boolean isTest) {
+    @PostMapping("/start")
+    public ResponseEntity<Map<String, Object>> startBattle(@RequestBody Map<String, Object> body) {
         
         try {
-            // 解析單位ID列表
-            List<String> unitIdList = List.of(unitIds.split(","));
+            String playerId = (String) body.get("playerId");
+            @SuppressWarnings("unchecked")
+            List<String> soldierIds = (List<String>) body.get("soldierIds");
+            String enemyType = (String) body.get("enemyType");
+            Integer locationX = (Integer) body.getOrDefault("locationX", 0);
+            Integer locationY = (Integer) body.getOrDefault("locationY", 0);
+            Boolean isTest = (Boolean) body.getOrDefault("isTest", false);
             
-            Battle battle = battleService.startBattle(playerId, unitIdList, enemyType, 
+            // 驗證必要參數
+            if (playerId == null || playerId.trim().isEmpty()) {
+                throw new IllegalArgumentException("Player ID is required");
+            }
+            if (soldierIds == null || soldierIds.isEmpty()) {
+                throw new IllegalArgumentException("Soldier IDs are required");
+            }
+            if (enemyType == null || enemyType.trim().isEmpty()) {
+                throw new IllegalArgumentException("Enemy type is required");
+            }
+            
+            Battle battle = battleService.startBattle(playerId, soldierIds, enemyType, 
                                                     locationX, locationY, isTest);
             
             Map<String, Object> response = new HashMap<>();
@@ -71,7 +76,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }*/
+    }
 
     /**
      * 獲取玩家戰鬥記錄

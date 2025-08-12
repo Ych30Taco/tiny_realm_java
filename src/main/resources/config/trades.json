@@ -1,0 +1,67 @@
+[
+  {
+    "id": "trade_1",
+    "sellerId": "player1",
+    "buyerId": "player2",
+    "itemType": "sword",
+    "quantity": 1,
+    "price": 100,
+    "currency": "gold",
+    "status": "COMPLETED",
+    "createdTime": 1640995200000,
+    "completedTime": 1640995800000,
+    "description": "鐵劍交易"
+  },
+  {
+    "id": "trade_2",
+    "sellerId": "player2",
+    "buyerId": "player3",
+    "itemType": "health_potion",
+    "quantity": 3,
+    "price": 45,
+    "currency": "gold",
+    "status": "COMPLETED",
+    "createdTime": 1640995200000,
+    "completedTime": 1640996000000,
+    "description": "生命藥水交易"
+  },
+  {
+    "id": "trade_3",
+    "sellerId": "player3",
+    "buyerId": "player1",
+    "itemType": "iron_ore",
+    "quantity": 5,
+    "price": 25,
+    "currency": "gold",
+    "status": "PENDING",
+    "createdTime": 1640995200000,
+    "completedTime": null,
+    "description": "鐵礦石交易"
+  },
+  {
+    "id": "trade_4",
+    "sellerId": "player1",
+    "buyerId": "player2",
+    "itemType": "shield",
+    "quantity": 1,
+    "price": 80,
+    "currency": "gold",
+    "status": "CANCELLED",
+    "createdTime": 1640995200000,
+    "completedTime": null,
+    "description": "木盾交易"
+  },
+  {
+    "id": "trade_5",
+    "sellerId": "player2",
+    "buyerId": "player3",
+    "itemType": "wood",
+    "quantity": 50,
+    "price": 15,
+    "currency": "gold",
+    "status": "COMPLETED",
+    "createdTime": 1640995200000,
+    "completedTime": 1640996400000,
+    "description": "木材交易"
+  }
+]

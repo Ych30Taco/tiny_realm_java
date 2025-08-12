@@ -1,18 +1,174 @@
 [
   {
-    "type": "basic_military",
-    "name": "Basic Military",
-    "description": "Unlocks basic military units",
-    "cost": { "gold": 50, "wood": 20 },
-    "prerequisites": [],
-    "researchTime": 120
+    "id": "basic_farming",
+    "name": "基礎農業",
+    "description": "學習基本的農業技術，提高食物產量",
+    "category": "agriculture",
+    "level": 1,
+    "maxLevel": 5,
+    "researchTime": 300,
+    "cost": {
+      "gold": 100,
+      "food": 50,
+      "wood": 30
+    },
+    "requirements": {},
+    "effects": {
+      "food_production": 0.1
+    },
+    "icon": "/images/technologies/basic_farming.png"
   },
   {
-    "type": "archery",
-    "name": "Archery",
-    "description": "Unlocks archer units",
-    "cost": { "gold": 100, "wood": 50 },
-    "prerequisites": ["basic_military"],
-    "researchTime": 240
+    "id": "advanced_farming",
+    "name": "進階農業",
+    "description": "學習進階農業技術，大幅提高食物產量",
+    "category": "agriculture",
+    "level": 2,
+    "maxLevel": 5,
+    "researchTime": 600,
+    "cost": {
+      "gold": 200,
+      "food": 100,
+      "wood": 60
+    },
+    "requirements": {
+      "basic_farming": 3
+    },
+    "effects": {
+      "food_production": 0.2
+    },
+    "icon": "/images/technologies/advanced_farming.png"
+  },
+  {
+    "id": "basic_mining",
+    "name": "基礎採礦",
+    "description": "學習基本的採礦技術，提高礦產產量",
+    "category": "mining",
+    "level": 1,
+    "maxLevel": 5,
+    "researchTime": 360,
+    "cost": {
+      "gold": 120,
+      "food": 40,
+      "wood": 50,
+      "stone": 20
+    },
+    "requirements": {},
+    "effects": {
+      "stone_production": 0.1,
+      "iron_production": 0.1
+    },
+    "icon": "/images/technologies/basic_mining.png"
+  },
+  {
+    "id": "advanced_mining",
+    "name": "進階採礦",
+    "description": "學習進階採礦技術，大幅提高礦產產量",
+    "category": "mining",
+    "level": 2,
+    "maxLevel": 5,
+    "researchTime": 720,
+    "cost": {
+      "gold": 250,
+      "food": 80,
+      "wood": 100,
+      "stone": 40
+    },
+    "requirements": {
+      "basic_mining": 3
+    },
+    "effects": {
+      "stone_production": 0.2,
+      "iron_production": 0.2
+    },
+    "icon": "/images/technologies/advanced_mining.png"
+  },
+  {
+    "id": "basic_combat",
+    "name": "基礎戰鬥",
+    "description": "學習基本的戰鬥技巧，提高部隊戰鬥力",
+    "category": "military",
+    "level": 1,
+    "maxLevel": 5,
+    "researchTime": 480,
+    "cost": {
+      "gold": 150,
+      "food": 60,
+      "wood": 40,
+      "iron": 30
+    },
+    "requirements": {},
+    "effects": {
+      "unit_attack": 0.1,
+      "unit_defense": 0.1
+    },
+    "icon": "/images/technologies/basic_combat.png"
+  },
+  {
+    "id": "advanced_combat",
+    "name": "進階戰鬥",
+    "description": "學習進階戰鬥技巧，大幅提高部隊戰鬥力",
+    "category": "military",
+    "level": 2,
+    "maxLevel": 5,
+    "researchTime": 900,
+    "cost": {
+      "gold": 300,
+      "food": 120,
+      "wood": 80,
+      "iron": 60
+    },
+    "requirements": {
+      "basic_combat": 3
+    },
+    "effects": {
+      "unit_attack": 0.2,
+      "unit_defense": 0.2
+    },
+    "icon": "/images/technologies/advanced_combat.png"
+  },
+  {
+    "id": "basic_construction",
+    "name": "基礎建築",
+    "description": "學習基本的建築技術，提高建築效率",
+    "category": "construction",
+    "level": 1,
+    "maxLevel": 5,
+    "researchTime": 420,
+    "cost": {
+      "gold": 100,
+      "food": 30,
+      "wood": 80,
+      "stone": 40
+    },
+    "requirements": {},
+    "effects": {
+      "build_speed": 0.1,
+      "building_durability": 0.1
+    },
+    "icon": "/images/technologies/basic_construction.png"
+  },
+  {
+    "id": "advanced_construction",
+    "name": "進階建築",
+    "description": "學習進階建築技術，大幅提高建築效率",
+    "category": "construction",
+    "level": 2,
+    "maxLevel": 5,
+    "researchTime": 840,
+    "cost": {
+      "gold": 200,
+      "food": 60,
+      "wood": 160,
+      "stone": 80
+    },
+    "requirements": {
+      "basic_construction": 3
+    },
+    "effects": {
+      "build_speed": 0.2,
+      "building_durability": 0.2
+    },
+    "icon": "/images/technologies/advanced_construction.png"
   }
 ]

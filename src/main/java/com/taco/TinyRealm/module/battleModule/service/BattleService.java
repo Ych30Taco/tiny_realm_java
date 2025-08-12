@@ -6,12 +6,11 @@ import com.taco.TinyRealm.module.battleModule.model.Battle;
 import com.taco.TinyRealm.module.battleModule.model.EnemyType;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
-//import com.taco.TinyRealm.module.soldierModule.model.Unit;
+import com.taco.TinyRealm.module.soldierModule.model.PlayerSoldier;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
 import com.taco.TinyRealm.module.terrainMapModule.service.TerrainMapService;
 import com.taco.TinyRealm.service.EventService;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,12 +59,29 @@ public class BattleService {
      */
     @PostConstruct
     public void init() {
+        System.out.println("---- 應用程式啟動中，載入戰鬥模組 ----");
         try {
-            //loadEnemyTypes(enemiesPath);
-            System.out.println("BattleService initialized with " + enemyTypes.size() + " enemy types");
+            loadEnemyTypes(enemiesPath);
+            String enemyNames = getEnemyNames();
+            System.out.println("---- 應用程式啟動中，已載入" + enemyNames + " ----");
         } catch (Exception e) {
-            System.err.println("Failed to initialize BattleService: " + e.getMessage());
+            System.out.println("---- 應用程式啟動中，載入戰鬥模組失敗 ----");
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load enemies.json: " + e.getMessage(), e);
         }
+        System.out.println("---- 應用程式啟動中，載入戰鬥模組完成 ----");
+    }
+
+    /**
+     * 獲取敵人名稱列表
+     */
+    public String getEnemyNames() {
+        String names = "";
+        for (EnemyType type : enemyTypes.values()) {
+            names += type.getName() + ", ";
+        }
+        names += "共" + enemyTypes.size() + "種敵人";
+        return names.length() > 0 ? names : "";
     }
 
     /**
@@ -98,7 +114,7 @@ public class BattleService {
     /**
      * 開始戰鬥
      * @param playerId 玩家ID
-     * @param unitIds 參戰單位ID列表
+     * @param soldierIds 參戰士兵ID列表
      * @param enemyType 敵人類型
      * @param locationX 戰鬥位置X座標
      * @param locationY 戰鬥位置Y座標
@@ -106,21 +122,21 @@ public class BattleService {
      * @return 戰鬥結果
      * @throws IOException 操作失敗時拋出異常
      */
-    /*public Battle startBattle(String playerId, List<String> unitIds, String enemyType, 
+    public Battle startBattle(String playerId, List<String> soldierIds, String enemyType, 
                              int locationX, int locationY, boolean isTest) throws IOException {
         // 驗證參數
         if (playerId == null || playerId.trim().isEmpty()) {
             throw new IllegalArgumentException("Player ID cannot be null or empty");
         }
-        if (unitIds == null || unitIds.isEmpty()) {
-            throw new IllegalArgumentException("Unit IDs cannot be null or empty");
+        if (soldierIds == null || soldierIds.isEmpty()) {
+            throw new IllegalArgumentException("Soldier IDs cannot be null or empty");
         }
         if (enemyType == null || enemyType.trim().isEmpty()) {
             throw new IllegalArgumentException("Enemy type cannot be null or empty");
         }
 
         // 載入遊戲狀態
-        GameState gameState = storageService.loadGameState(playerId, isTest);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) {
             throw new IllegalArgumentException("Player not found: " + playerId);
         }
@@ -132,103 +148,97 @@ public class BattleService {
         }
 
         // 驗證玩家等級
-        if (!enemyConfig.isPlayerLevelSufficient(gameState.getPlayer().getLevel())) {
+        if (gameState.getPlayer() != null && !enemyConfig.isPlayerLevelSufficient(gameState.getPlayer().getLevel())) {
             throw new IllegalArgumentException("Player level too low for this enemy type");
         }
 
-        // 獲取玩家單位
-        List<Unit> playerUnits = getPlayerUnits(gameState, unitIds);
-        if (playerUnits.isEmpty()) {
-            throw new IllegalArgumentException("No valid units found for battle");
+        // 獲取玩家士兵
+        List<PlayerSoldier> playerSoldiers = getPlayerSoldiers(gameState, soldierIds);
+        if (playerSoldiers.isEmpty()) {
+            throw new IllegalArgumentException("No valid soldiers found for battle");
         }
 
         // 創建敵方單位
-        List<Unit> enemyUnits = createEnemyUnits(enemyConfig);
+        List<PlayerSoldier> enemySoldiers = createEnemySoldiers(enemyConfig);
 
         // 執行戰鬥邏輯
-        Battle battle = executeBattle(playerId, playerUnits, enemyUnits, enemyConfig, 
+        Battle battle = executeBattle(playerId, playerSoldiers, enemySoldiers, enemyConfig, 
                                     locationX, locationY, isTest);
 
         // 更新遊戲狀態
-        updateGameStateAfterBattle(gameState, playerUnits, battle, isTest);
+        updateGameStateAfterBattle(gameState, playerSoldiers, battle, isTest);
 
         // 發放獎勵
         if (battle.isVictory()) {
             distributeRewards(playerId, battle.getRewards(), isTest);
-            updateTaskProgress(playerId, enemyType, gameState, isTest);
         }
 
         // 記錄事件
         recordBattleEvent(playerId, battle, isTest);
 
         return battle;
-    }*/
+    }
 
     /**
-     * 獲取玩家單位
+     * 獲取玩家士兵
      * @param gameState 遊戲狀態
-     * @param unitIds 單位ID列表
-     * @return 玩家單位列表
+     * @param soldierIds 士兵ID列表
+     * @return 玩家士兵列表
      */
-    /*private List<Unit> getPlayerUnits(GameState gameState, List<String> unitIds) {
-        List<Unit> playerUnits = new ArrayList<>();
-        for (String unitId : unitIds) {
-            Unit unit = gameState.getUnits().stream()
-                    .filter(u -> u.getId().equals(unitId) && u.isAlive())
-                    .findFirst()
-                    .orElse(null);
-            if (unit != null) {
-                playerUnits.add(unit);
+    private List<PlayerSoldier> getPlayerSoldiers(GameState gameState, List<String> soldierIds) {
+        List<PlayerSoldier> playerSoldiers = new ArrayList<>();
+        for (String soldierId : soldierIds) {
+            PlayerSoldier soldier = gameState.getSoldiers().get(soldierId);
+            if (soldier != null && "ACTIVE".equals(soldier.getStatus())) {
+                playerSoldiers.add(soldier);
             }
         }
-        return playerUnits;
-    }*/
+        return playerSoldiers;
+    }
 
     /**
-     * 創建敵方單位
+     * 創建敵方士兵
      * @param enemyConfig 敵方配置
-     * @return 敵方單位列表
+     * @return 敵方士兵列表
      */
-    /* 
-    private List<Unit> createEnemyUnits(EnemyType enemyConfig) {
-        List<Unit> enemyUnits = new ArrayList<>();
+    private List<PlayerSoldier> createEnemySoldiers(EnemyType enemyConfig) {
+        List<PlayerSoldier> enemySoldiers = new ArrayList<>();
         for (var unitConfig : enemyConfig.getUnits()) {
-            Unit enemyUnit = new Unit();
-            enemyUnit.setId(UUID.randomUUID().toString());
-            enemyUnit.setType(unitConfig.getType());
-            enemyUnit.setName(enemyConfig.getName() + " " + unitConfig.getType());
-            enemyUnit.setLevel(unitConfig.getLevel());
-            enemyUnit.setAttack(unitConfig.getAttack());
-            enemyUnit.setDefense(unitConfig.getDefense());
-            enemyUnit.setHealth(unitConfig.getHealth());
-            enemyUnit.setMaxHealth(unitConfig.getHealth());
-            enemyUnit.setStatus("ACTIVE");
-            enemyUnit.setCreatedTime(System.currentTimeMillis());
-            enemyUnit.setLastUpdatedTime(System.currentTimeMillis());
-            enemyUnits.add(enemyUnit);
+            PlayerSoldier enemySoldier = new PlayerSoldier();
+            enemySoldier.setId(UUID.randomUUID().toString());
+            enemySoldier.setType(unitConfig.getType());
+            enemySoldier.setName(enemyConfig.getName() + " " + unitConfig.getType());
+            enemySoldier.setLevel(unitConfig.getLevel());
+            enemySoldier.setAttack(unitConfig.getAttack());
+            enemySoldier.setDefense(unitConfig.getDefense());
+            enemySoldier.setHealth(unitConfig.getHealth());
+            enemySoldier.setMaxHealth(unitConfig.getHealth());
+            enemySoldier.setStatus("ACTIVE");
+            enemySoldier.setCount(unitConfig.getCount());
+            enemySoldier.setCreatedTime(System.currentTimeMillis());
+            enemySoldier.setLastUpdatedTime(System.currentTimeMillis());
+            enemySoldiers.add(enemySoldier);
         }
-        return enemyUnits;
-    }*/
+        return enemySoldiers;
+    }
 
     /**
      * 執行戰鬥邏輯
      * @param playerId 玩家ID
-     * @param playerUnits 玩家單位
-     * @param enemyUnits 敵方單位
+     * @param playerSoldiers 玩家士兵
+     * @param enemySoldiers 敵方士兵
      * @param enemyConfig 敵方配置
      * @param locationX 戰鬥位置X
      * @param locationY 戰鬥位置Y
      * @param isTest 是否測試模式
      * @return 戰鬥結果
      */
-   /* private Battle executeBattle(String playerId, List<Unit> playerUnits, List<Unit> enemyUnits,
+    private Battle executeBattle(String playerId, List<PlayerSoldier> playerSoldiers, List<PlayerSoldier> enemySoldiers,
                                 EnemyType enemyConfig, int locationX, int locationY, boolean isTest) {
         Battle battle = new Battle();
         battle.setId(UUID.randomUUID().toString());
         battle.setPlayerId(playerId);
         battle.setEnemyType(enemyConfig.getType());
-        battle.setPlayerUnits(new ArrayList<>(playerUnits));
-        battle.setEnemyUnits(new ArrayList<>(enemyUnits));
         battle.setLocationX(locationX);
         battle.setLocationY(locationY);
         battle.setDifficulty(enemyConfig.getDifficulty());
@@ -237,8 +247,8 @@ public class BattleService {
         battle.setStatus("IN_PROGRESS");
 
         // 計算戰鬥結果
-        int playerStrength = calculateTotalStrength(playerUnits);
-        int enemyStrength = calculateTotalStrength(enemyUnits);
+        int playerStrength = calculateTotalStrength(playerSoldiers);
+        int enemyStrength = calculateTotalStrength(enemySoldiers);
         
         // 添加隨機因素
         double playerRandomFactor = 0.8 + ThreadLocalRandom.current().nextDouble() * 0.4; // 0.8-1.2
@@ -260,8 +270,8 @@ public class BattleService {
         battle.setResult(result);
         battle.setStatus("COMPLETED");
 
-        // 計算單位損失
-        calculateUnitLosses(playerUnits, enemyUnits, result);
+        // 計算士兵損失
+        calculateSoldierLosses(playerSoldiers, enemySoldiers, result);
 
         // 設定獎勵
         if ("WIN".equals(result)) {
@@ -279,65 +289,63 @@ public class BattleService {
         battle.addStatistic("finalEnemyStrength", finalEnemyStrength);
 
         return battle;
-    }*/
+    }
 
     /**
      * 計算總戰力
-     * @param units 單位列表
+     * @param soldiers 士兵列表
      * @return 總戰力
      */
-    /*private int calculateTotalStrength(List<Unit> units) {
-        return units.stream()
-                .mapToInt(unit -> unit.getAttack() * unit.getLevel() * unit.getHealth() / unit.getMaxHealth())
+    private int calculateTotalStrength(List<PlayerSoldier> soldiers) {
+        return soldiers.stream()
+                .mapToInt(soldier -> soldier.getAttack() * soldier.getLevel() * soldier.getHealth() / soldier.getMaxHealth())
                 .sum();
-    }*/
+    }
 
     /**
-     * 計算單位損失
-     * @param playerUnits 玩家單位
-     * @param enemyUnits 敵方單位
+     * 計算士兵損失
+     * @param playerSoldiers 玩家士兵
+     * @param enemySoldiers 敵方士兵
      * @param result 戰鬥結果
      */
-    /*private void calculateUnitLosses(List<Unit> playerUnits, List<Unit> enemyUnits, String result) {
+    private void calculateSoldierLosses(List<PlayerSoldier> playerSoldiers, List<PlayerSoldier> enemySoldiers, String result) {
         if ("WIN".equals(result)) {
-            // 玩家勝利，單位損失較少
-            for (Unit unit : playerUnits) {
+            // 玩家勝利，士兵損失較少
+            for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(10, 30); // 10-30% 傷害
-                unit.takeDamage(damage);
+                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
             }
         } else if ("LOSE".equals(result)) {
-            // 玩家失敗，單位損失較大
-            for (Unit unit : playerUnits) {
+            // 玩家失敗，士兵損失較大
+            for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(40, 70); // 40-70% 傷害
-                unit.takeDamage(damage);
+                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
             }
         } else {
             // 平手，中等損失
-            for (Unit unit : playerUnits) {
+            for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(20, 40); // 20-40% 傷害
-                unit.takeDamage(damage);
+                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
             }
         }
-    }*/
+    }
 
     /**
      * 更新戰鬥後的遊戲狀態
      * @param gameState 遊戲狀態
-     * @param playerUnits 玩家單位
+     * @param playerSoldiers 玩家士兵
      * @param battle 戰鬥結果
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    /*private void updateGameStateAfterBattle(GameState gameState, List<Unit> playerUnits, 
+    private void updateGameStateAfterBattle(GameState gameState, List<PlayerSoldier> playerSoldiers, 
                                           Battle battle, boolean isTest) throws IOException {
-        // 移除已死亡的單位並釋放地形
-        Iterator<Unit> iterator = gameState.getUnits().iterator();
-        while (iterator.hasNext()) {
-            Unit unit = iterator.next();
-            if (!unit.isAlive()) {
-                //terrainMapService.releasePosition(battle.getPlayerId(), unit.getX(), unit.getY());
-                iterator.remove();
+        // 更新士兵狀態
+        for (PlayerSoldier soldier : playerSoldiers) {
+            if (soldier.getHealth() <= 0) {
+                soldier.setStatus("INJURED");
             }
+            soldier.setLastUpdatedTime(System.currentTimeMillis());
         }
 
         // 添加戰鬥記錄
@@ -347,8 +355,8 @@ public class BattleService {
         gameState.getBattles().add(battle);
 
         // 保存遊戲狀態
-        storageService.saveGameState(battle.getPlayerId(), gameState, isTest);
-    }*/
+        storageService.saveGameState(battle.getPlayerId(), gameState, "戰鬥完成", isTest);
+    }
 
     /**
      * 發放獎勵
@@ -357,34 +365,21 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    /*private void distributeRewards(String playerId, Resource rewards, boolean isTest) throws IOException {
+    private void distributeRewards(String playerId, Resource rewards, boolean isTest) throws IOException {
         if (rewards != null) {
-            resourceService.addResources(playerId, rewards.getGold(), rewards.getWood(), 
-                                       rewards.getStone(), rewards.getIron(), rewards.getFood(), isTest);
+            // 創建資源映射
+            Map<String, Integer> resourceMap = new HashMap<>();
+            // 這裡需要根據實際的Resource模型來映射資源
+            // 暫時使用預設值，實際實現時需要根據Resource模型的具體結構來調整
+            resourceMap.put("gold", 100);
+            resourceMap.put("food", 50);
+            resourceMap.put("wood", 30);
+            resourceMap.put("stone", 20);
+            resourceMap.put("iron", 10);
+            
+            resourceService.addResources(playerId, resourceMap, isTest);
         }
-    }*/
-
-    /**
-     * 更新任務進度
-     * @param playerId 玩家ID
-     * @param enemyType 敵人類型
-     * @param gameState 遊戲狀態
-     * @param isTest 是否測試模式
-     */
-    /*
-    private void updateTaskProgress(String playerId, String enemyType, GameState gameState, boolean isTest) {
-        if (gameState.getTasks() != null) {
-            gameState.getTasks().stream()
-                .filter(task -> task.getType().equals("defeat_" + enemyType) && "ACTIVE".equals(task.getStatus()))
-                .forEach(task -> {
-                    try {
-                        taskService.updateTaskProgress(playerId, task.getId(), 1, isTest);
-                    } catch (IOException e) {
-                        // 忽略任務更新失敗
-                    }
-                });
-        }
-    }*/
+    }
 
     /**
      * 記錄戰鬥事件
@@ -414,7 +409,7 @@ public class BattleService {
             throw new IllegalArgumentException("Player ID cannot be null or empty");
         }
 
-        GameState gameState = storageService.loadGameState(playerId, isTest);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState == null) {
             throw new IllegalArgumentException("Player not found: " + playerId);
         }
@@ -490,10 +485,12 @@ public class BattleService {
             throw new IllegalArgumentException("Can only clear test battles");
         }
         
-        GameState gameState = storageService.loadGameState(playerId, isTest);
+        GameState gameState = storageService.getGameStateListById(playerId);
         if (gameState != null) {
             gameState.setBattles(new ArrayList<>());
-            storageService.saveGameState(playerId, gameState,"清理測試數據", isTest);
+            storageService.saveGameState(playerId, gameState, "清理測試數據", isTest);
         }
     }
 }
+
+

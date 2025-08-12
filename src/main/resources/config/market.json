@@ -1,8 +1,62 @@
-{
-  "maxListings": 100,
-  "tradeFee": 0.1,
-  "allowedResources": ["gold", "wood"],
-  "allowedItems": ["sword", "shield"],
-  "minPrice": { "gold": 10, "wood": 5 },
-  "description": "Market for trading resources and items"
-}
+[
+  {
+    "id": "listing_1",
+    "sellerId": "player1",
+    "itemType": "sword",
+    "quantity": 1,
+    "price": 100,
+    "currency": "gold",
+    "status": "ACTIVE",
+    "createdTime": 1640995200000,
+    "expiryTime": 1641081600000,
+    "description": "鋒利的鐵劍，適合新手戰士"
+  },
+  {
+    "id": "listing_2",
+    "sellerId": "player2",
+    "itemType": "health_potion",
+    "quantity": 5,
+    "price": 50,
+    "currency": "gold",
+    "status": "ACTIVE",
+    "createdTime": 1640995200000,
+    "expiryTime": 1641081600000,
+    "description": "生命藥水，恢復50點生命值"
+  },
+  {
+    "id": "listing_3",
+    "sellerId": "player3",
+    "itemType": "iron_ore",
+    "quantity": 10,
+    "price": 20,
+    "currency": "gold",
+    "status": "ACTIVE",
+    "createdTime": 1640995200000,
+    "expiryTime": 1641081600000,
+    "description": "高品質鐵礦石，用於冶煉"
+  },
+  {
+    "id": "listing_4",
+    "sellerId": "player1",
+    "itemType": "shield",
+    "quantity": 1,
+    "price": 80,
+    "currency": "gold",
+    "status": "ACTIVE",
+    "createdTime": 1640995200000,
+    "expiryTime": 1641081600000,
+    "description": "堅固的木盾，提供良好防禦"
+  },
+  {
+    "id": "listing_5",
+    "sellerId": "player2",
+    "itemType": "wood",
+    "quantity": 100,
+    "price": 30,
+    "currency": "gold",
+    "status": "ACTIVE",
+    "createdTime": 1640995200000,
+    "expiryTime": 1641081600000,
+    "description": "優質木材，適合建造"
+  }
+]

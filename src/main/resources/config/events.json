@@ -1,16 +1,212 @@
 [
   {
-    "type": "building_completed",
-    "name": "Building Completed",
-    "template": "Player {playerId} completed {buildingName}",
-    "category": "building",
-    "priority": "normal"
+    "id": "player_created",
+    "name": "玩家創建",
+    "description": "新玩家加入遊戲",
+    "type": "system",
+    "category": "player",
+    "severity": "info",
+    "icon": "/images/events/player_created.png",
+    "color": "#28a745"
   },
   {
-    "type": "task_completed",
-    "name": "Task Completed",
-    "template": "Player {playerId} completed task {taskName}",
+    "id": "player_login",
+    "name": "玩家登入",
+    "description": "玩家登入遊戲",
+    "type": "system",
+    "category": "player",
+    "severity": "info",
+    "icon": "/images/events/player_login.png",
+    "color": "#17a2b8"
+  },
+  {
+    "id": "player_logout",
+    "name": "玩家登出",
+    "description": "玩家登出遊戲",
+    "type": "system",
+    "category": "player",
+    "severity": "info",
+    "icon": "/images/events/player_logout.png",
+    "color": "#6c757d"
+  },
+  {
+    "id": "building_constructed",
+    "name": "建築建造",
+    "description": "新建築建造完成",
+    "type": "construction",
+    "category": "building",
+    "severity": "success",
+    "icon": "/images/events/building_constructed.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "building_upgraded",
+    "name": "建築升級",
+    "description": "建築升級完成",
+    "type": "construction",
+    "category": "building",
+    "severity": "success",
+    "icon": "/images/events/building_upgraded.png",
+    "color": "#ffc107"
+  },
+  {
+    "id": "resource_produced",
+    "name": "資源生產",
+    "description": "資源生產完成",
+    "type": "production",
+    "category": "resource",
+    "severity": "info",
+    "icon": "/images/events/resource_produced.png",
+    "color": "#17a2b8"
+  },
+  {
+    "id": "resource_depleted",
+    "name": "資源耗盡",
+    "description": "資源庫存不足",
+    "type": "production",
+    "category": "resource",
+    "severity": "warning",
+    "icon": "/images/events/resource_depleted.png",
+    "color": "#fd7e14"
+  },
+  {
+    "id": "battle_started",
+    "name": "戰鬥開始",
+    "description": "戰鬥開始",
+    "type": "combat",
+    "category": "battle",
+    "severity": "warning",
+    "icon": "/images/events/battle_started.png",
+    "color": "#dc3545"
+  },
+  {
+    "id": "battle_victory",
+    "name": "戰鬥勝利",
+    "description": "戰鬥獲得勝利",
+    "type": "combat",
+    "category": "battle",
+    "severity": "success",
+    "icon": "/images/events/battle_victory.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "battle_defeat",
+    "name": "戰鬥失敗",
+    "description": "戰鬥失敗",
+    "type": "combat",
+    "category": "battle",
+    "severity": "danger",
+    "icon": "/images/events/battle_defeat.png",
+    "color": "#dc3545"
+  },
+  {
+    "id": "item_acquired",
+    "name": "物品獲得",
+    "description": "獲得新物品",
+    "type": "inventory",
+    "category": "item",
+    "severity": "success",
+    "icon": "/images/events/item_acquired.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "item_used",
+    "name": "物品使用",
+    "description": "使用物品",
+    "type": "inventory",
+    "category": "item",
+    "severity": "info",
+    "icon": "/images/events/item_used.png",
+    "color": "#17a2b8"
+  },
+  {
+    "id": "item_broken",
+    "name": "物品損壞",
+    "description": "物品耐久度耗盡",
+    "type": "inventory",
+    "category": "item",
+    "severity": "warning",
+    "icon": "/images/events/item_broken.png",
+    "color": "#fd7e14"
+  },
+  {
+    "id": "technology_researched",
+    "name": "科技研發",
+    "description": "新科技研發完成",
+    "type": "research",
+    "category": "technology",
+    "severity": "success",
+    "icon": "/images/events/technology_researched.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "research_failed",
+    "name": "研發失敗",
+    "description": "科技研發失敗",
+    "type": "research",
+    "category": "technology",
+    "severity": "danger",
+    "icon": "/images/events/research_failed.png",
+    "color": "#dc3545"
+  },
+  {
+    "id": "task_completed",
+    "name": "任務完成",
+    "description": "完成任務獲得獎勵",
+    "type": "quest",
     "category": "task",
-    "priority": "high"
+    "severity": "success",
+    "icon": "/images/events/task_completed.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "task_failed",
+    "name": "任務失敗",
+    "description": "任務失敗",
+    "type": "quest",
+    "category": "task",
+    "severity": "danger",
+    "icon": "/images/events/task_failed.png",
+    "color": "#dc3545"
+  },
+  {
+    "id": "trade_completed",
+    "name": "交易完成",
+    "description": "市場交易完成",
+    "type": "commerce",
+    "category": "trade",
+    "severity": "success",
+    "icon": "/images/events/trade_completed.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "trade_failed",
+    "name": "交易失敗",
+    "description": "市場交易失敗",
+    "type": "commerce",
+    "category": "trade",
+    "severity": "danger",
+    "icon": "/images/events/trade_failed.png",
+    "color": "#dc3545"
+  },
+  {
+    "id": "alliance_formed",
+    "name": "聯盟成立",
+    "description": "新聯盟成立",
+    "type": "social",
+    "category": "alliance",
+    "severity": "success",
+    "icon": "/images/events/alliance_formed.png",
+    "color": "#28a745"
+  },
+  {
+    "id": "alliance_joined",
+    "name": "加入聯盟",
+    "description": "玩家加入聯盟",
+    "type": "social",
+    "category": "alliance",
+    "severity": "info",
+    "icon": "/images/events/alliance_joined.png",
+    "color": "#17a2b8"
   }
 ]

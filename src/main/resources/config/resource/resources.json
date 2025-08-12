@@ -1,134 +1,112 @@
 [
-    {
-      "id": "FOOD",
-      "name": {
-        "en": "Food",
-        "zh-TW": "糧食"
-      },
-      "resourceDescription": {
-        "en": "Essential for sustaining troops, city population, and various building upgrades.",
-        "zh-TW": "維持部隊、城市人口運作以及多數建築升級不可或缺的必需品。"
-      },
-      "resourceIconURL": "/assets/icons/resource_food.png",
-      "isPremium": false,
-      "stackable": true,
-      "category": "Basic",
-      "sortOrder": 1,
-      "baseProductionRate": 60,
-      "nowAmount": 10000,
-      "maxAmount": 5000000,
-      "protectedStoragePercentage": 0.3,
-      "protectedStorageMaxAmount": 10000000,
-      "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
+  {
+    "id": "gold",
+    "name": {
+      "zh-TW": "金幣",
+      "en-US": "Gold"
     },
-    {
-      "id": "WOOD",
-      "name": {
-        "en": "Wood",
-        "zh-TW": "木頭"
-      },
-      "resourceDescription": {
-        "en": "Primary material for most building constructions and early research.",
-        "zh-TW": "大多數建築建造與早期科技研發所需的主要材料。"
-      },
-      "resourceIconURL": "/assets/icons/resource_wood.png",
-      "isPremium": false,
-      "stackable": true,
-      "category": "Basic",
-      "sortOrder": 2,
-      "baseProductionRate": 60,
-      "nowAmount": 10000,
-      "maxAmount": 5000000,
-      "protectedStoragePercentage": 0.3,
-      "protectedStorageMaxAmount": 10000000,
-      "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
+    "description": {
+      "zh-TW": "通用貨幣，用於交易和建設",
+      "en-US": "Universal currency for trading and construction"
     },
-    {
-      "id": "STONE",
-      "name": {
-        "en": "Stone",
-        "zh-TW": "石頭"
-      },
-      "resourceDescription": {
-        "en": "Used for advanced building upgrades, defenses, and higher-tier constructions.",
-        "zh-TW": "用於進階建築升級、防禦設施與高階建造的重要材料。"
-      },
-      "resourceIconURL": "/assets/icons/resource_stone.png",
-      "isPremium": false,
-      "stackable": true,
-      "category": "Basic",
-      "sortOrder": 3,
-      "baseProductionRate": 60,
-      "nowAmount": 10000,
-      "maxAmount": 4000000,
-      "protectedStoragePercentage": 0.25,
-      "protectedStorageMaxAmount": 8000000,
-      "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
+    "resourceIconURL": "/images/resources/gold.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "currency",
+    "sortOrder": 1,
+    "nowAmount": 1000,
+    "maxAmount": 100000,
+    "protectedStoragePercentage": 0.1,
+    "protectedStorageMaxAmount": 10000,
+    "acquisitionMethods": ["mining", "trading", "quests", "battles"],
+    "baseProductionRate": 10
+  },
+  {
+    "id": "food",
+    "name": {
+      "zh-TW": "食物",
+      "en-US": "Food"
     },
-    {
-      "id": "IRON",
-      "name": {
-        "en": "Iron",
-        "zh-TW": "鐵礦"
-      },
-      "resourceDescription": {
-        "en": "Crucial for high-tier troop training, powerful equipment, and formidable defenses.",
-        "zh-TW": "高階部隊訓練、強力裝備製造與堅固防禦工事的關鍵材料。"
-      },
-      "resourceIconURL": "/assets/icons/resource_iron.png",
-      "isPremium": false,
-      "stackable": true,
-      "category": "Basic",
-      "sortOrder": 4,
-      "baseProductionRate": 60,
-      "nowAmount": 10000,
-      "maxAmount": 3000000,
-      "protectedStoragePercentage": 0.2,
-      "protectedStorageMaxAmount": 6000000,
-      "acquisitionMethods": ["ProductionBuilding", "GatheringNode", "QuestReward", "ShopPurchase", "EventReward", "Pillage"]
+    "description": {
+      "zh-TW": "維持人口和軍隊的基本需求",
+      "en-US": "Basic requirement for maintaining population and army"
     },
-    {
-      "id": "GOLD",
-      "name": {
-        "en": "Gold",
-        "zh-TW": "金幣"
-      },
-      "resourceDescription": {
-        "en": "A valuable currency used for various in-game transactions, speed-ups, and special items.",
-        "zh-TW": "用於遊戲內多種交易、加速建築/研究/訓練，以及購買特殊物品的寶貴貨幣。"
-      },
-      "resourceIconURL": "/assets/icons/resource_gold.png",
-      "isPremium": true,
-      "stackable": true,
-      "category": "Premium",
-      "sortOrder": 5,
-      "baseProductionRate": 1,
-      "nowAmount": 10000,
-      "maxAmount": 999999999,
-      "protectedStoragePercentage": 1.0, 
-      "protectedStorageMaxAmount": 999999999,
-      "acquisitionMethods": ["QuestReward", "ShopPurchase", "EventReward", "Taxation", "Pillage"]
+    "resourceIconURL": "/images/resources/food.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "consumable",
+    "sortOrder": 2,
+    "nowAmount": 500,
+    "maxAmount": 50000,
+    "protectedStoragePercentage": 0.2,
+    "protectedStorageMaxAmount": 10000,
+    "acquisitionMethods": ["farming", "hunting", "trading"],
+    "baseProductionRate": 50
+  },
+  {
+    "id": "wood",
+    "name": {
+      "zh-TW": "木材",
+      "en-US": "Wood"
     },
-    {
-      "id": "DIAMOND",
-      "name": {
-        "en": "Diamond",
-        "zh-TW": "鑽石"
-      },
-      "resourceDescription": {
-        "en": "The ultimate premium currency, primarily obtained through real-money purchases. Used for exclusive items, instant completions, and rare advantages.",
-        "zh-TW": "頂級付費貨幣，主要透過真實貨幣購買獲得。用於兌換專屬物品、立即完成任務和取得稀有優勢。"
-      },
-      "resourceIconURL": "/assets/icons/resource_diamond.png",
-      "isPremium": true,
-      "stackable": true,
-      "category": "Premium",
-      "sortOrder": 6,
-      "baseProductionRate": 0,
-      "nowAmount": 10000,
-      "maxAmount": 999999999, 
-      "protectedStoragePercentage": 1.0,
-      "protectedStorageMaxAmount": 999999999,
-      "acquisitionMethods": ["ShopPurchase", "EventReward", "AchievementReward"] 
-    }
-  ]
+    "description": {
+      "zh-TW": "用於建造建築和製作工具",
+      "en-US": "Used for building construction and tool making"
+    },
+    "resourceIconURL": "/images/resources/wood.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 3,
+    "nowAmount": 300,
+    "maxAmount": 30000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 4500,
+    "acquisitionMethods": ["logging", "trading"],
+    "baseProductionRate": 30
+  },
+  {
+    "id": "stone",
+    "name": {
+      "zh-TW": "石頭",
+      "en-US": "Stone"
+    },
+    "description": {
+      "zh-TW": "堅固的建築材料，用於防禦工事",
+      "en-US": "Solid building material for defensive structures"
+    },
+    "resourceIconURL": "/images/resources/stone.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 4,
+    "nowAmount": 200,
+    "maxAmount": 20000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 3000,
+    "acquisitionMethods": ["mining", "trading"],
+    "baseProductionRate": 20
+  },
+  {
+    "id": "iron",
+    "name": {
+      "zh-TW": "鐵礦",
+      "en-US": "Iron"
+    },
+    "description": {
+      "zh-TW": "重要的金屬資源，用於武器和工具",
+      "en-US": "Important metal resource for weapons and tools"
+    },
+    "resourceIconURL": "/images/resources/iron.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 5,
+    "nowAmount": 100,
+    "maxAmount": 10000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 1500,
+    "acquisitionMethods": ["mining", "trading"],
+    "baseProductionRate": 15
+  }
+]
