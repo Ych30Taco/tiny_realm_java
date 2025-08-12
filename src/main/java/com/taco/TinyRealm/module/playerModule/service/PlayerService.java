@@ -8,6 +8,7 @@ import com.taco.TinyRealm.module.resourceModule.model.PlayerResource;
 import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 import com.taco.TinyRealm.module.storageModule.service.StorageService;
+import com.taco.TinyRealm.module.resourceModule.service.ResourceProductionService;
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class PlayerService {
     private StorageService storageService;
     @Autowired
     private ResourceService resourceService;
+        @Autowired
+    private ResourceProductionService productionService;
 
     private Map<String, PlayerResource> playerResources;
     
@@ -129,6 +132,7 @@ public class PlayerService {
         player.setStatus(1); // 設置玩家狀態為上線
         player.setLastLoginTime(System.currentTimeMillis());
         gameState.setPlayer(player);
+        productionService.updatePlayerResources(playerId, false);
         storageService.saveGameState(playerId, gameState,"玩家上線", isTest);
         return gameState;
     }

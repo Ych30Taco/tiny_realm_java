@@ -34,7 +34,7 @@ public class StorageController {
      * @param gameState 遊戲狀態
      * @return 保存結果
      */
-    @PostMapping("/save")
+   /*@PostMapping("/save")
     public ResponseEntity<?> saveGame(@RequestParam String playerId, @RequestBody GameState gameState) {
         try {
             storageService.saveGameState(playerId, gameState,"保存遊戲狀態", false);
@@ -50,7 +50,7 @@ public class StorageController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 載入遊戲狀態
@@ -58,7 +58,7 @@ public class StorageController {
      * @param body 包含 playerId 的請求體
      * @return 遊戲狀態
      */
-    @PostMapping("/load")
+    /*@PostMapping("/load")
     public ResponseEntity<?> loadGame(@RequestBody Map<String, Object> body) {
         String playerId = (String) body.get("playerId");
         if (playerId == null || playerId.trim().isEmpty()) {
@@ -91,7 +91,7 @@ public class StorageController {
                 "data", null
             ));
         }
-    }
+    }*/
 
     /**
      * 獲取所有玩家列表
