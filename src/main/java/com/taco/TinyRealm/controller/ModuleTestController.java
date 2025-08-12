@@ -457,7 +457,7 @@ public class ModuleTestController {
     }*/
     
     // ==================== 背包模組測試端點 ====================
-    
+    /*
     @GetMapping("/inventory")
     @ResponseBody
     public Map<String, Object> getInventoryData() {
@@ -473,8 +473,8 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
-    
+    }*/
+    /*
     @PostMapping("/inventory/add")
     @ResponseBody
     public Map<String, Object> addInventoryItem(@RequestParam String playerId,
@@ -526,5 +526,5 @@ public class ModuleTestController {
             response.put("data", null);
         }
         return response;
-    }
+    }*/
 } 

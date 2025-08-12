@@ -11,10 +11,10 @@ spring:
 app:
   data:
     storagePath: game_data/
-    config-resource-path: classpath:config/resource/
-    resource-path:        classpath:config/resource/resource.json
-    building-path:        classpath:config/building/building.json
-    terrain-path:         classpath:config/terrains/terrain.json
-    map-path:             classpath:config/map/map.json
-    soldier-path:         classpath:config/soldier/soldier.json
+    resource-path:        classpath:config/resource/resources.json
+    building-path:        classpath:config/building/buildings.json
+    terrain-path:         classpath:config/terrain/terrains.json
+    map-path:             classpath:config/map/maps.json
+    soldier-path:         classpath:config/soldier/soldiers.json
+    item-path:            classpath:config/item/items.json
     enemies-path:         classpath:config/enemies.json

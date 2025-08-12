@@ -1,8 +1,10 @@
 package com.taco.TinyRealm.module.inventoryModule.controller;
 
-import com.taco.TinyRealm.module.inventoryModule.model.Item;
+import com.taco.TinyRealm.module.inventoryModule.model.PlayerItem;
 import com.taco.TinyRealm.module.inventoryModule.model.ItemType;
 import com.taco.TinyRealm.module.inventoryModule.service.InventoryService;
+import com.taco.TinyRealm.module.storageModule.model.GameState;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class InventoryController {
     @GetMapping("/types")
     public ResponseEntity<Map<String, Object>> getAllItemTypes() {
         try {
-            Map<String, ItemType> itemTypes = inventoryService.getAllItemTypes();
+            List<ItemType>  itemTypes = inventoryService.getAllItemTypes();
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Successfully retrieved all item types");
@@ -49,19 +51,20 @@ public class InventoryController {
      * 獲取特定物品類型
      * GET /api/inventory/types/{type}
      */
-    @GetMapping("/types/{type}")
-    public ResponseEntity<Map<String, Object>> getItemType(@PathVariable String type) {
+    @GetMapping("/type")
+    public ResponseEntity<Map<String, Object>> getItemTypeById(@RequestBody Map<String, Object> body) {
         try {
-            ItemType itemType = inventoryService.getItemType(type);
+            String itemType = (String) body.get("itemType");
+            ItemType itemTypeResult = inventoryService.getItemTypeByType(itemType);
             Map<String, Object> response = new HashMap<>();
             if (itemType != null) {
                 response.put("success", true);
-                response.put("message", "Successfully retrieved item type: " + type);
-                response.put("data", itemType);
+                response.put("message", "Successfully retrieved item type: " + itemType);
+                response.put("data", itemTypeResult);
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
-                response.put("message", "Item type not found: " + type);
+                response.put("message", "Item type not found: " + itemType);
                 response.put("data", null);
                 return ResponseEntity.status(404).body(response);
             }
@@ -79,16 +82,17 @@ public class InventoryController {
      * POST /api/inventory/add
      */
     @PostMapping("/add")
-    public ResponseEntity<Map<String, Object>> addItem(@RequestParam String playerId,
-                                                       @RequestParam String type,
-                                                       @RequestParam int quantity,
-                                                       @RequestParam(defaultValue = "false") boolean isTest) {
+    public ResponseEntity<Map<String, Object>> addItem(@RequestBody Map<String, Object> body) {
         try {
-            Item item = inventoryService.addItem(playerId, type, quantity, isTest);
+            String playerId = (String) body.get("playerId");
+            String itemType = (String) body.get("itemType");
+            int quantity = (int) body.get("quantity");
+
+            GameState playerItem = inventoryService.addItem(playerId, itemType, quantity, false);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Successfully added " + quantity + " " + type + " to player " + playerId);
-            response.put("data", item);
+            response.put("message", "Successfully added " + quantity + " " + itemType + " to player " + playerId);
+            response.put("data", playerItem);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             Map<String, Object> response = new HashMap<>();
@@ -110,15 +114,17 @@ public class InventoryController {
      * DELETE /api/inventory/remove
      */
     @DeleteMapping("/remove")
-    public ResponseEntity<Map<String, Object>> removeItem(@RequestParam String playerId,
-                                                          @RequestParam String itemId,
-                                                          @RequestParam int quantity,
-                                                          @RequestParam(defaultValue = "false") boolean isTest) {
+    public ResponseEntity<Map<String, Object>> removeItem(@RequestBody Map<String, Object> body) {
         try {
-            Item item = inventoryService.removeItem(playerId, itemId, quantity, isTest);
+            String playerId = (String) body.get("playerId");
+            String playerItemId = (String) body.get("playerItemId");
+            int quantity = (int) body.get("quantity");
+            boolean isTest = (boolean) body.getOrDefault("isTest", false);
+            
+            GameState item = inventoryService.removeItem(playerId, playerItemId, quantity, isTest);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Successfully removed " + quantity + " items from player " + playerId);
+            response.put("message", "Successfully removed " + quantity + " " + playerItemId + " items from player " + playerId);
             response.put("data", item);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -140,7 +146,7 @@ public class InventoryController {
      * 獲取玩家背包
      * GET /api/inventory/{playerId}
      */
-    @GetMapping("/{playerId}")
+    /*@GetMapping("/{playerId}")
     public ResponseEntity<Map<String, Object>> getInventory(@PathVariable String playerId,
                                                             @RequestParam(defaultValue = "false") boolean isTest) {
         try {
@@ -163,21 +169,23 @@ public class InventoryController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
     
     /**
      * 使用物品
      * PUT /api/inventory/use
      */
     @PutMapping("/use")
-    public ResponseEntity<Map<String, Object>> useItem(@RequestParam String playerId,
-                                                       @RequestParam String itemId,
-                                                       @RequestParam(defaultValue = "false") boolean isTest) {
+    public ResponseEntity<Map<String, Object>> useItem(@RequestBody Map<String, Object> body) {
         try {
-            Map<String, Object> effects = inventoryService.useItem(playerId, itemId, isTest);
+            String playerId = (String) body.get("playerId");
+            String playerItemId = (String) body.get("playerItemId");
+            int quantity = (int) body.get("quantity");
+            boolean isTest = (boolean) body.getOrDefault("isTest", false);
+            Map<String, Object> effects = inventoryService.useItem(playerId, playerItemId,quantity, isTest);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("message", "Successfully used item " + itemId);
+            response.put("message", "Successfully used item " + playerItemId);
             response.put("data", effects);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
@@ -199,7 +207,7 @@ public class InventoryController {
      * 修復物品
      * PUT /api/inventory/repair
      */
-    @PutMapping("/repair")
+    /*@PutMapping("/repair")
     public ResponseEntity<Map<String, Object>> repairItem(@RequestParam String playerId,
                                                           @RequestParam String itemId,
                                                           @RequestParam int repairAmount,
@@ -224,13 +232,13 @@ public class InventoryController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
     
     /**
      * 獲取背包統計信息
      * GET /api/inventory/stats/{playerId}
      */
-    @GetMapping("/stats/{playerId}")
+    /*@GetMapping("/stats/{playerId}")
     public ResponseEntity<Map<String, Object>> getInventoryStats(@PathVariable String playerId,
                                                                  @RequestParam(defaultValue = "false") boolean isTest) {
         try {
@@ -253,13 +261,13 @@ public class InventoryController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
     
     /**
      * 搜索背包物品
      * GET /api/inventory/search/{playerId}
      */
-    @GetMapping("/search/{playerId}")
+    /*@GetMapping("/search/{playerId}")
     public ResponseEntity<Map<String, Object>> searchInventory(@PathVariable String playerId,
                                                                @RequestParam(required = false) String searchTerm,
                                                                @RequestParam(required = false) String category,
@@ -285,13 +293,13 @@ public class InventoryController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
     
     /**
      * 獲取特定物品
      * GET /api/inventory/{playerId}/{itemId}
      */
-    @GetMapping("/{playerId}/{itemId}")
+    /*@GetMapping("/{playerId}/{itemId}")
     public ResponseEntity<Map<String, Object>> getItem(@PathVariable String playerId,
                                                        @PathVariable String itemId,
                                                        @RequestParam(defaultValue = "false") boolean isTest) {
@@ -327,5 +335,5 @@ public class InventoryController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 }

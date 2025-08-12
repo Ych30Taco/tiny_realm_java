@@ -57,7 +57,7 @@ public class SoldierService {
      */
     @PostConstruct
     public void init() {
-         System.out.println("---- 應用程式啟動中，載入士兵模組 ----");
+        System.out.println("---- 應用程式啟動中，載入士兵模組 ----");
         try {
             try (InputStream is = soldierPath.getInputStream()) {
                 soldierTypeList = objectMapper.readValue(is, new TypeReference<List<SoldierType>>() {});

@@ -1,163 +1,41 @@
 package com.taco.TinyRealm.module.inventoryModule.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * 物品類型配置模型
  * 定義不同物品類型的基本屬性和配置
  */
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemType {
-    @JsonProperty("type")
-    private String type;
-    
-    @JsonProperty("name")
-    private String name;
-    
-    @JsonProperty("description")
-    private String description;
-    
-    @JsonProperty("rarity")
-    private String rarity;
-    
-    @JsonProperty("category")
-    private String category;
-    
-    @JsonProperty("maxQuantity")
-    private int maxQuantity;
-    
-    @JsonProperty("maxDurability")
-    private int maxDurability;
-    
-    @JsonProperty("level")
-    private int level;
-    
-    @JsonProperty("attributes")
-    private Map<String, Object> attributes;
-    
-    @JsonProperty("effects")
-    private Map<String, Object> effects;
-    
-    @JsonProperty("isStackable")
-    private boolean isStackable;
-    
-    @JsonProperty("isTradeable")
-    private boolean isTradeable;
-    
-    @JsonProperty("isDroppable")
-    private boolean isDroppable;
-    
-    @JsonProperty("isConsumable")
-    private boolean isConsumable;
-    
-    @JsonProperty("isEquippable")
-    private boolean isEquippable;
-    
-    @JsonProperty("equipmentSlot")
-    private String equipmentSlot;
-    
-    @JsonProperty("sellPrice")
-    private int sellPrice;
-    
-    @JsonProperty("buyPrice")
-    private int buyPrice;
-    
-    @JsonProperty("craftingRecipe")
-    private Map<String, Integer> craftingRecipe;
-    
-    @JsonProperty("requiredLevel")
-    private int requiredLevel;
-    
-    @JsonProperty("requiredTech")
-    private String requiredTech;
-    
-    @JsonProperty("dropRate")
-    private double dropRate;
-    
-    @JsonProperty("useEffect")
-    private Map<String, Object> useEffect;
-    
-    /**
-     * 獲取物品的特定屬性值
-     */
-    public Object getAttribute(String key) {
-        return attributes != null ? attributes.get(key) : null;
-    }
-    
-    /**
-     * 設置物品的特定屬性值
-     */
-    public void setAttribute(String key, Object value) {
-        if (attributes == null) {
-            attributes = new HashMap<>();
-        }
-        attributes.put(key, value);
-    }
-    
-    /**
-     * 獲取物品的特定效果值
-     */
-    public Object getEffect(String key) {
-        return effects != null ? effects.get(key) : null;
-    }
-    
-    /**
-     * 設置物品的特定效果值
-     */
-    public void setEffect(String key, Object value) {
-        if (effects == null) {
-            effects = new HashMap<>();
-        }
-        effects.put(key, value);
-    }
-    
-    /**
-     * 獲取製作配方中特定材料的數量
-     */
-    public int getCraftingMaterial(String material) {
-        return craftingRecipe != null ? craftingRecipe.getOrDefault(material, 0) : 0;
-    }
-    
-    /**
-     * 檢查是否為特定稀有度
-     */
-    public boolean isRarity(String rarity) {
-        return this.rarity != null && this.rarity.equalsIgnoreCase(rarity);
-    }
-    
-    /**
-     * 檢查是否為特定類別
-     */
-    public boolean isCategory(String category) {
-        return this.category != null && this.category.equalsIgnoreCase(category);
-    }
-    
-    /**
-     * 檢查是否為裝備
-     */
-    public boolean isEquipment() {
-        return isEquippable && equipmentSlot != null;
-    }
-    
-    /**
-     * 檢查是否為消耗品
-     */
-    public boolean isConsumable() {
-        return isConsumable;
-    }
-    
-    /**
-     * 檢查是否可以堆疊
-     */
-    public boolean canStack() {
-        return isStackable && maxQuantity > 1;
-    }
+    private String id; // 物品類型唯一識別碼
+    private String type; // 物品類型，例如武器、護甲、消耗品等
+    private String name; // 物品類型名稱
+    private String description; // 物品類型描述
+    private String rarity; // 稀有度 普通、稀有、史詩、傳奇等
+    private String category; // 物品類別，例如武器、盔甲、消耗品等
+    private int maxQuantity; // 物品最大堆疊數量
+    private int maxDurability; // 最大耐久度
+    private int level; // 物品等級
+    private Map<String, Object> attributes; // 物品屬性，例如攻擊力、防禦力、魔法值等
+    private Map<String, Object> effects; // 物品效果，例如恢復生命值、增加經驗值等
+    private boolean stackable; // 是否可以堆疊
+    private boolean tradeable; // 是否可以交易
+    private boolean droppable; // 是否可以掉落
+    private boolean consumable; // 是否為消耗品
+    private boolean equippable; // 是否可以裝備
+    private String equipmentSlot; // 裝備槽 武器、護甲、配件等
+    private int sellPrice; // 賣出價格
+    private int buyPrice;   // 購買價格
+    private Map<String, Integer> craftingRecipe; // 製作配方，包含所需材料和數量
+    private int requiredLevel; // 製作或使用物品所需的等級
+    private String requiredTech; // 製作或使用物品所需的科技或技能
+    private double dropRate; // 掉落率，表示物品在戰鬥或探索中掉落的機率
+    private Map<String, Object> useEffect; // 使用物品時的效果，例如恢復生命值、增加經驗值等
 }

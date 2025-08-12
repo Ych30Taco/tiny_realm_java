@@ -25,7 +25,7 @@ public class ConfigReloadController {
     @Autowired private InventoryService inventoryService;
     @Autowired private BattleService battleService;
 
-    @PostMapping("/reload")
+    /*@PostMapping("/reload")
     public ResponseEntity<Map<String, Object>> reload(@RequestParam String module,
                                                       @RequestParam(required = false) String path) {
         Map<String, Object> resp = new HashMap<>();
@@ -72,9 +72,9 @@ public class ConfigReloadController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(api(false, e.getMessage(), null));
         }
-    }
+    }*/
 
-    @PostMapping("/reloadAll")
+    /*@PostMapping("/reloadAll")
     public ResponseEntity<Map<String, Object>> reloadAll() {
         try {
             resourceService.reloadResources(null);
@@ -88,13 +88,13 @@ public class ConfigReloadController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(api(false, e.getMessage(), null));
         }
-    }
-
+    }*/
+    /* 
     private Map<String, Object> api(boolean success, String message, Object data) {
         Map<String, Object> m = new HashMap<>();
         m.put("success", success);
         m.put("message", message);
         m.put("data", data);
         return m;
-    }
+    }*/
 }

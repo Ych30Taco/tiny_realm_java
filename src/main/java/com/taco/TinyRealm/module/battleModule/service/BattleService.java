@@ -61,7 +61,7 @@ public class BattleService {
     @PostConstruct
     public void init() {
         try {
-            loadEnemyTypes(enemiesPath);
+            //loadEnemyTypes(enemiesPath);
             System.out.println("BattleService initialized with " + enemyTypes.size() + " enemy types");
         } catch (Exception e) {
             System.err.println("Failed to initialize BattleService: " + e.getMessage());
