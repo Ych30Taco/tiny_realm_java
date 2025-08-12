@@ -966,36 +966,40 @@
         // 載入地圖配置
         function loadMapFromConfig() {
             showResult('正在從配置檔案載入地圖...');
-            fetch('http://localhost:1026/api/terrain/gameMap')
+            fetch('/api/terrain/gameMap')
                 .then(response => response.json())
                 .then(data => {
-                    showResult('地圖載入成功：\n' + JSON.stringify(data, null, 2));
-                    // 根據 data 更新地圖預覽
-                    const grid = document.getElementById('terrainGrid');
-                    grid.innerHTML = '';
-                    if (data && data.tiles) {
-                        let width = data.width || 10;
-                        let height = data.height || 10;
-                        // 建立二維陣列方便查找
-                        let mapArr = Array.from({length: height}, () => Array(width).fill(null));
-                        data.tiles.forEach(tile => {
-                            if (tile.x < width && tile.y < height) {
-                                mapArr[tile.y][tile.x] = tile;
-                            }
-                        });
-                        for (let i = 0; i < height; i++) {
-                            for (let j = 0; j < width; j++) {
-                                const cell = document.createElement('div');
-                                let terrainType = mapArr[i][j].terrain.id;
-                                if (mapArr[i][j] && mapArr[i][j].terrain && mapArr[i][j].terrain.type) {
-                                    terrainType = mapArr[i][j].terrain.type.toLowerCase();
+                    if (data.success) {
+                        showResult('地圖載入成功：\n' + JSON.stringify(data.data, null, 2));
+                        // 根據 data 更新地圖預覽
+                        const grid = document.getElementById('terrainGrid');
+                        grid.innerHTML = '';
+                        if (data.data && data.data.tiles) {
+                            let width = data.data.width || 8;
+                            let height = data.data.height || 8;
+                            // 建立二維陣列方便查找
+                            let mapArr = Array.from({length: height}, () => Array(width).fill(null));
+                            data.data.tiles.forEach(tile => {
+                                if (tile.x < width && tile.y < height) {
+                                    mapArr[tile.y][tile.x] = tile;
                                 }
-                                cell.className = `terrain-cell terrain-${terrainType}`;
-                                cell.textContent = terrainType.charAt(0).toUpperCase();
-                                cell.title = `${terrainType} (${j},${i})`;
-                                grid.appendChild(cell);
+                            });
+                            for (let i = 0; i < height; i++) {
+                                for (let j = 0; j < width; j++) {
+                                    const cell = document.createElement('div');
+                                    let terrainType = 'plain'; // 預設地形
+                                    if (mapArr[i][j] && mapArr[i][j].terrain && mapArr[i][j].terrain.id) {
+                                        terrainType = mapArr[i][j].terrain.id.toLowerCase();
+                                    }
+                                    cell.className = `terrain-cell terrain-${terrainType}`;
+                                    cell.textContent = terrainType.charAt(0).toUpperCase();
+                                    cell.title = `${terrainType} (${j},${i})`;
+                                    grid.appendChild(cell);
+                                }
                             }
                         }
+                    } else {
+                        showResult('載入地圖失敗：' + data.message);
                     }
                 })
                 .catch(error => {
@@ -1089,16 +1093,24 @@
             const x = document.getElementById('terrainX').value;
             const y = document.getElementById('terrainY').value;
             
-            fetch('/modules/terrain/set', {
+            fetch('/api/terrain/set', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `type=${type}&x=${x}&y=${y}`
+                body: JSON.stringify({
+                    terrainType: type,
+                    x: parseInt(x),
+                    y: parseInt(y)
+                })
             })
             .then(response => response.json())
             .then(data => {
-                showResult(`設定地形：${type} 在座標 (${x}, ${y})\n結果：${data.message}`);
+                if (data.success) {
+                    showResult(`設定地形：${type} 在座標 (${x}, ${y})\n結果：${data.message}`);
+                } else {
+                    showResult(`設定地形失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1109,10 +1121,14 @@
             const x = document.getElementById('terrainX').value;
             const y = document.getElementById('terrainY').value;
             
-            fetch('/modules/terrain')
+            fetch(`/api/terrain/tile?x=${x}&y=${y}`)
             .then(response => response.json())
             .then(data => {
-                showResult(`查詢地形：座標 (${x}, ${y}) 的地形類型\n結果：${data.data}`);
+                if (data.success) {
+                    showResult(`查詢地形：座標 (${x}, ${y}) 的地形類型\n結果：${JSON.stringify(data.data, null, 2)}`);
+                } else {
+                    showResult(`查詢地形失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1125,16 +1141,26 @@
             const playerId = document.getElementById('buildingPlayerId').value;
             const level = document.getElementById('buildingLevel').value;
             
-            fetch('/modules/building/create', {
+            fetch('/api/building/create', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `type=${type}&playerId=${playerId}&level=${level}`
+                body: JSON.stringify({
+                    buildingId: type,
+                    playerId: playerId,
+                    x: 0,
+                    y: 0,
+                    isTest: true
+                })
             })
             .then(response => response.json())
             .then(data => {
-                showResult(`建造建築：${type} 等級 ${level} 屬於玩家 ${playerId}\n結果：${data.message}`);
+                if (data.success) {
+                    showResult(`建造建築：${type} 等級 ${level} 屬於玩家 ${playerId}\n結果：${data.message}`);
+                } else {
+                    showResult(`建造建築失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1146,14 +1172,39 @@
             const playerId = document.getElementById('buildingPlayerId').value;
             const level = document.getElementById('buildingLevel').value;
             
-            showResult(`升級建築：${type} 升級到等級 ${level} 屬於玩家 ${playerId}`);
+            fetch('/api/building/upgrade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    buildingId: type,
+                    playerId: playerId,
+                    isTest: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult(`升級建築：${type} 升級到等級 ${level} 屬於玩家 ${playerId}\n結果：${data.message}`);
+                } else {
+                    showResult(`升級建築失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
         }
 
         function loadBuildings() {
-            fetch('/modules/building')
+            fetch('/api/building/types')
             .then(response => response.json())
             .then(data => {
-                showResult(`載入建築列表...\n結果：${data.data}`);
+                if (data.success) {
+                    showResult(`載入建築類型列表...\n結果：${JSON.stringify(data.data, null, 2)}`);
+                } else {
+                    showResult(`載入建築類型失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1166,16 +1217,25 @@
             const playerId = document.getElementById('resourcePlayerId').value;
             const amount = document.getElementById('resourceAmount').value;
             
-            fetch('/modules/resource/add', {
+            fetch('/api/resource/add', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: `type=${type}&playerId=${playerId}&amount=${amount}`
+                body: JSON.stringify({
+                    playerId: playerId,
+                    resourceType: type,
+                    amount: parseInt(amount),
+                    isTest: true
+                })
             })
             .then(response => response.json())
             .then(data => {
-                showResult(`增加資源：${amount} 個 ${type} 給玩家 ${playerId}\n結果：${data.message}`);
+                if (data.success) {
+                    showResult(`增加資源：${amount} 個 ${type} 給玩家 ${playerId}\n結果：${data.message}`);
+                } else {
+                    showResult(`增加資源失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1187,14 +1247,40 @@
             const playerId = document.getElementById('resourcePlayerId').value;
             const amount = document.getElementById('resourceAmount').value;
             
-            showResult(`消耗資源：${amount} 個 ${type} 從玩家 ${playerId}`);
+            fetch('/api/resource/consume', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playerId: playerId,
+                    resourceType: type,
+                    amount: parseInt(amount),
+                    isTest: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult(`消耗資源：${amount} 個 ${type} 從玩家 ${playerId}\n結果：${data.message}`);
+                } else {
+                    showResult(`消耗資源失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                showResult(`錯誤：${error.message}`);
+            });
         }
 
         function loadResources() {
-            fetch('/modules/resource')
+            fetch('/api/resource/types')
             .then(response => response.json())
             .then(data => {
-                showResult(`載入資源概覽...\n結果：${data.data}`);
+                if (data.success) {
+                    showResult(`載入資源類型列表...\n結果：${JSON.stringify(data.data, null, 2)}`);
+                } else {
+                    showResult(`載入資源類型失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1213,7 +1299,13 @@
             })
             .then(response => response.json())
             .then(data => {
-                showResult(`創建玩家：ID ${data.id}, 名稱 ${data.name}, 等級 ${data.level}\n結果：${data}`);
+                if (data.success) {
+                    const p = data.data;
+                    showResult(`創建玩家成功：\nID ${p.id}, 名稱 ${p.name}, 等級 ${p.level}`);
+                    loadPlayers();
+                } else {
+                    showResult(`創建玩家失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1235,16 +1327,20 @@
                 fetch('/api/storage/onlinePlayers').then(r => r.json()),
                 fetch('/api/storage/offlinePlayers').then(r => r.json()),
                 fetch('/api/storage/allGameStateList').then(r => r.json())
-            ]).then(([allPlayers, onlinePlayers, offlinePlayers, allGameStates]) => {
-                // 修正 length 取得方式，確保是陣列才取 length
-                const allPlayersCount = Array.isArray(allPlayers) ? allPlayers.length : 0;
-                const onlinePlayersCount = Array.isArray(onlinePlayers) ? onlinePlayers.length : 0;
-                const offlinePlayersCount = Array.isArray(offlinePlayers) ? offlinePlayers.length : 0;
+            ]).then(([allPlayersRes, onlinePlayersRes, offlinePlayersRes, allGameStatesRes]) => {
+                const allPlayers = (allPlayersRes && allPlayersRes.success && Array.isArray(allPlayersRes.data)) ? allPlayersRes.data : [];
+                const onlinePlayers = (onlinePlayersRes && onlinePlayersRes.success && Array.isArray(onlinePlayersRes.data)) ? onlinePlayersRes.data : [];
+                const offlinePlayers = (offlinePlayersRes && offlinePlayersRes.success && Array.isArray(offlinePlayersRes.data)) ? offlinePlayersRes.data : [];
+                const allGameStates = (allGameStatesRes && allGameStatesRes.success && allGameStatesRes.data) ? allGameStatesRes.data : {};
+
+                const allPlayersCount = allPlayers.length;
+                const onlinePlayersCount = onlinePlayers.length;
+                const offlinePlayersCount = offlinePlayers.length;
                 showResult(`載入玩家列表...\n所有玩家: ${allPlayersCount}\n上線: ${onlinePlayersCount}\n下線: ${offlinePlayersCount}`);
                 const playerListDiv = document.getElementById('playerList');
                 // 所有玩家
                 let html = '';
-                if (Array.isArray(allPlayers) && allPlayers.length > 0) {
+                if (allPlayers.length > 0) {
                     html += '<ul class="list-group mb-3">';
                     allPlayers.forEach(id => {
                         // 檢查 GameState 和 Player 是否存在
@@ -1334,20 +1430,7 @@
             const unitType = document.getElementById('unitType').value;
             const unitCount = document.getElementById('unitCount').value;
             
-            fetch('/modules/battle/start', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `attackerId=${attacker}&defenderId=${defender}&unitType=${unitType}&unitCount=${unitCount}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                showResult(`開始戰鬥：${attacker} 攻擊 ${defender}，使用 ${unitCount} 個 ${unitType}\n結果：${data.message}`);
-            })
-            .catch(error => {
-                showResult(`錯誤：${error.message}`);
-            });
+            showResult(`開始戰鬥：${attacker} 攻擊 ${defender}，使用 ${unitCount} 個 ${unitType}\n注意：戰鬥功能目前被註解，請使用新的戰鬥模組 API`);
         }
 
         function simulateBattle() {
@@ -1358,10 +1441,16 @@
         }
 
         function loadBattleHistory() {
-            fetch('/modules/battle')
+            const playerId = document.getElementById('attackerId').value;
+            
+            fetch(`/api/battle/player/${playerId}`)
             .then(response => response.json())
             .then(data => {
-                showResult(`載入戰鬥記錄...\n結果：${data.data}`);
+                if (data.success) {
+                    showResult(`載入戰鬥記錄...\n結果：${JSON.stringify(data.data, null, 2)}`);
+                } else {
+                    showResult(`載入戰鬥記錄失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
@@ -1375,89 +1464,94 @@
             const amount = document.getElementById('itemAmount').value;
             const price = document.getElementById('itemPrice').value;
             
-            fetch('/modules/market/list', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `sellerId=${seller}&itemType=${itemType}&amount=${amount}&price=${price}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                showResult(`上架商品：${amount} 個 ${itemType}，價格 ${price}，賣家 ${seller}\n結果：${data.message}`);
-            })
-            .catch(error => {
-                showResult(`錯誤：${error.message}`);
-            });
+            showResult(`上架商品：${amount} 個 ${itemType}，價格 ${price}，賣家 ${seller}\n注意：市場功能目前被註解，請使用新的市場模組 API`);
         }
 
+        // 購買商品 (此功能尚未實作，僅為示範)
         function buyItem() {
             const itemType = document.getElementById('itemType').value;
             const amount = document.getElementById('itemAmount').value;
             const price = document.getElementById('itemPrice').value;
-            
-            showResult(`購買商品：${amount} 個 ${itemType}，價格 ${price}`);
+            const buyerId = 'player1'; // 預設購買者
+
+            showResult(`嘗試購買商品：${amount} 個 ${itemType}，價格 ${price}，購買者 ${buyerId}\n注意：市場功能目前被註解，請使用新的市場模組 API`);
+            // 實際購買邏輯需要呼叫後端 API
         }
 
         function loadMarketItems() {
-            fetch('/modules/market')
+            fetch('/api/market/listings')
             .then(response => response.json())
             .then(data => {
-                showResult(`載入市場商品...\n結果：${data.data}`);
+                if (data.success) {
+                    showResult(`載入市場商品列表...\n結果：${JSON.stringify(data.data, null, 2)}`);
+                } else {
+                    showResult(`載入市場商品失敗：${data.message}`);
+                }
             })
             .catch(error => {
                 showResult(`錯誤：${error.message}`);
             });
         }
 
-        // 檢查模組狀態
-        function checkModuleStatus() {
-            fetch('/modules/status')
-                .then(response => response.json())
-                .then(data => {
-                    updateModuleStatus('playerModuleStatus', data.playerModule, '玩家模組');
-                    updateModuleStatus('resourceModuleStatus', data.resourceModule, '資源模組');
-                    updateModuleStatus('buildingModuleStatus', data.buildingModule, '建築模組');
-                    updateModuleStatus('terrainMapModuleStatus', data.terrainMapModule, '地形地圖模組');
-                })
-                .catch(error => {
-                    console.error('檢查模組狀態失敗:', error);
-                    // 如果檢查失敗，將所有模組標記為失敗
-                    updateModuleStatus('playerModuleStatus', false, '玩家模組');
-                    updateModuleStatus('resourceModuleStatus', false, '資源模組');
-                    updateModuleStatus('buildingModuleStatus', false, '建築模組');
-                    updateModuleStatus('terrainMapModuleStatus', false, '地形地圖模組');
-                });
+        // 顯示結果區域
+        function showResult(message) {
+            const resultArea = document.getElementById('resultArea');
+            const resultContent = document.getElementById('resultContent');
+            resultContent.textContent = message;
+            resultArea.style.display = 'block';
+            setTimeout(() => {
+                resultArea.style.display = 'none';
+            }, 5000); // 5秒後自動隱藏
         }
 
-        // 更新模組狀態顯示
-        function updateModuleStatus(elementId, isActive, moduleName) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                const indicator = element.querySelector('.status-indicator');
-                if (isActive) {
-                    indicator.className = 'status-indicator status-active';
-                    element.innerHTML = `<span class="status-indicator status-active"></span>運行中`;
-                } else {
-                    indicator.className = 'status-indicator status-inactive';
-                    element.innerHTML = `<span class="status-indicator status-inactive"></span>運行失敗`;
-                }
-            }
-        }
-
-        // 工具函數
+        // 顯示載入中動畫
         function showLoading() {
             document.getElementById('loadingSpinner').style.display = 'block';
         }
 
+        // 隱藏載入中動畫
         function hideLoading() {
             document.getElementById('loadingSpinner').style.display = 'none';
         }
 
-        function showResult(message) {
-            document.getElementById('resultContent').textContent = message;
-            document.getElementById('resultArea').style.display = 'block';
-            document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+        // 檢查模組狀態
+        function checkModuleStatus() {
+            showLoading();
+            
+            // 簡化的模組狀態檢查
+            Promise.all([
+                fetch('/api/terrain/types').then(r => r.json()).catch(() => ({ success: false })),
+                fetch('/api/resource/types').then(r => r.json()).catch(() => ({ success: false })),
+                fetch('/api/building/types').then(r => r.json()).catch(() => ({ success: false })),
+                fetch('/api/terrain/gameMap').then(r => r.json()).catch(() => ({ success: false }))
+            ]).then(([terrain, resource, building, map]) => {
+                hideLoading();
+                
+                const playerStatus = document.getElementById('playerModuleStatus');
+                const resourceStatus = document.getElementById('resourceModuleStatus');
+                const buildingStatus = document.getElementById('buildingModuleStatus');
+                const terrainMapStatus = document.getElementById('terrainMapModuleStatus');
+
+                // 更新狀態顯示
+                playerStatus.innerHTML = `
+                    <span class="status-indicator status-active"></span>運行中
+                `;
+                resourceStatus.innerHTML = `
+                    <span class="status-indicator ${resource.success ? 'status-active' : 'status-inactive'}"></span>
+                    ${resource.success ? '運行中' : '運行失敗'}
+                `;
+                buildingStatus.innerHTML = `
+                    <span class="status-indicator ${building.success ? 'status-active' : 'status-inactive'}"></span>
+                    ${building.success ? '運行中' : '運行失敗'}
+                `;
+                terrainMapStatus.innerHTML = `
+                    <span class="status-indicator ${map.success ? 'status-active' : 'status-inactive'}"></span>
+                    ${map.success ? '運行中' : '運行失敗'}
+                `;
+            }).catch(error => {
+                hideLoading();
+                showResult(`檢查模組狀態失敗：${error.message}`);
+            });
         }
     </script>
 </body>
