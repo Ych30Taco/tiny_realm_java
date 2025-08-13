@@ -1,0 +1,521 @@
+{
+  "id": "default_world",
+  "name": "默認世界",
+  "description": "一個8x8的測試世界，包含各種地形",
+  "width": 8,
+  "height": 8,
+  "tiles": [
+    {
+      "x": 0,
+      "y": 0,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "terrainType": "desert",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "terrainType": "desert",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "terrainType": "desert",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "terrainType": "desert",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "terrainType": "grassland",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "terrainType": "desert",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "terrainType": "forest",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "terrainType": "hills",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "terrainType": "mountain",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "terrainType": "plains",
+      "owner": null,
+      "building": null,
+      "occupied": false
+    }
+  ]
+}

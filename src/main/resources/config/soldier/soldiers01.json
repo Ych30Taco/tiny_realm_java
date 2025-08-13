@@ -1,0 +1,102 @@
+[
+  {
+    "id": "infantry",
+    "name": "步兵",
+    "description": "基礎的步兵單位，平衡的攻防能力",
+    "level": 1,
+    "attack": 20,
+    "defense": 15,
+    "health": 100,
+    "maxHealth": 100,
+    "upgradeCost": {
+      "gold": 50,
+      "food": 20,
+      "wood": 10
+    },
+    "trainingTime": 60,
+    "maintenanceCost": {
+      "food": 5,
+      "gold": 2
+    },
+    "specialAbilities": ["formation_fighting"],
+    "terrainBonus": {
+      "plains": 1.1,
+      "forest": 0.9
+    }
+  },
+  {
+    "id": "archer",
+    "name": "弓箭手",
+    "description": "遠程攻擊單位，攻擊力高但防禦力低",
+    "level": 1,
+    "attack": 35,
+    "defense": 8,
+    "health": 80,
+    "maxHealth": 80,
+    "upgradeCost": {
+      "gold": 60,
+      "food": 15,
+      "wood": 25
+    },
+    "trainingTime": 90,
+    "maintenanceCost": {
+      "food": 4,
+      "gold": 3
+    },
+    "specialAbilities": ["ranged_attack", "precision_shot"],
+    "terrainBonus": {
+      "hills": 1.2,
+      "forest": 1.1
+    }
+  },
+  {
+    "id": "cavalry",
+    "name": "騎兵",
+    "description": "機動性強的騎兵單位，適合突襲和追擊",
+    "level": 1,
+    "attack": 30,
+    "defense": 20,
+    "health": 120,
+    "maxHealth": 120,
+    "upgradeCost": {
+      "gold": 80,
+      "food": 30,
+      "wood": 15
+    },
+    "trainingTime": 120,
+    "maintenanceCost": {
+      "food": 8,
+      "gold": 5
+    },
+    "specialAbilities": ["charge", "mobility"],
+    "terrainBonus": {
+      "plains": 1.3,
+      "hills": 1.1
+    }
+  },
+  {
+    "id": "spearman",
+    "name": "長槍兵",
+    "description": "專門對付騎兵的單位，擁有強大的防禦能力",
+    "level": 1,
+    "attack": 25,
+    "defense": 25,
+    "health": 110,
+    "maxHealth": 110,
+    "upgradeCost": {
+      "gold": 55,
+      "food": 25,
+      "wood": 20
+    },
+    "trainingTime": 75,
+    "maintenanceCost": {
+      "food": 6,
+      "gold": 2
+    },
+    "specialAbilities": ["anti_cavalry", "defensive_stance"],
+    "terrainBonus": {
+      "hills": 1.1,
+      "mountain": 1.0
+    }
+  }
+]
