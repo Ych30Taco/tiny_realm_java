@@ -364,11 +364,48 @@ public class BattleService {
             }
         }
 
+        // 創建一個簡化的戰鬥記錄，避免序列化問題
+        Battle battleRecord = new Battle();
+        battleRecord.setId(battle.getId());
+        battleRecord.setPlayerId(battle.getPlayerId());
+        battleRecord.setEnemyType(battle.getEnemyType());
+        battleRecord.setResult(battle.getResult());
+        battleRecord.setStatus(battle.getStatus());
+        battleRecord.setTimestamp(battle.getTimestamp());
+        battleRecord.setDuration(battle.getDuration());
+        battleRecord.setDifficulty(battle.getDifficulty());
+        battleRecord.setLocationX(battle.getLocationX());
+        battleRecord.setLocationY(battle.getLocationY());
+        battleRecord.setDescription(battle.getDescription());
+        
+        // 簡化獎勵數據，創建一個新的 Resource 對象，只包含必要信息
+        if (battle.getRewards() != null) {
+            Resource simplifiedRewards = new Resource();
+            simplifiedRewards.setId("battle_rewards");
+            // 不設置複雜的獎勵數據，避免序列化問題
+            simplifiedRewards.setNowAmount(0);
+            simplifiedRewards.setMaxAmount(0);
+            battleRecord.setRewards(simplifiedRewards);
+        }
+        
+        // 簡化統計數據，只保留基本數值，避免複雜對象序列化問題
+        if (battle.getStatistics() != null && !battle.getStatistics().isEmpty()) {
+            Map<String, Object> simplifiedStats = new HashMap<>();
+            for (Map.Entry<String, Object> entry : battle.getStatistics().entrySet()) {
+                Object value = entry.getValue();
+                // 只保留基本數據類型，避免複雜對象
+                if (value instanceof String || value instanceof Number || value instanceof Boolean) {
+                    simplifiedStats.put(entry.getKey(), value);
+                }
+            }
+            battleRecord.setStatistics(simplifiedStats);
+        }
+        
         // 添加戰鬥記錄
         if (gameState.getBattles() == null) {
             gameState.setBattles(new ArrayList<>());
         }
-        //gameState.getBattles().add(battle);後續資料讀取有問題，要重新調整
+        gameState.getBattles().add(battleRecord);
 
         // 保存遊戲狀態
         storageService.saveGameState(battle.getPlayerId(), gameState, "戰鬥完成", isTest);
