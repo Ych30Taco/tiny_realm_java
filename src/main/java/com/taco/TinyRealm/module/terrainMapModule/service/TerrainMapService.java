@@ -50,26 +50,23 @@ public class TerrainMapService {
         this.objectMapper = objectMapper;
     }
     @PostConstruct
-    public void init() throws IOException{
+    public void init() throws IOException {
         System.out.println("---- 應用程式啟動中，載入地形地圖模組 ----");
         try {
-            try (InputStream is = terrainPath.getInputStream()) {
-                terrainsList = objectMapper.readValue(is, new TypeReference<List<Terrain>>() {});
-                String terrainNames = getTerrainName();
-                System.out.println("---- 應用程式啟動中，已載入" + terrainNames + " ----");
-            }
+            loadTerrainTypes(terrainPath);
+            String terrainNames = getTerrainName();
+            System.out.println("---- 應用程式啟動中，已載入" + terrainNames + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入地形失敗 ----");
-            e.printStackTrace(); // 印出詳細錯誤
-            throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load terrain.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入地形完成 ----");
 
         System.out.println("---- 應用程式啟動中，載入地圖... ----");
-        try (InputStream is = mapPath.getInputStream()){
-            // 檔案存在，直接讀取
-            gameMap = objectMapper.readValue(is, new TypeReference<GameMap>(){});
-            System.out.println("---- 應用程式啟動中，已載入地圖"+gameMap.getHeight()+"*"+gameMap.getWidth()+" ----"); 
+        try {
+            loadMap(mapPath);
+            System.out.println("---- 應用程式啟動中，已載入地圖" + gameMap.getHeight() + "*" + gameMap.getWidth() + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入地圖失敗，創建新地圖 ----");
             gameMap = new GameMap(10, 10);
@@ -78,7 +75,18 @@ public class TerrainMapService {
             System.out.println("---- 應用程式啟動中，載入地圖完成 ----");
         }
         System.out.println("---- 應用程式啟動中，載入地形地圖模組完成 ----");
+    }
 
+    private void loadTerrainTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            terrainsList = objectMapper.readValue(is, new TypeReference<List<Terrain>>() {});
+        }
+    }
+
+    private void loadMap(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            gameMap = objectMapper.readValue(is, new TypeReference<GameMap>() {});
+        }
     }
 
     public void reloadTerrains(String overridePath) throws IOException {
@@ -86,9 +94,7 @@ public class TerrainMapService {
         if (overridePath != null && !overridePath.isBlank()) {
             target = resourceLoader.getResource(overridePath);
         }
-        try (InputStream is = target.getInputStream()) {
-            terrainsList = objectMapper.readValue(is, new TypeReference<List<Terrain>>() {});
-        }
+        loadTerrainTypes(target);
     }
 
     public void reloadMap(String overridePath) throws IOException {
@@ -96,9 +102,7 @@ public class TerrainMapService {
         if (overridePath != null && !overridePath.isBlank()) {
             target = resourceLoader.getResource(overridePath);
         }
-        try (InputStream is = target.getInputStream()){
-            gameMap = objectMapper.readValue(is, new TypeReference<GameMap>(){});
-        }
+        loadMap(target);
     }
 
     public String getTerrainName() {

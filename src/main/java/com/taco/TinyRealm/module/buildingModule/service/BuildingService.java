@@ -60,17 +60,21 @@ public class BuildingService {
     public void init() {
         System.out.println("---- 應用程式啟動中，載入建築模組 ----");
         try {
-            try (InputStream is = buildingPath.getInputStream()) {
-                buildingsList = objectMapper.readValue(is, new TypeReference<List<Building>>() {});
-                String buildingNames = getBuildingName();
-                System.out.println("---- 應用程式啟動中，已載入" + buildingNames + " ----");
-            }
+            loadBuildingTypes(buildingPath);
+            String buildingNames = getBuildingName();
+            System.out.println("---- 應用程式啟動中，已載入" + buildingNames + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入建築模組失敗 ----");
-            e.printStackTrace(); // 印出詳細錯誤
+            e.printStackTrace();
             throw new RuntimeException("Failed to load building.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入建築模組完成 ----");
+    }
+
+    private void loadBuildingTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            buildingsList = objectMapper.readValue(is, new TypeReference<List<Building>>() {});
+        }
     }
 
     public void reloadBuildings(String overridePath) throws IOException {
@@ -78,9 +82,7 @@ public class BuildingService {
         if (overridePath != null && !overridePath.isBlank()) {
             target = resourceLoader.getResource(overridePath);
         }
-        try (InputStream is = target.getInputStream()) {
-            buildingsList = objectMapper.readValue(is, new TypeReference<List<Building>>() {});
-        }
+        loadBuildingTypes(target);
     }
 
     public List<Building> getAllbuilding() {
@@ -336,4 +338,3 @@ public class BuildingService {
         return gameState;
     }
 }
- 

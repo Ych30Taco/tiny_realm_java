@@ -1,0 +1,112 @@
+[
+  {
+    "id": "gold",
+    "name": {
+      "zh-TW": "金幣",
+      "en-US": "Gold"
+    },
+    "description": {
+      "zh-TW": "通用貨幣，用於交易和建設",
+      "en-US": "Universal currency for trading and construction"
+    },
+    "resourceIconURL": "/images/resources/gold.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "currency",
+    "sortOrder": 1,
+    "nowAmount": 1000,
+    "maxAmount": 100000,
+    "protectedStoragePercentage": 0.1,
+    "protectedStorageMaxAmount": 10000,
+    "acquisitionMethods": ["mining", "trading", "quests", "battles"],
+    "baseProductionRate": 10
+  },
+  {
+    "id": "food",
+    "name": {
+      "zh-TW": "食物",
+      "en-US": "Food"
+    },
+    "description": {
+      "zh-TW": "維持人口和軍隊的基本需求",
+      "en-US": "Basic requirement for maintaining population and army"
+    },
+    "resourceIconURL": "/images/resources/food.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "consumable",
+    "sortOrder": 2,
+    "nowAmount": 500,
+    "maxAmount": 50000,
+    "protectedStoragePercentage": 0.2,
+    "protectedStorageMaxAmount": 10000,
+    "acquisitionMethods": ["farming", "hunting", "trading"],
+    "baseProductionRate": 50
+  },
+  {
+    "id": "wood",
+    "name": {
+      "zh-TW": "木材",
+      "en-US": "Wood"
+    },
+    "description": {
+      "zh-TW": "用於建造建築和製作工具",
+      "en-US": "Used for building construction and tool making"
+    },
+    "resourceIconURL": "/images/resources/wood.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 3,
+    "nowAmount": 300,
+    "maxAmount": 30000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 4500,
+    "acquisitionMethods": ["logging", "trading"],
+    "baseProductionRate": 30
+  },
+  {
+    "id": "stone",
+    "name": {
+      "zh-TW": "石頭",
+      "en-US": "Stone"
+    },
+    "description": {
+      "zh-TW": "堅固的建築材料，用於防禦工事",
+      "en-US": "Solid building material for defensive structures"
+    },
+    "resourceIconURL": "/images/resources/stone.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 4,
+    "nowAmount": 200,
+    "maxAmount": 20000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 3000,
+    "acquisitionMethods": ["mining", "trading"],
+    "baseProductionRate": 20
+  },
+  {
+    "id": "iron",
+    "name": {
+      "zh-TW": "鐵礦",
+      "en-US": "Iron"
+    },
+    "description": {
+      "zh-TW": "重要的金屬資源，用於武器和工具",
+      "en-US": "Important metal resource for weapons and tools"
+    },
+    "resourceIconURL": "/images/resources/iron.png",
+    "isPremium": false,
+    "stackable": true,
+    "category": "material",
+    "sortOrder": 5,
+    "nowAmount": 100,
+    "maxAmount": 10000,
+    "protectedStoragePercentage": 0.15,
+    "protectedStorageMaxAmount": 1500,
+    "acquisitionMethods": ["mining", "trading"],
+    "baseProductionRate": 15
+  }
+]

@@ -59,17 +59,21 @@ public class SoldierService {
     public void init() {
         System.out.println("---- 應用程式啟動中，載入士兵模組 ----");
         try {
-            try (InputStream is = soldierPath.getInputStream()) {
-                soldierTypeList = objectMapper.readValue(is, new TypeReference<List<SoldierType>>() {});
-                String soldierNames = getSoldierName();
-                System.out.println("---- 應用程式啟動中，已載入" + soldierNames + " ----");
-            }
+            loadSoldierTypes(soldierPath);
+            String soldierNames = getSoldierName();
+            System.out.println("---- 應用程式啟動中，已載入" + soldierNames + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入士兵模組失敗 ----");
-            e.printStackTrace(); // 印出詳細錯誤
+            e.printStackTrace();
             throw new RuntimeException("Failed to load soldier.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入士兵模組完成 ----");
+    }
+
+    private void loadSoldierTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            soldierTypeList = objectMapper.readValue(is, new TypeReference<List<SoldierType>>() {});
+        }
     }
 
     public void reloadSoldierTypes(String overridePath) throws IOException {
@@ -77,9 +81,7 @@ public class SoldierService {
         if (overridePath != null && !overridePath.isBlank()) {
             target = resourceLoader.getResource(overridePath);
         }
-        try (InputStream is = target.getInputStream()) {
-            soldierTypeList = objectMapper.readValue(is, new TypeReference<List<SoldierType>>() {});
-        }
+        loadSoldierTypes(target);
     }
 
     /**
@@ -173,7 +175,14 @@ public class SoldierService {
         playerSoldier.setType(soldier.getType());
         playerSoldier.setName(soldier.getName());
         playerSoldier.setCount(gameState.getSoldiers().keySet().contains(soldier.getId()) ? (gameState.getSoldiers().get(soldier.getId()).getCount() + count) : count);
-
+        playerSoldier.setLevel(1);
+        playerSoldier.setAttack(soldier.getStats().getAttack());
+        playerSoldier.setDefense(soldier.getStats().getDefense());
+        playerSoldier.setSpeed(soldier.getStats().getSpeed());
+        playerSoldier.setHealth(soldier.getStats().getHealth());
+        playerSoldier.setMaxHealth(soldier.getStats().getHealth());
+        playerSoldier.setAttack(soldier.getStats().getAttack());
+        playerSoldier.setStatus("ACTIVE");
         // 添加到遊戲狀態
         gameState.getSoldiers().put(soldier.getId(), playerSoldier);
         

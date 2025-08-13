@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 public class InventoryService {
     @Autowired
     private StorageService storageService;
+    @Autowired
+    private ResourceLoader resourceLoader;
         
     @Value("${app.data.item-path}")
     private org.springframework.core.io.Resource itemPath;
@@ -43,19 +45,31 @@ public class InventoryService {
     public void init() {
         System.out.println("---- 應用程式啟動中，載入背包模組 ----");
         try {
-            try (InputStream is = itemPath.getInputStream()) {
-                itemTypeList = objectMapper.readValue(is, new TypeReference<List<ItemType>>() {});
-                String itemNames = getItemName();
-                System.out.println("---- 應用程式啟動中，已載入" + itemNames + " ----");
-
-            }
+            loadItemTypes(itemPath);
+            String itemNames = getItemName();
+            System.out.println("---- 應用程式啟動中，已載入" + itemNames + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入背包模組失敗 ----");
-            e.printStackTrace(); // 印出詳細錯誤
+            e.printStackTrace();
             throw new RuntimeException("Failed to load items.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入背包模組完成 ----");
     }
+
+    private void loadItemTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            itemTypeList = objectMapper.readValue(is, new TypeReference<List<ItemType>>() {});
+        }
+    }
+
+    public void reloadItemTypes(String overridePath) throws IOException {
+        org.springframework.core.io.Resource target = itemPath;
+        if (overridePath != null && !overridePath.isBlank()) {
+            target = resourceLoader.getResource(overridePath);
+        }
+        loadItemTypes(target);
+    }
+
     public String getItemName() {
         String names = "";
         for (ItemType type : itemTypeList) {

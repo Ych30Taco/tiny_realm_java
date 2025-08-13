@@ -53,17 +53,21 @@ public class ResourceService {
     public void init() {
         System.out.println("---- 應用程式啟動中，載入資源模組 ----");
         try {
-            try (InputStream is = resourcePath.getInputStream()) {
-                resourcesList = objectMapper.readValue(is, new TypeReference<List<Resource>>() {});
-                String resourceNames = getResourceName();
-                System.out.println("---- 應用程式啟動中，已載入" + resourceNames + " ----");
-            }
+            loadResourceTypes(resourcePath);
+            String resourceNames = getResourceName();
+            System.out.println("---- 應用程式啟動中，已載入" + resourceNames + " ----");
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入資源模組失敗 ----");
-            e.printStackTrace(); // 印出詳細錯誤
+            e.printStackTrace();
             throw new RuntimeException("Failed to load resource.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入資源模組完成 ----");
+    }
+
+    private void loadResourceTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            resourcesList = objectMapper.readValue(is, new TypeReference<List<Resource>>() {});
+        }
     }
 
     public void reloadResources(String overridePath) throws IOException {
@@ -71,9 +75,7 @@ public class ResourceService {
         if (overridePath != null && !overridePath.isBlank()) {
             target = resourceLoader.getResource(overridePath);
         }
-        try (InputStream is = target.getInputStream()) {
-            resourcesList = objectMapper.readValue(is, new TypeReference<List<Resource>>() {});
-        }
+        loadResourceTypes(target);
     }
 
     public List<Resource> getAllResourceTypes() {

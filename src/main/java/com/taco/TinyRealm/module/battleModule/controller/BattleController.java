@@ -23,6 +23,16 @@ public class BattleController {
     @Autowired
     private BattleService battleService;
 
+    @GetMapping("/types")
+    public ResponseEntity<?> getAllEnemyTypes() {
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取戰鬥類型成功", "data", battleService.getAllEnemyTypes()));
+    }
+
+    @PostMapping("/typeById")
+    public ResponseEntity<?> getEnemyType(@RequestBody Map<String, Object> body) {
+        String enemyType = (String) body.get("enemyType");
+        return ResponseEntity.ok(Map.of("success", true, "message", "獲取戰鬥類型成功", "data", battleService.getEnemyType(enemyType)));
+    }
     /**
      * 開始戰鬥
      * POST /api/battle/start
@@ -86,7 +96,7 @@ public class BattleController {
      * @param isTest 是否為測試模式（可選，預設false）
      * @return 戰鬥記錄列表
      */
-    @GetMapping("/player/{playerId}")
+    /*@GetMapping("/player/{playerId}")
     public ResponseEntity<Map<String, Object>> getBattles(
             @PathVariable String playerId,
             @RequestParam(defaultValue = "false") boolean isTest) {
@@ -114,7 +124,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取特定戰鬥記錄
@@ -125,7 +135,7 @@ public class BattleController {
      * @param isTest 是否為測試模式（可選，預設false）
      * @return 戰鬥記錄
      */
-    @GetMapping("/{playerId}/{battleId}")
+    /*@GetMapping("/{playerId}/{battleId}")
     public ResponseEntity<Map<String, Object>> getBattleById(
             @PathVariable String playerId,
             @PathVariable String battleId,
@@ -161,7 +171,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取所有敵人類型
@@ -169,7 +179,7 @@ public class BattleController {
      * 
      * @return 敵人類型配置
      */
-    @GetMapping("/enemies")
+    /*@GetMapping("/enemies")
     public ResponseEntity<Map<String, Object>> getAllEnemyTypes() {
         try {
             Map<String, EnemyType> enemyTypes = battleService.getAllEnemyTypes();
@@ -187,7 +197,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取特定敵人類型
@@ -196,7 +206,7 @@ public class BattleController {
      * @param enemyType 敵人類型識別碼
      * @return 敵人類型配置
      */
-    @GetMapping("/enemies/{enemyType}")
+   /*@GetMapping("/enemies/{enemyType}")
     public ResponseEntity<Map<String, Object>> getEnemyType(@PathVariable String enemyType) {
         try {
             EnemyType enemy = battleService.getEnemyType(enemyType);
@@ -221,7 +231,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取玩家戰鬥統計
@@ -231,7 +241,7 @@ public class BattleController {
      * @param isTest 是否為測試模式（可選，預設false）
      * @return 戰鬥統計
      */
-    @GetMapping("/stats/{playerId}")
+    /*@GetMapping("/stats/{playerId}")
     public ResponseEntity<Map<String, Object>> getBattleStatistics(
             @PathVariable String playerId,
             @RequestParam(defaultValue = "false") boolean isTest) {
@@ -259,7 +269,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 清理測試戰鬥數據
@@ -269,7 +279,7 @@ public class BattleController {
      * @param isTest 是否為測試模式（必須為true）
      * @return 操作結果
      */
-    @DeleteMapping("/clearTest/{playerId}")
+    /*@DeleteMapping("/clearTest/{playerId}")
     public ResponseEntity<Map<String, Object>> clearTestBattles(
             @PathVariable String playerId,
             @RequestParam(defaultValue = "false") boolean isTest) {
@@ -305,7 +315,7 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 
     /**
      * 獲取戰鬥系統狀態
@@ -313,7 +323,7 @@ public class BattleController {
      * 
      * @return 系統狀態
      */
-    @GetMapping("/status")
+    /*@GetMapping("/status")
     public ResponseEntity<Map<String, Object>> getBattleSystemStatus() {
         try {
             Map<String, Object> status = new HashMap<>();
@@ -334,5 +344,5 @@ public class BattleController {
             response.put("data", null);
             return ResponseEntity.status(500).body(response);
         }
-    }
+    }*/
 }

@@ -17,4 +17,4 @@ app:
     map-path:             classpath:config/map/maps.json
     soldier-path:         classpath:config/soldier/soldiers.json
     item-path:            classpath:config/item/items.json
-    enemies-path:         classpath:config/enemies.json
+    enemies-path:         classpath:config/battle/enemies.json

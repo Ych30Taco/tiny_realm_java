@@ -65,7 +65,6 @@ public class SoldierController {
             String playerId = (String) body.get("playerId");
             String soldierID = (String) body.get("soldierID");
             int count = (int) body.get("count");
-            
             GameState gameState = soldierService.createSoldier(playerId, soldierID, count,false);
             return ResponseEntity.ok(Map.of(
                 "success", true,
@@ -119,4 +118,5 @@ public class SoldierController {
             ));
         }
     }
+
 }

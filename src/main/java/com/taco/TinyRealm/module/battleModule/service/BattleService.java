@@ -45,7 +45,7 @@ public class BattleService {
     @Autowired
     private ResourceLoader resourceLoader;
     
-    @Value("${app.data.enemies-path:classpath:config/enemies.json}")
+    @Value("${app.data.enemies-path}")
     private org.springframework.core.io.Resource enemiesPath;
     
     /** 敵人類型配置 */
@@ -112,6 +112,22 @@ public class BattleService {
     }
 
     /**
+     * 獲取所有敵人類型
+     * @return 敵人類型映射
+     */
+    public Map<String, EnemyType> getAllEnemyTypes() {
+        return new HashMap<>(enemyTypes);
+    }
+
+    /**
+     * 獲取特定敵人類型
+     * @param enemyType 敵人類型識別碼
+     * @return 敵人類型配置
+     */
+    public EnemyType getEnemyType(String enemyType) {
+        return enemyTypes.get(enemyType);
+    }
+    /**
      * 開始戰鬥
      * @param playerId 玩家ID
      * @param soldierIds 參戰士兵ID列表
@@ -151,20 +167,21 @@ public class BattleService {
         if (gameState.getPlayer() != null && !enemyConfig.isPlayerLevelSufficient(gameState.getPlayer().getLevel())) {
             throw new IllegalArgumentException("Player level too low for this enemy type");
         }
-
+        
         // 獲取玩家士兵
         List<PlayerSoldier> playerSoldiers = getPlayerSoldiers(gameState, soldierIds);
         if (playerSoldiers.isEmpty()) {
             throw new IllegalArgumentException("No valid soldiers found for battle");
         }
+        System.out.println(playerSoldiers);
 
         // 創建敵方單位
         List<PlayerSoldier> enemySoldiers = createEnemySoldiers(enemyConfig);
-
+        System.out.println(enemyType);
         // 執行戰鬥邏輯
         Battle battle = executeBattle(playerId, playerSoldiers, enemySoldiers, enemyConfig, 
                                     locationX, locationY, isTest);
-
+         
         // 更新遊戲狀態
         updateGameStateAfterBattle(gameState, playerSoldiers, battle, isTest);
 
@@ -174,8 +191,8 @@ public class BattleService {
         }
 
         // 記錄事件
-        recordBattleEvent(playerId, battle, isTest);
-
+        //recordBattleEvent(playerId, battle, isTest);
+        
         return battle;
     }
 
@@ -187,9 +204,11 @@ public class BattleService {
      */
     private List<PlayerSoldier> getPlayerSoldiers(GameState gameState, List<String> soldierIds) {
         List<PlayerSoldier> playerSoldiers = new ArrayList<>();
+        System.out.println(playerSoldiers);
         for (String soldierId : soldierIds) {
             PlayerSoldier soldier = gameState.getSoldiers().get(soldierId);
-            if (soldier != null && "ACTIVE".equals(soldier.getStatus())) {
+            System.out.println("soldier"+soldier);
+            if (soldier != null /*&& "ACTIVE".equals(soldier.getStatus())*/) {
                 playerSoldiers.add(soldier);
             }
         }
@@ -215,8 +234,6 @@ public class BattleService {
             enemySoldier.setMaxHealth(unitConfig.getHealth());
             enemySoldier.setStatus("ACTIVE");
             enemySoldier.setCount(unitConfig.getCount());
-            enemySoldier.setCreatedTime(System.currentTimeMillis());
-            enemySoldier.setLastUpdatedTime(System.currentTimeMillis());
             enemySoldiers.add(enemySoldier);
         }
         return enemySoldiers;
@@ -345,14 +362,13 @@ public class BattleService {
             if (soldier.getHealth() <= 0) {
                 soldier.setStatus("INJURED");
             }
-            soldier.setLastUpdatedTime(System.currentTimeMillis());
         }
 
         // 添加戰鬥記錄
         if (gameState.getBattles() == null) {
             gameState.setBattles(new ArrayList<>());
         }
-        gameState.getBattles().add(battle);
+        //gameState.getBattles().add(battle);後續資料讀取有問題，要重新調整
 
         // 保存遊戲狀態
         storageService.saveGameState(battle.getPlayerId(), gameState, "戰鬥完成", isTest);
@@ -371,11 +387,11 @@ public class BattleService {
             Map<String, Integer> resourceMap = new HashMap<>();
             // 這裡需要根據實際的Resource模型來映射資源
             // 暫時使用預設值，實際實現時需要根據Resource模型的具體結構來調整
-            resourceMap.put("gold", 100);
-            resourceMap.put("food", 50);
-            resourceMap.put("wood", 30);
-            resourceMap.put("stone", 20);
-            resourceMap.put("iron", 10);
+            resourceMap.put("gold", 1000);
+            resourceMap.put("food", 1000);
+            resourceMap.put("wood", 1000);
+            resourceMap.put("stone", 1000);
+            resourceMap.put("iron", 1000);
             
             resourceService.addResources(playerId, resourceMap, isTest);
         }
@@ -387,7 +403,7 @@ public class BattleService {
      * @param battle 戰鬥結果
      * @param isTest 是否測試模式
      */
-    private void recordBattleEvent(String playerId, Battle battle, boolean isTest) {
+    /*private void recordBattleEvent(String playerId, Battle battle, boolean isTest) {
         String eventMessage = String.format("Battle against %s: %s", 
                                           battle.getEnemyType(), battle.getResult());
         try {
@@ -395,7 +411,7 @@ public class BattleService {
         } catch (IOException e) {
             // 忽略事件記錄失敗
         }
-    }
+    }*/
 
     /**
      * 獲取玩家戰鬥記錄
@@ -404,7 +420,7 @@ public class BattleService {
      * @return 戰鬥記錄列表
      * @throws IOException 操作失敗時拋出異常
      */
-    public List<Battle> getBattles(String playerId, boolean isTest) throws IOException {
+    /*public List<Battle> getBattles(String playerId, boolean isTest) throws IOException {
         if (playerId == null || playerId.trim().isEmpty()) {
             throw new IllegalArgumentException("Player ID cannot be null or empty");
         }
@@ -415,7 +431,7 @@ public class BattleService {
         }
 
         return gameState.getBattles() != null ? gameState.getBattles() : new ArrayList<>();
-    }
+    }*/
 
     /**
      * 獲取特定戰鬥記錄
@@ -425,30 +441,15 @@ public class BattleService {
      * @return 戰鬥記錄
      * @throws IOException 操作失敗時拋出異常
      */
-    public Battle getBattleById(String playerId, String battleId, boolean isTest) throws IOException {
+    /*public Battle getBattleById(String playerId, String battleId, boolean isTest) throws IOException {
         List<Battle> battles = getBattles(playerId, isTest);
         return battles.stream()
                 .filter(battle -> battle.getId().equals(battleId))
                 .findFirst()
                 .orElse(null);
-    }
+    }*/
 
-    /**
-     * 獲取所有敵人類型
-     * @return 敵人類型映射
-     */
-    public Map<String, EnemyType> getAllEnemyTypes() {
-        return new HashMap<>(enemyTypes);
-    }
 
-    /**
-     * 獲取特定敵人類型
-     * @param enemyType 敵人類型識別碼
-     * @return 敵人類型配置
-     */
-    public EnemyType getEnemyType(String enemyType) {
-        return enemyTypes.get(enemyType);
-    }
 
     /**
      * 獲取玩家戰鬥統計
@@ -457,7 +458,7 @@ public class BattleService {
      * @return 戰鬥統計
      * @throws IOException 操作失敗時拋出異常
      */
-    public Map<String, Object> getBattleStatistics(String playerId, boolean isTest) throws IOException {
+    /*public Map<String, Object> getBattleStatistics(String playerId, boolean isTest) throws IOException {
         List<Battle> battles = getBattles(playerId, isTest);
         
         Map<String, Object> stats = new HashMap<>();
@@ -472,7 +473,7 @@ public class BattleService {
         }
         
         return stats;
-    }
+    }*/
 
     /**
      * 清理測試數據
@@ -480,7 +481,7 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    public void clearTestBattles(String playerId, boolean isTest) throws IOException {
+    /*public void clearTestBattles(String playerId, boolean isTest) throws IOException {
         if (!isTest) {
             throw new IllegalArgumentException("Can only clear test battles");
         }
@@ -490,7 +491,7 @@ public class BattleService {
             gameState.setBattles(new ArrayList<>());
             storageService.saveGameState(playerId, gameState, "清理測試數據", isTest);
         }
-    }
+    }*/
 }
 
 

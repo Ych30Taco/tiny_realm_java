@@ -15,7 +15,7 @@ public class Resource {
     private Map<String, String> name;
     private Map<String, String> description;
     private String resourceIconURL;
-    private boolean isPremium;
+    private boolean premium;
     private boolean stackable;
     private String category;
     private int sortOrder;

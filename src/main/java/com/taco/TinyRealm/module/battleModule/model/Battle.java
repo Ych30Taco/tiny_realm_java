@@ -396,4 +396,25 @@ public class Battle {
     public Object getStatistic(String key) {
         return statistics != null ? statistics.get(key) : null;
     }
+
+    // 讓 JSON 直接映射 completed/victory/draw/defeat
+    @JsonProperty("completed")
+    public boolean getCompleted() {
+        return isCompleted();
+    }
+
+    @JsonProperty("victory")
+    public boolean getVictory() {
+        return isVictory();
+    }
+
+    @JsonProperty("draw")
+    public boolean getDraw() {
+        return isDraw();
+    }
+
+    @JsonProperty("defeat")
+    public boolean getDefeat() {
+        return isDefeat();
+    }
 }

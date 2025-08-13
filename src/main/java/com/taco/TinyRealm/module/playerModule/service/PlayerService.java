@@ -51,14 +51,6 @@ public class PlayerService {
         gameState.setPlayer(player);
         gameState.setResources(initializePlayerResources());
         gameState.setBuildings(initializePlayerBuilding(player.getId()));
-        /*gameState.setUnits(new java.util.ArrayList<>());
-        gameState.setTasks(new java.util.ArrayList<>());
-        gameState.setInventory(new java.util.ArrayList<>());
-        gameState.setTrades(new java.util.ArrayList<>());   
-        gameState.setTechnologies(new java.util.ArrayList<>());
-        gameState.setBattles(new java.util.ArrayList<>());
-        gameState.setEvents(new java.util.ArrayList<>());
-        gameState.setTerrains(new java.util.ArrayList<>());*/
         System.out.println("---- 應用程式啟動中，已建立玩家 " + player.getId().toString() + " ----");
         storageService.saveGameState(player.getId(), gameState,"建立玩家", isTest);
         return player;

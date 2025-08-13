@@ -25,7 +25,7 @@ public class TerrainMapController {
     }
     
     @PostMapping("/typeById")
-    public ResponseEntity<?> getResourceTypeById(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> getTerrainTypeById(@RequestBody Map<String, Object> body) {
         String terrainID = (String) body.get("terrainID");
         return ResponseEntity.ok(Map.of("success", true, "message", "獲取地形類型成功", "data", terrainMapService.getTerrainTypeById(terrainID)));
     }
