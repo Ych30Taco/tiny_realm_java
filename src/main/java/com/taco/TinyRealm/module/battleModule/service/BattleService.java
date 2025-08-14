@@ -293,7 +293,7 @@ public class BattleService {
         if ("WIN".equals(result)) {
             battle.setRewards(enemyConfig.getRewards());
         } else {
-            battle.setRewards(new Resource()); // 空獎勵
+            battle.setRewards(new HashMap<>()); // 空獎勵
         }
 
         // 添加統計數據
@@ -379,11 +379,10 @@ public class BattleService {
         
         // 簡化獎勵數據，創建一個新的 Resource 對象，只包含必要信息
         if (battle.getRewards() != null) {
-            Resource simplifiedRewards = new Resource();
-            simplifiedRewards.setId("battle_rewards");
+            Map<String, Integer> simplifiedRewards = new HashMap<>();
+            simplifiedRewards.put("food", 100);
             // 不設置複雜的獎勵數據，避免序列化問題
-            simplifiedRewards.setNowAmount(0);
-            simplifiedRewards.setMaxAmount(0);
+            simplifiedRewards.put("wood", 100);
             battleRecord.setRewards(simplifiedRewards);
         }
         
@@ -417,19 +416,19 @@ public class BattleService {
      * @param isTest 是否測試模式
      * @throws IOException 操作失敗時拋出異常
      */
-    private void distributeRewards(String playerId, Resource rewards, boolean isTest) throws IOException {
+    private void distributeRewards(String playerId, Map<String, Integer> rewards, boolean isTest) throws IOException {
         if (rewards != null) {
             // 創建資源映射
-            Map<String, Integer> resourceMap = new HashMap<>();
+            /*Map<String, Integer> resourceMap = new HashMap<>();
             // 這裡需要根據實際的Resource模型來映射資源
             // 暫時使用預設值，實際實現時需要根據Resource模型的具體結構來調整
             resourceMap.put("gold", 1000);
             resourceMap.put("food", 1000);
             resourceMap.put("wood", 1000);
             resourceMap.put("stone", 1000);
-            resourceMap.put("iron", 1000);
+            resourceMap.put("iron", 1000);*/
             
-            resourceService.addResources(playerId, resourceMap, isTest);
+            resourceService.addResources(playerId, rewards, isTest);
         }
     }
 

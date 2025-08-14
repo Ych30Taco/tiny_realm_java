@@ -15,20 +15,8 @@
       }
     ],
     "rewards": {
-      "id": "bandit_rewards",
-      "name": {"zh-TW": "強盜戰利品"},
-      "description": {"zh-TW": "從強盜身上搜刮的戰利品"},
-      "resourceIconURL": "",
-      "premium": false,
-      "stackable": true,
-      "category": "loot",
-      "sortOrder": 1,
-      "nowAmount": 100,
-      "maxAmount": 1000,
-      "protectedStoragePercentage": 0.1,
-      "protectedStorageMaxAmount": 100,
-      "acquisitionMethods": ["battle"],
-      "baseProductionRate": 0
+      "food":100,
+      "wood":100
     },
     "difficulty": "EASY",
     "minPlayerLevel": 3,
@@ -65,20 +53,8 @@
       }
     ],
     "rewards": {
-      "id": "wolf_rewards",
-      "name": {"zh-TW": "狼皮戰利品"},
-      "description": {"zh-TW": "從野狼身上獲得的珍貴毛皮"},
-      "resourceIconURL": "",
-      "premium": false,
-      "stackable": true,
-      "category": "loot",
-      "sortOrder": 2,
-      "nowAmount": 150,
-      "maxAmount": 1000,
-      "protectedStoragePercentage": 0.1,
-      "protectedStorageMaxAmount": 100,
-      "acquisitionMethods": ["battle"],
-      "baseProductionRate": 0
+      "food":100,
+      "wood":100
     },
     "difficulty": "MEDIUM",
     "minPlayerLevel": 6,
@@ -115,20 +91,8 @@
       }
     ],
     "rewards": {
-      "id": "goblin_rewards",
-      "name": {"zh-TW": "哥布林戰利品"},
-      "description": {"zh-TW": "從哥布林身上搜刮的各種物品"},
-      "resourceIconURL": "",
-      "premium": false,
-      "stackable": true,
-      "category": "loot",
-      "sortOrder": 3,
-      "nowAmount": 200,
-      "maxAmount": 1000,
-      "protectedStoragePercentage": 0.1,
-      "protectedStorageMaxAmount": 100,
-      "acquisitionMethods": ["battle"],
-      "baseProductionRate": 0
+      "food":100,
+      "wood":100
     },
     "difficulty": "HARD",
     "minPlayerLevel": 10,

@@ -34,7 +34,7 @@ public class EnemyType {
     
     /** 戰鬥獎勵 */
     @JsonProperty("rewards")
-    private Resource rewards;
+    private Map<String, Integer> rewards;
     
     /** 戰鬥難度 */
     @JsonProperty("difficulty")
@@ -157,7 +157,7 @@ public class EnemyType {
      * 取得戰鬥獎勵
      * @return 戰鬥獎勵資源
      */
-    public Resource getRewards() { 
+    public Map<String, Integer> getRewards() { 
         return rewards; 
     }
     
@@ -165,7 +165,7 @@ public class EnemyType {
      * 設定戰鬥獎勵
      * @param rewards 戰鬥獎勵資源
      */
-    public void setRewards(Resource rewards) { 
+    public void setRewards(Map<String, Integer> rewards) { 
         this.rewards = rewards; 
     }
     

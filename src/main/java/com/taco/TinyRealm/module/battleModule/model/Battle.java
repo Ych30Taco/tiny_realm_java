@@ -39,7 +39,7 @@ public class Battle {
     
     /** 戰鬥獎勵資源 */
     @JsonProperty("rewards")
-    private Resource rewards;
+    private Map<String, Integer> rewards;
     
     /** 戰鬥發生時間戳（毫秒） */
     @JsonProperty("timestamp")
@@ -194,7 +194,7 @@ public class Battle {
      * 取得戰鬥獎勵
      * @return 戰鬥獎勵資源
      */
-    public Resource getRewards() { 
+    public Map<String, Integer> getRewards() { 
         return rewards; 
     }
     
@@ -202,7 +202,7 @@ public class Battle {
      * 設定戰鬥獎勵
      * @param rewards 戰鬥獎勵資源
      */
-    public void setRewards(Resource rewards) { 
+    public void setRewards(Map<String, Integer> rewards) { 
         this.rewards = rewards; 
     }
     
