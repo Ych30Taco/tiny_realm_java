@@ -138,7 +138,7 @@ public class BattleService {
      * @return 戰鬥結果
      * @throws IOException 操作失敗時拋出異常
      */
-    public Battle startBattle(String playerId, List<String> soldierIds, String enemyType, 
+    public Battle startBattle(String playerId, Map<String,Integer> soldierIds, String enemyType, 
                              int locationX, int locationY, boolean isTest) throws IOException {
         // 驗證參數
         if (playerId == null || playerId.trim().isEmpty()) {
@@ -202,12 +202,11 @@ public class BattleService {
      * @param soldierIds 士兵ID列表
      * @return 玩家士兵列表
      */
-    private List<PlayerSoldier> getPlayerSoldiers(GameState gameState, List<String> soldierIds) {
+    private List<PlayerSoldier> getPlayerSoldiers(GameState gameState, Map<String,Integer> soldierIds) {
         List<PlayerSoldier> playerSoldiers = new ArrayList<>();
-        System.out.println(playerSoldiers);
-        for (String soldierId : soldierIds) {
+        for (String soldierId : soldierIds.keySet()) {
             PlayerSoldier soldier = gameState.getSoldiers().get(soldierId);
-            System.out.println("soldier"+soldier);
+            soldier.setCount(soldierIds.get(soldierId));
             if (soldier != null /*&& "ACTIVE".equals(soldier.getStatus())*/) {
                 playerSoldiers.add(soldier);
             }
@@ -266,7 +265,7 @@ public class BattleService {
         // 計算戰鬥結果
         int playerStrength = calculateTotalStrength(playerSoldiers);
         int enemyStrength = calculateTotalStrength(enemySoldiers);
-        
+        System.out.println("playerStrength = "+playerStrength+", enemyStrength = "+enemyStrength);
         // 添加隨機因素
         double playerRandomFactor = 0.8 + ThreadLocalRandom.current().nextDouble() * 0.4; // 0.8-1.2
         double enemyRandomFactor = 0.8 + ThreadLocalRandom.current().nextDouble() * 0.4; // 0.8-1.2
@@ -315,7 +314,7 @@ public class BattleService {
      */
     private int calculateTotalStrength(List<PlayerSoldier> soldiers) {
         return soldiers.stream()
-                .mapToInt(soldier -> soldier.getAttack() * soldier.getLevel() * soldier.getHealth() / soldier.getMaxHealth())
+                .mapToInt(soldier -> soldier.getAttack() * soldier.getLevel() * soldier.getHealth() / soldier.getMaxHealth()*soldier.getCount())
                 .sum();
     }
 

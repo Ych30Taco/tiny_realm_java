@@ -51,7 +51,7 @@ public class InventoryController {
      * 獲取特定物品類型
      * GET /api/inventory/types/{type}
      */
-    @GetMapping("/type")
+    @PostMapping("/type")
     public ResponseEntity<Map<String, Object>> getItemTypeById(@RequestBody Map<String, Object> body) {
         try {
             String itemType = (String) body.get("itemType");

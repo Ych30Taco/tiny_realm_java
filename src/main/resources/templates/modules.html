@@ -608,20 +608,24 @@
                                 </div>
                                 <div class="module-body">
                                     <form id="battleForm">
+                                        <!-- 玩家選擇 -->
                                         <div class="mb-3">
-                                            <label class="form-label">玩家ID</label>
-                                            <input type="text" class="form-control" id="battlePlayerId" value="player1">
+                                            <label class="form-label">選擇玩家</label>
+                                            <select class="form-select" id="battlePlayerSelect"></select>
                                         </div>
+                                        <!-- 士兵選擇區 -->
+                                        <div class="mb-3">
+                                            <label class="form-label">選擇派出士兵</label>
+                                            <div id="soldierSelectArea"></div>
+                                        </div>
+                                        <!-- 敵人類型 -->
                                         <div class="mb-3">
                                             <label class="form-label">敵人類型</label>
                                             <select class="form-select" id="enemyType">
                                                 <option value="">選擇敵人類型...</option>
                                             </select>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">參戰士兵ID (逗號分隔)</label>
-                                            <input type="text" class="form-control" id="soldierIds" placeholder="soldier1,soldier2,soldier3">
-                                        </div>
+                                        <!-- 戰鬥座標 -->
                                         <div class="mb-3">
                                             <label class="form-label">戰鬥位置X</label>
                                             <input type="number" class="form-control" id="battleLocationX" min="0" max="7" value="0">
@@ -1481,13 +1485,22 @@
 
         // 戰鬥相關功能
         function startBattle() {
-            const playerId = document.getElementById('battlePlayerId').value;
+            const playerId = document.getElementById('battlePlayerSelect').value;
             const enemyType = document.getElementById('enemyType').value;
-            const soldierIds = document.getElementById('soldierIds').value.split(',').map(id => id.trim()).filter(id => id);
             const locationX = document.getElementById('battleLocationX').value;
             const locationY = document.getElementById('battleLocationY').value;
             const isTest = document.getElementById('battleIsTest').checked;
-            
+
+            // 收集派出士兵ID與數量
+            const soldierInputs = document.querySelectorAll('.soldier-send-count');
+            const soldierIds = {};
+            soldierInputs.forEach(input => {
+                const count = parseInt(input.value);
+                if (count > 0) {
+                    soldierIds[input.dataset.sid] = count;
+                }
+            });
+
             if (!enemyType) {
                 showResult('請選擇敵人類型！');
                 return;
@@ -1521,7 +1534,7 @@
                 hideLoading();
                 if (data.success) {
                     showResult(`戰鬥開始成功！\n結果：${data.message}\n\n戰鬥 ID: ${data.data.id}`);
-                    loadBattleHistory(); // 重新載入戰鬥記錄
+                    loadBattleHistory();
                 } else {
                     showResult(`戰鬥開始失敗：${data.message}`);
                 }
@@ -1603,7 +1616,7 @@
 
         function loadEnemyTypes() {
             showLoading();
-            fetch('/api/battle/enemies')
+            fetch('/api/battle/types')
                 .then(response => response.json())
                 .then(data => {
                     hideLoading();
@@ -1763,6 +1776,73 @@
             }).catch(error => {
                 hideLoading();
                 showResult(`檢查模組狀態失敗：${error.message}`);
+            });
+        }
+
+        // 載入所有玩家到戰鬥玩家選單
+        function loadBattlePlayers() {
+            fetch('/api/storage/playerList')
+                .then(r => r.json())
+                .then(data => {
+                    const select = document.getElementById('battlePlayerSelect');
+                    select.innerHTML = '';
+                    if (data.success && Array.isArray(data.data)) {
+                        data.data.forEach(pid => {
+                            select.innerHTML += `<option value="${pid}">${pid}</option>`;
+                        });
+                    }
+                    // 預設選第一個
+                    if (select.options.length > 0) {
+                        select.value = select.options[0].value;
+                        loadPlayerSoldiers(select.value);
+                        loadEnemyTypes();
+                    }
+                });
+        }
+
+        // 玩家選擇變更時載入士兵
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            loadBattlePlayers();
+            document.getElementById('battlePlayerSelect').addEventListener('change', function() {
+                loadPlayerSoldiers(this.value);
+            });
+            // ...existing code...
+        });
+
+        // 載入玩家士兵
+        function loadPlayerSoldiers(playerId) {
+            fetch('/api/player/userdata', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ playerId: playerId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                const area = document.getElementById('soldierSelectArea');
+                area.innerHTML = '';
+                if (data.success && data.data && data.data.soldiers) {
+                    const soldiers = data.data.soldiers;
+                    // 產生士兵選擇表格
+                    let html = '<table class="table table-sm"><thead><tr><th>士兵ID</th><th>名稱</th><th>數量</th><th>派出</th></tr></thead><tbody>';
+                    Object.keys(soldiers).forEach(sid => {
+                        const s = soldiers[sid];
+                        html += `<tr>
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${s.count}</td>
+                            <td>
+                                <input type="number" min="0" max="${s.count}" value="0" class="form-control soldier-send-count" data-sid="${s.id}">
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table>';
+                    area.innerHTML = html;
+                } else {
+                    area.innerHTML = '<p class="text-muted">無士兵資料</p>';
+                }
             });
         }
     </script>

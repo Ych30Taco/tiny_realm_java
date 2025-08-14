@@ -28,7 +28,7 @@ public class PlayerController {
         }
     }
 
-    @GetMapping("/userdata")
+    @PostMapping("/userdata")
     public ResponseEntity<?> getPlayer(@RequestBody Map<String, Object> body) {
         try {
             String playerId = (String) body.get("playerId");

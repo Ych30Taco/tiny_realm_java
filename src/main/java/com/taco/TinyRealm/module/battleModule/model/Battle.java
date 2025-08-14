@@ -73,6 +73,18 @@ public class Battle {
     @JsonProperty("description")
     private String description;
 
+    @JsonProperty("completed")
+    private boolean completed;
+  
+    @JsonProperty("victory")
+    private boolean victory;
+  
+    @JsonProperty("draw")
+    private boolean draw;
+  
+    @JsonProperty("defeat")
+    private boolean defeat;
+
     /**
      * 預設建構函數
      */
@@ -397,24 +409,5 @@ public class Battle {
         return statistics != null ? statistics.get(key) : null;
     }
 
-    // 讓 JSON 直接映射 completed/victory/draw/defeat
-    @JsonProperty("completed")
-    public boolean getCompleted() {
-        return isCompleted();
-    }
-
-    @JsonProperty("victory")
-    public boolean getVictory() {
-        return isVictory();
-    }
-
-    @JsonProperty("draw")
-    public boolean getDraw() {
-        return isDraw();
-    }
-
-    @JsonProperty("defeat")
-    public boolean getDefeat() {
-        return isDefeat();
-    }
+  
 }

@@ -45,8 +45,7 @@ public class BattleController {
         
         try {
             String playerId = (String) body.get("playerId");
-            @SuppressWarnings("unchecked")
-            List<String> soldierIds = (List<String>) body.get("soldierIds");
+            Map<String,Integer> soldierIds = (Map<String,Integer>) body.get("soldierIds");
             String enemyType = (String) body.get("enemyType");
             Integer locationX = (Integer) body.getOrDefault("locationX", 0);
             Integer locationY = (Integer) body.getOrDefault("locationY", 0);
