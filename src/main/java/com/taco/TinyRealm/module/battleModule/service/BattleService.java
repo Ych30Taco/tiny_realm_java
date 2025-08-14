@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * 戰鬥服務
@@ -57,10 +56,8 @@ public class BattleService {
 
     /**
      * 初始化服務，載入敵人類型配置
-     * 改為異步載入，避免阻塞啟動
      */
     @PostConstruct
-    @Async("startupTaskExecutor")
     public void init() {
         System.out.println("---- 應用程式啟動中，載入戰鬥模組 ----");
         try {
@@ -70,8 +67,7 @@ public class BattleService {
         } catch (Exception e) {
             System.out.println("---- 應用程式啟動中，載入戰鬥模組失敗 ----");
             e.printStackTrace();
-            // 不拋出異常，避免阻塞啟動
-            // throw new RuntimeException("Failed to load enemies.json: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to load enemies.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入戰鬥模組完成 ----");
     }

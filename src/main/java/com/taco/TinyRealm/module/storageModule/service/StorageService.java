@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * 存儲服務類別
@@ -59,19 +58,7 @@ public class StorageService {
      * @return 遊戲狀態，如果不存在則返回null
      */
     public GameState getGameStateListById(String playerId) {
-        GameState gameState = gameStateList.get(playerId);
-        if (gameState == null) {
-            // 如果記憶體中沒有，嘗試從檔案載入
-            try {
-                gameState = loadGameState(playerId, false);
-                if (gameState != null) {
-                    gameStateList.put(playerId, gameState);
-                }
-            } catch (IOException e) {
-                System.err.println("懶載入玩家 " + playerId + " 數據失敗: " + e.getMessage());
-            }
-        }
-        return gameState;
+        return gameStateList.get(playerId);
     }
     
     /**
@@ -119,10 +106,9 @@ public class StorageService {
     
     /**
      * 應用程式啟動時的初始化方法
-     * 改為異步載入，避免阻塞啟動
+     * 載入所有已存在的遊戲狀態檔案
      */
     @PostConstruct
-    @Async("startupTaskExecutor")
     public void init() {
         System.out.println("---- 應用程式啟動中，載入遊戲資料 ----");
         try {
@@ -133,24 +119,20 @@ public class StorageService {
                 System.out.println("---- 創建存儲目錄: " + storagePath + " ----");
             }
             
-            // 異步載入所有遊戲狀態檔案
+            // 載入所有遊戲狀態檔案
             List<String> fileIds = listAllFiles();
             int loadedCount = 0;
             
-            // 使用並行流加速載入
-            loadedCount = fileIds.parallelStream()
-                .mapToInt(id -> {
-                    try {
-                        GameState gameState = objectMapper.readValue(
-                            new File(storagePath + id + ".json"), GameState.class);
-                        gameStateList.put(id, gameState);
-                        return 1;
-                    } catch (Exception e) {
-                        System.out.println("載入玩家 " + id + " 的遊戲資料失敗: " + e.getMessage());
-                        return 0;
-                    }
-                })
-                .sum();
+            for (String id : fileIds) {
+                try {
+                    GameState gameState = objectMapper.readValue(
+                        new File(storagePath + id + ".json"), GameState.class);
+                    gameStateList.put(id, gameState);
+                    loadedCount++;
+                } catch (Exception e) {
+                    System.out.println("載入玩家 " + id + " 的遊戲資料失敗: " + e.getMessage());
+                }
+            }
             
             System.out.println("---- 已載入 " + loadedCount + " 位玩家遊戲資料 ----");
         } catch (Exception e) {
