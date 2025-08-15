@@ -172,12 +172,11 @@ public class BattleService {
         List<PlayerSoldier> playerSoldiers = getPlayerSoldiers(gameState, soldierIds);
         if (playerSoldiers.isEmpty()) {
             throw new IllegalArgumentException("No valid soldiers found for battle");
-        }
-        System.out.println(playerSoldiers);
+        };
 
         // 創建敵方單位
         List<PlayerSoldier> enemySoldiers = createEnemySoldiers(enemyConfig);
-        System.out.println(enemyType);
+        
         // 執行戰鬥邏輯
         Battle battle = executeBattle(playerId, playerSoldiers, enemySoldiers, enemyConfig, 
                                     locationX, locationY, isTest);
