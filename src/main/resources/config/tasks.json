@@ -1,0 +1,192 @@
+[
+  {
+    "id": "welcome_task",
+    "name": "歡迎來到 TinyRealm",
+    "description": "完成新手教程，了解遊戲基本操作",
+    "type": "tutorial",
+    "category": "main",
+    "level": 1,
+    "maxLevel": 1,
+    "requirements": {},
+    "objectives": [
+      {
+        "id": "create_player",
+        "description": "創建一個玩家角色",
+        "type": "create_player",
+        "target": 1,
+        "current": 0
+      },
+      {
+        "id": "build_town_hall",
+        "description": "建造市政廳",
+        "type": "build_building",
+        "target": 1,
+        "current": 0,
+        "buildingType": "town_hall"
+      }
+    ],
+    "rewards": {
+      "gold": 100,
+      "food": 200,
+      "wood": 150,
+      "stone": 100,
+      "iron": 50
+    },
+    "status": "ACTIVE",
+    "isRepeatable": false,
+    "timeLimit": 0,
+    "icon": "/images/tasks/welcome_task.png"
+  },
+  {
+    "id": "first_battle",
+    "name": "第一場戰鬥",
+    "description": "與敵人進行你的第一場戰鬥",
+    "type": "battle",
+    "category": "combat",
+    "level": 2,
+    "maxLevel": 1,
+    "requirements": {
+      "player_level": 2
+    },
+    "objectives": [
+      {
+        "id": "win_battle",
+        "description": "贏得一場戰鬥",
+        "type": "win_battle",
+        "target": 1,
+        "current": 0
+      }
+    ],
+    "rewards": {
+      "gold": 200,
+      "food": 100,
+      "wood": 100,
+      "stone": 50,
+      "iron": 25
+    },
+    "status": "ACTIVE",
+    "isRepeatable": false,
+    "timeLimit": 0,
+    "icon": "/images/tasks/first_battle.png"
+  },
+  {
+    "id": "resource_collector",
+    "name": "資源收集者",
+    "description": "收集各種基礎資源",
+    "type": "collection",
+    "category": "resource",
+    "level": 1,
+    "maxLevel": 5,
+    "requirements": {},
+    "objectives": [
+      {
+        "id": "collect_food",
+        "description": "收集食物資源",
+        "type": "collect_resource",
+        "target": 1000,
+        "current": 0,
+        "resourceType": "food"
+      },
+      {
+        "id": "collect_wood",
+        "description": "收集木材資源",
+        "type": "collect_resource",
+        "target": 500,
+        "current": 0,
+        "resourceType": "wood"
+      },
+      {
+        "id": "collect_stone",
+        "description": "收集石頭資源",
+        "type": "collect_resource",
+        "target": 300,
+        "current": 0,
+        "resourceType": "stone"
+      }
+    ],
+    "rewards": {
+      "gold": 150,
+      "food": 300,
+      "wood": 200,
+      "stone": 150,
+      "iron": 75
+    },
+    "status": "ACTIVE",
+    "isRepeatable": true,
+    "timeLimit": 0,
+    "icon": "/images/tasks/resource_collector.png"
+  },
+  {
+    "id": "building_master",
+    "name": "建築大師",
+    "description": "建造和升級各種建築",
+    "type": "construction",
+    "category": "building",
+    "level": 3,
+    "maxLevel": 3,
+    "requirements": {
+      "player_level": 3,
+      "buildings": {
+        "town_hall": 2
+      }
+    },
+    "objectives": [
+      {
+        "id": "upgrade_buildings",
+        "description": "升級建築到指定等級",
+        "type": "upgrade_buildings",
+        "target": 5,
+        "current": 0
+      },
+      {
+        "id": "build_farm",
+        "description": "建造農場",
+        "type": "build_building",
+        "target": 2,
+        "current": 0,
+        "buildingType": "farm"
+      }
+    ],
+    "rewards": {
+      "gold": 300,
+      "food": 500,
+      "wood": 400,
+      "stone": 300,
+      "iron": 150
+    },
+    "status": "ACTIVE",
+    "isRepeatable": false,
+    "timeLimit": 0,
+    "icon": "/images/tasks/building_master.png"
+  },
+  {
+    "id": "daily_login",
+    "name": "每日登入",
+    "description": "連續登入遊戲獲得獎勵",
+    "type": "daily",
+    "category": "daily",
+    "level": 1,
+    "maxLevel": 1,
+    "requirements": {},
+    "objectives": [
+      {
+        "id": "login_days",
+        "description": "連續登入天數",
+        "type": "login_days",
+        "target": 7,
+        "current": 0
+      }
+    ],
+    "rewards": {
+      "gold": 50,
+      "food": 100,
+      "wood": 75,
+      "stone": 50,
+      "iron": 25
+    },
+    "status": "ACTIVE",
+    "isRepeatable": true,
+    "timeLimit": 86400000,
+    "icon": "/images/tasks/daily_login.png"
+  }
+]

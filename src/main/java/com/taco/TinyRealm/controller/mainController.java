@@ -12,7 +12,7 @@ public class mainController {
     @PostMapping("/main")
 
     public Map<String, Object> getmain(@RequestBody Map<String, Object> body) {
-        return Map.of("status", "success", "data", body);
+        return Map.of("success", true, "message", "主控制器回應成功", "data", body);
     }
     
 }

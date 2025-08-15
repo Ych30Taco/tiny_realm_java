@@ -1,0 +1,101 @@
+[
+  {
+    "id": "alliance_1",
+    "name": "星辰聯盟",
+    "description": "致力於和平發展的友好聯盟",
+    "leaderId": "player1",
+    "members": [
+      {
+        "playerId": "player1",
+        "role": "LEADER",
+        "joinTime": 1640995200000,
+        "contribution": 1000
+      },
+      {
+        "playerId": "player2",
+        "role": "OFFICER",
+        "joinTime": 1640995800000,
+        "contribution": 800
+      },
+      {
+        "playerId": "player3",
+        "role": "MEMBER",
+        "joinTime": 1640996400000,
+        "contribution": 500
+      }
+    ],
+    "level": 3,
+    "experience": 2500,
+    "maxMembers": 20,
+    "createdTime": 1640995200000,
+    "status": "ACTIVE",
+    "icon": "/images/alliances/stars_alliance.png",
+    "color": "#FFD700"
+  },
+  {
+    "id": "alliance_2",
+    "name": "鐵血軍團",
+    "description": "專注於軍事發展的強大聯盟",
+    "leaderId": "player4",
+    "members": [
+      {
+        "playerId": "player4",
+        "role": "LEADER",
+        "joinTime": 1640995200000,
+        "contribution": 1500
+      },
+      {
+        "playerId": "player5",
+        "role": "OFFICER",
+        "joinTime": 1640996000000,
+        "contribution": 1200
+      },
+      {
+        "playerId": "player6",
+        "role": "MEMBER",
+        "joinTime": 1640996800000,
+        "contribution": 900
+      }
+    ],
+    "level": 4,
+    "experience": 4000,
+    "maxMembers": 25,
+    "createdTime": 1640995200000,
+    "status": "ACTIVE",
+    "icon": "/images/alliances/iron_blood.png",
+    "color": "#DC143C"
+  },
+  {
+    "id": "alliance_3",
+    "name": "商業公會",
+    "description": "專注於貿易和經濟發展的聯盟",
+    "leaderId": "player7",
+    "members": [
+      {
+        "playerId": "player7",
+        "role": "LEADER",
+        "joinTime": 1640995200000,
+        "contribution": 2000
+      },
+      {
+        "playerId": "player8",
+        "role": "OFFICER",
+        "joinTime": 1640996200000,
+        "contribution": 1800
+      },
+      {
+        "playerId": "player9",
+        "role": "MEMBER",
+        "joinTime": 1640997000000,
+        "contribution": 1500
+      }
+    ],
+    "level": 5,
+    "experience": 6000,
+    "maxMembers": 30,
+    "createdTime": 1640995200000,
+    "status": "ACTIVE",
+    "icon": "/images/alliances/merchant_guild.png",
+    "color": "#32CD32"
+  }
+]

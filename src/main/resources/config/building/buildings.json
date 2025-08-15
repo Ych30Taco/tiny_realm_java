@@ -1,0 +1,200 @@
+[
+  {
+    "id": "mainHall",
+    "name": "主城",
+    "type": "function",
+    "resourceType": null,
+    "maxCount": 5,
+    "allowedTerrains": ["plain", "grassland","desert","mountain"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
+        "output": { },
+        "prerequisites": {},
+        "productionRate": 0
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
+        "output": { "food": 150 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 0
+      }
+    ]
+  },
+  {
+    "id": "barracks",
+    "name": "兵營",
+    "type": "military",
+    "resourceType": null,
+    "maxCount": 2,
+    "allowedTerrains": ["plain", "grassland", "desert", "mountain"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": {  "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
+        "output": { "soldierCapacity": 50 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 0
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": {  "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 0 },
+        "output": { "soldierCapacity": 100 },
+        "prerequisites": { "barracks": 1 },
+        "productionRate": 0
+      },{
+        "level": 3,
+        "buildTime": 600000,
+        "cost": {  "FOOD": 1500,"WOOD": 1500,"IRON": 1500,"STONE": 1500 },
+        "output": { "soldierCapacity": 150 },
+        "prerequisites": { "barracks": 2 },
+        "productionRate": 0
+      }
+    ]
+  },
+  {
+    "id": "farm",
+    "name": "農田",
+    "type": "resource",
+    "resourceType": "FOOD",
+    "maxCount": 5,
+    "allowedTerrains": ["plain", "grassland"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
+        "output": { "food": 100 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 100
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
+        "output": { "food": 150 },
+        "prerequisites": { "farm": 1 },
+        "productionRate": 150
+      },
+      {
+        "level": 3,
+        "buildTime": 600000,
+        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
+        "output": { "food": 200 },
+        "prerequisites": { "farm": 2 },
+        "productionRate": 200
+      }
+    ]
+  },
+  {
+    "id": "lumberMill",
+    "name": "伐木場",
+    "type": "resource",
+    "resourceType": "WOOD",
+    "maxCount": 5,
+    "allowedTerrains": ["forest"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
+        "output": { "wood": 100 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 100
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
+        "output": { "wood": 150 },
+        "prerequisites": { "lumberMill": 1 },
+        "productionRate": 150
+      },
+      {
+        "level": 3,
+        "buildTime": 600000,
+        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
+        "output": { "stone": 200 },
+        "prerequisites": { "lumberMill": 2 },
+        "productionRate": 200
+      }
+
+    ]
+  }
+  ,
+  {
+    "id": "stoneQuarry",
+    "name": "採石場",
+    "type": "resource",
+    "resourceType": "STONE",
+    "maxCount": 5,
+    "allowedTerrains": ["stone_mine"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 100},
+        "output": { "stone": 100 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 100
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 500},
+        "output": { "stone": 150 },
+        "prerequisites": { "stoneQuarry": 1 },
+        "productionRate": 150
+      },
+      {
+        "level": 3,
+        "buildTime": 600000,
+        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
+        "output": { "stone": 200 },
+        "prerequisites": { "stoneQuarry": 2 },
+        "productionRate": 200
+      }
+    ]
+  }
+  ,
+  {
+    "id": "ironQuarry",
+    "name": "採鐵場",
+    "type": "resource",
+    "resourceType": "IRON",
+    "maxCount": 5,
+    "allowedTerrains": ["iron_mine"],
+    "levels": [
+      {
+        "level": 1,
+        "buildTime": 60000,
+        "cost": { "FOOD": 100,"WOOD": 100,"IRON": 0,"STONE": 0},
+        "output": { "stone": 100 },
+        "prerequisites": { "mainHall": 1 },
+        "productionRate": 100
+      },
+      {
+        "level": 2,
+        "buildTime": 360000,
+        "cost": { "FOOD": 500,"WOOD": 500,"IRON": 500,"STONE": 0},
+        "output": { "stone": 150 },
+        "prerequisites": { "ironQuarry": 1 },
+        "productionRate": 150
+      },
+      {
+        "level": 3,
+        "buildTime": 600000,
+        "cost": { "FOOD": 1000,"WOOD": 1000,"IRON": 1000,"STONE": 1000},
+        "output": { "stone": 200 },
+        "prerequisites": { "ironQuarry": 2 },
+        "productionRate": 200
+      }
+    ]
+  }
+]

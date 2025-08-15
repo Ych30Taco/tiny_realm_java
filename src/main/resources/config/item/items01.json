@@ -1,0 +1,117 @@
+[
+  {
+    "type": "sword",
+    "name": "鐵劍",
+    "description": "一把鋒利的鐵製長劍，適合近戰戰鬥",
+    "rarity": "common",
+    "category": "weapon",
+    "level": 1,
+    "maxDurability": 100,
+    "attributes": {
+      "attack": 15,
+      "speed": 1.0
+    },
+    "stackable": false,
+    "tradeable": true,
+    "droppable": true,
+    "consumable": false,
+    "equippable": true,
+    "equipmentSlot": "weapon",
+    "sellPrice": 50,
+    "buyPrice": 100,
+    "useEffect": {
+      "attack_boost": 15
+    }
+  },
+  {
+    "type": "shield",
+    "name": "木盾",
+    "description": "堅固的木製盾牌，提供良好的防禦",
+    "rarity": "common",
+    "category": "armor",
+    "level": 1,
+    "maxDurability": 80,
+    "attributes": {
+      "defense": 12,
+      "block_chance": 0.2
+    },
+    "stackable": false,
+    "tradeable": true,
+    "droppable": true,
+    "consumable": false,
+    "equippable": true,
+    "equipmentSlot": "shield",
+    "sellPrice": 30,
+    "buyPrice": 60,
+    "useEffect": {
+      "defense_boost": 12
+    }
+  },
+  {
+    "type": "health_potion",
+    "name": "生命藥水",
+    "description": "恢復生命值的魔法藥水",
+    "rarity": "common",
+    "category": "consumable",
+    "level": 1,
+    "maxDurability": 1,
+    "attributes": {
+      "healing": 50
+    },
+    "stackable": true,
+    "tradeable": true,
+    "droppable": true,
+    "consumable": true,
+    "equippable": false,
+    "equipmentSlot": null,
+    "sellPrice": 20,
+    "buyPrice": 40,
+    "useEffect": {
+      "heal": 50
+    }
+  },
+  {
+    "type": "iron_ore",
+    "name": "鐵礦石",
+    "description": "用於冶煉的鐵礦石",
+    "rarity": "common",
+    "category": "material",
+    "level": 1,
+    "maxDurability": 1,
+    "attributes": {
+      "quality": 1
+    },
+    "stackable": true,
+    "tradeable": true,
+    "droppable": true,
+    "consumable": false,
+    "equippable": false,
+    "equipmentSlot": null,
+    "sellPrice": 5,
+    "buyPrice": 10,
+    "useEffect": {}
+  },
+  {
+    "type": "magic_scroll",
+    "name": "魔法卷軸",
+    "description": "記載著神秘魔法的古老卷軸",
+    "rarity": "rare",
+    "category": "quest",
+    "level": 5,
+    "maxDurability": 1,
+    "attributes": {
+      "magic_power": 25
+    },
+    "stackable": false,
+    "tradeable": false,
+    "droppable": false,
+    "consumable": true,
+    "equippable": false,
+    "equipmentSlot": null,
+    "sellPrice": 0,
+    "buyPrice": 0,
+    "useEffect": {
+      "learn_spell": "fireball"
+    }
+  }
+]

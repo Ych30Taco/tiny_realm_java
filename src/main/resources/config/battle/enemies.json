@@ -1,0 +1,109 @@
+{
+  "bandit": {
+    "type": "bandit",
+    "name": "強盜",
+    "description": "一群兇狠的強盜，經常襲擊過往的商隊",
+    "level": 1,
+    "units": [
+      {
+        "type": "bandit_warrior",
+        "count": 3,
+        "level": 5,
+        "attack": 25,
+        "defense": 15,
+        "health": 80
+      }
+    ],
+    "rewards": {
+      "food":100,
+      "wood":100
+    },
+    "difficulty": "EASY",
+    "minPlayerLevel": 1,
+    "battleDuration": 300,
+    "skills": {
+      "stealth": 0.3,
+      "ambush": 0.2
+    },
+    "spawnChance": 0.8,
+    "isBoss": false,
+    "battleDescription": "在荒涼的山路上，你遭遇了一群兇狠的強盜。他們手持武器，眼神兇狠，顯然不打算放過任何獵物。"
+  },
+  "wolf_pack": {
+    "type": "wolf_pack",
+    "name": "狼群",
+    "description": "一群兇猛的野狼，在夜晚特別危險",
+    "level": 8,
+    "units": [
+      {
+        "type": "alpha_wolf",
+        "count": 1,
+        "level": 8,
+        "attack": 35,
+        "defense": 20,
+        "health": 120
+      },
+      {
+        "type": "wolf",
+        "count": 4,
+        "level": 6,
+        "attack": 28,
+        "defense": 18,
+        "health": 90
+      }
+    ],
+    "rewards": {
+      "food":100,
+      "wood":100
+    },
+    "difficulty": "MEDIUM",
+    "minPlayerLevel": 6,
+    "battleDuration": 420,
+    "skills": {
+      "pack_tactics": 0.4,
+      "night_vision": 0.5
+    },
+    "spawnChance": 0.6,
+    "isBoss": false,
+    "battleDescription": "在月光下，你聽到遠處傳來狼嚎聲。很快，一雙雙綠色的眼睛在黑暗中閃爍，狼群正在包圍你。"
+  },
+  "goblin_raiders": {
+    "type": "goblin_raiders",
+    "name": "哥布林突襲者",
+    "description": "一群狡猾的哥布林，擅長偷襲和游擊戰",
+    "level": 12,
+    "units": [
+      {
+        "type": "goblin_warrior",
+        "count": 5,
+        "level": 12,
+        "attack": 40,
+        "defense": 25,
+        "health": 100
+      },
+      {
+        "type": "goblin_archer",
+        "count": 3,
+        "level": 10,
+        "attack": 45,
+        "defense": 15,
+        "health": 70
+      }
+    ],
+    "rewards": {
+      "food":100,
+      "wood":100
+    },
+    "difficulty": "HARD",
+    "minPlayerLevel": 10,
+    "battleDuration": 600,
+    "skills": {
+      "stealth": 0.6,
+      "trap_mastery": 0.4,
+      "poison_weapons": 0.3
+    },
+    "spawnChance": 0.4,
+    "isBoss": false,
+    "battleDescription": "在茂密的森林中，你突然聽到樹葉沙沙作響。哥布林們從四面八方湧出，他們手持塗毒的武器，準備發動突襲。"
+  }
+}
