@@ -177,7 +177,7 @@ public class TerrainMapService {
         }
         
         // 檢查地形是否可建造
-        if (!tile.getTerrain().getBuildable()) {
+        if (!tile.getTerrain().isBuildable()) {
             return false; // 地形不可建造
         }
         
