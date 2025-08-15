@@ -4,7 +4,7 @@ import com.taco.TinyRealm.module.soldierModule.model.PlayerSoldier;
 import com.taco.TinyRealm.module.soldierModule.model.UnitType;
 import com.taco.TinyRealm.module.terrainMapModule.model.Terrain;
 import com.taco.TinyRealm.module.terrainMapModule.model.TerrainType;
-
+import com.taco.TinyRealm.module.battleModule.model.SiegeResult;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;

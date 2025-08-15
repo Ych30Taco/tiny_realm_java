@@ -3,7 +3,8 @@ package com.taco.TinyRealm.module.battleModule.service;
 import com.taco.TinyRealm.module.soldierModule.model.PlayerSoldier;
 import com.taco.TinyRealm.module.soldierModule.model.FormationPosition;
 import com.taco.TinyRealm.module.terrainMapModule.model.Terrain;
-import com.taco.TinyRealm.module.terrainMapModule.model.TerrainType;
+import com.taco.TinyRealm.module.battleModule.model.BattleResult;
+import com.taco.TinyRealm.module.battleModule.model.RoundResult;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,7 +76,7 @@ public class BattleCalculator {
         // 按站位分組
         Map<FormationPosition, List<PlayerSoldier>> formationGroups = new HashMap<>();
         for (PlayerSoldier soldier : soldiers) {
-            formationGroups.computeIfAbsent(soldier.getFormationPos(), k -> new ArrayList<>()).add(soldier);
+            formationGroups.computeIfAbsent(soldier.getFormationPosition(), k -> new ArrayList<>()).add(soldier);
         }
         
         // 設置位置

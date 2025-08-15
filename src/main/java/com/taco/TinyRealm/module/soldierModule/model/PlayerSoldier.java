@@ -24,11 +24,11 @@ public class PlayerSoldier {
     
     /** 兵種類型 */
     @JsonProperty("unitType")
-    private UnitType unitType;
+    private UnitType type;
     
     /** 站位位置 */
-    @JsonProperty("formationPos")
-    private FormationPosition formationPos;
+    @JsonProperty("formationPosition")
+    private FormationPosition formationPosition;
     
     /** 生命值 */
     @JsonProperty("hp")
@@ -81,33 +81,55 @@ public class PlayerSoldier {
     /** 升級所需經驗值 */
     @JsonProperty("experienceToNext")
     private int experienceToNext;
+    
+    /** 存活狀態 */
+    @JsonProperty("alive")
+    private boolean alive;
 
-    /**
-     * 檢查士兵是否存活
-     */
-    public boolean isAlive() {
-        return hp > 0 && count > 0;
-    }
+    @JsonProperty("ranged")
+    private boolean ranged;
 
-    /**
-     * 檢查是否為遠程單位
-     */
-    public boolean isRanged() {
-        return unitType != null && unitType.isRanged();
-    }
+    @JsonProperty("melee")
+    private boolean melee;
+
+    @JsonProperty("siege")
+    private boolean siege;
+
+    /** 實際防禦力（考慮等級加成） */
+    @JsonProperty("effectiveDefense")
+    private int effectiveDefense;
+
+
+    /** 當前生命值百分比 */
+    @JsonProperty("healthPercentage")
+    private double healthPercentage;
+
+    /** 實際射程（考慮等級加成） */
+    @JsonProperty("effectiveRange")
+    private int effectiveRange;
+
+    /** 實際攻擊力（考慮等級加成） */
+    @JsonProperty("effectiveAttack")
+    private int effectiveAttack;
+
+    @JsonProperty("combatPower")
+    private int combatPower;
+
+    @JsonProperty("effectiveSpeed")
+    private int effectiveSpeed;
 
     /**
      * 檢查是否為近戰單位
      */
     public boolean isMelee() {
-        return unitType != null && unitType.isMelee();
+        return type != null && type.isMelee();
     }
 
     /**
      * 檢查是否為攻城單位
      */
     public boolean isSiege() {
-        return unitType != null && unitType.isSiege();
+        return type != null && type.isSiege();
     }
 
     /**

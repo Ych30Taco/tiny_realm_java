@@ -80,9 +80,6 @@ public class BattleLogEntry {
     /**
      * 位置信息內部類
      */
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Position {
         private int x;
         private int y;
@@ -127,7 +124,7 @@ public class BattleLogEntry {
         entry.setPosition(to);
         
         entry.setDescription(String.format("單位 %s 從 (%d,%d) 移動到 (%d,%d)", 
-                                         unitId, from.getX(), from.getY(), to.getX(), to.getY()));
+                                         unitId, from.x, from.y, to.x, to.y));
         
         return entry;
     }
@@ -144,7 +141,7 @@ public class BattleLogEntry {
         entry.setPosition(position);
         
         entry.setDescription(String.format("單位 %s 在位置 (%d,%d) 陣亡", 
-                                         unitId, position.getX(), position.getY()));
+                                         unitId, position.x, position.y));
         
         return entry;
     }

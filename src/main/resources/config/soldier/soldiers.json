@@ -1,277 +1,293 @@
 [
   {
     "id": "soldier_1",
-    "type": "soldier",
+    "type": "INFANTRY",
     "name": "1級步兵",
     "description": "基礎近戰單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 10,
       "defense": 8,
-      "health": 50,
+      "hp": 50,
       "speed": 3,
       "range": 1,
       "trainingTime": 120
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "FRONT"
   },
   {
     "id": "soldier_2",
-    "type": "soldier",
+    "type": "INFANTRY",
     "name": "2級步兵",
     "description": "基礎近戰單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 12,
       "defense": 9,
-      "health": 55,
+      "hp": 55,
       "speed": 3,
       "range": 1,
       "trainingTime": 240
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "FRONT"
   },
   {
     "id": "soldier_3",
-    "type": "soldier",
+    "type": "INFANTRY",
     "name": "3級步兵",
     "description": "基礎近戰單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 14,
       "defense": 10,
-      "health": 60,
+      "hp": 60,
       "speed": 3,
       "range": 1,
       "trainingTime": 360
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "FRONT"
   },
   {
     "id": "soldier_4",
-    "type": "soldier",
+    "type": "INFANTRY",
     "name": "4級步兵",
     "description": "基礎近戰單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 16,
       "defense": 11,
-      "health": 65,
+      "hp": 65,
       "speed": 3,
       "range": 1,
       "trainingTime": 480
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "FRONT"
   },
   {
     "id": "soldier_5",
-    "type": "soldier",
+    "type": "INFANTRY",
     "name": "5級步兵",
     "description": "基礎近戰單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 18,
       "defense": 12,
-      "health": 70,
+      "hp": 70,
       "speed": 3,
       "range": 1,
       "trainingTime": 600
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
+    "requiredTech": {},
     "skills": {
       "shield_wall": { "name": "盾牆", "description": "防禦力+20%", "level": 3 }
-    }
+    },
+    "formationPosition": "FRONT"
   },
   {
     "id": "archer_1",
-    "type": "archer",
+    "type": "ARCHER",
     "name": "1級弓箭手",
     "description": "遠程攻擊單位，防禦較弱",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 15,
       "defense": 5,
-      "health": 40,
+      "hp": 40,
       "speed": 2,
       "range": 3,
       "trainingTime": 120
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "BACK"
   },
   {
     "id": "archer_2",
-    "type": "archer",
+    "type": "ARCHER",
     "name": "2級弓箭手",
     "description": "遠程攻擊單位，防禦較弱",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 17,
       "defense": 6,
-      "health": 44,
+      "hp": 44,
       "speed": 2,
       "range": 3,
       "trainingTime": 240
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "BACK"
   },
   {
     "id": "archer_3",
-    "type": "archer",
+    "type": "ARCHER",
     "name": "3級弓箭手",
     "description": "遠程攻擊單位，防禦較弱",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 19,
       "defense": 7,
-      "health": 48,
+      "hp": 48,
       "speed": 2,
       "range": 3,
       "trainingTime": 360
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "BACK"
   },
   {
     "id": "archer_4",
-    "type": "archer",
+    "type": "ARCHER",
     "name": "4級弓箭手",
     "description": "遠程攻擊單位，防禦較弱",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 21,
       "defense": 8,
-      "health": 52,
+      "hp": 52,
       "speed": 2,
       "range": 3,
       "trainingTime": 480
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "BACK"
   },
   {
     "id": "archer_5",
-    "type": "archer",
+    "type": "ARCHER",
     "name": "5級弓箭手",
     "description": "遠程攻擊單位，防禦較弱",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 23,
       "defense": 9,
-      "health": 56,
+      "hp": 56,
       "speed": 2,
       "range": 3,
       "trainingTime": 600
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
+    "requiredTech": {},
     "skills": {
       "precise_shot": { "name": "精準射擊", "description": "攻擊力+25%", "level": 5 }
-    }
+    },
+    "formationPosition": "BACK"
   },
   {
     "id": "cavalry_1",
-    "type": "cavalry",
+    "type": "CAVALRY",
     "name": "1級騎兵",
     "description": "高機動突襲單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 18,
       "defense": 12,
-      "health": 60,
+      "hp": 60,
       "speed": 5,
       "range": 1,
-      "trainingTime": 120    },
+      "trainingTime": 120
+    },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "MIDDLE"
   },
   {
     "id": "cavalry_2",
-    "type": "cavalry",
+    "type": "CAVALRY",
     "name": "2級騎兵",
     "description": "高機動突襲單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 20,
       "defense": 13,
-      "health": 66,
+      "hp": 66,
       "speed": 5,
       "range": 1,
       "trainingTime": 240
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "MIDDLE"
   },
   {
     "id": "cavalry_3",
-    "type": "cavalry",
+    "type": "CAVALRY",
     "name": "3級騎兵",
     "description": "高機動突襲單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 22,
       "defense": 14,
-      "health": 72,
+      "hp": 72,
       "speed": 5,
       "range": 1,
       "trainingTime": 360
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "MIDDLE"
   },
   {
     "id": "cavalry_4",
-    "type": "cavalry",
+    "type": "CAVALRY",
     "name": "4級騎兵",
     "description": "高機動突襲單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 24,
       "defense": 15,
-      "health": 78,
+      "hp": 78,
       "speed": 5,
       "range": 1,
       "trainingTime": 480
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
-    "skills": {}
+    "requiredTech": {},
+    "skills": {},
+    "formationPosition": "MIDDLE"
   },
   {
     "id": "cavalry_5",
-    "type": "cavalry",
+    "type": "CAVALRY",
     "name": "5級騎兵",
     "description": "高機動突襲單位",
     "stats": {
       "cost": { "food": 100, "wood": 100 },
       "attack": 26,
       "defense": 16,
-      "health": 84,
+      "hp": 84,
       "speed": 5,
       "range": 1,
       "trainingTime": 600
     },
     "requirements": { "mainHall": 1 },
-    "requiredTech" :{},
+    "requiredTech": {},
     "skills": {
       "charge": { "name": "衝鋒", "description": "首次攻擊傷害翻倍", "level": 4 }
-    }
+    },
+    "formationPosition": "MIDDLE"
   }
 ]

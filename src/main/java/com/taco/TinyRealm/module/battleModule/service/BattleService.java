@@ -224,13 +224,13 @@ public class BattleService {
         for (var unitConfig : enemyConfig.getUnits()) {
             PlayerSoldier enemySoldier = new PlayerSoldier();
             enemySoldier.setId(UUID.randomUUID().toString());
-            enemySoldier.setType(unitConfig.getType());
+            //enemySoldier.setType(unitConfig.getType());
             enemySoldier.setName(enemyConfig.getName() + " " + unitConfig.getType());
             enemySoldier.setLevel(unitConfig.getLevel());
             enemySoldier.setAttack(unitConfig.getAttack());
             enemySoldier.setDefense(unitConfig.getDefense());
-            enemySoldier.setHealth(unitConfig.getHealth());
-            enemySoldier.setMaxHealth(unitConfig.getHealth());
+            enemySoldier.setHp(unitConfig.getHealth());
+            enemySoldier.setMaxHp(unitConfig.getHealth());
             enemySoldier.setStatus("ACTIVE");
             enemySoldier.setCount(unitConfig.getCount());
             enemySoldiers.add(enemySoldier);
@@ -314,7 +314,7 @@ public class BattleService {
      */
     private int calculateTotalStrength(List<PlayerSoldier> soldiers) {
         return soldiers.stream()
-                .mapToInt(soldier -> soldier.getAttack() * soldier.getLevel() * soldier.getHealth() / soldier.getMaxHealth()*soldier.getCount())
+                .mapToInt(soldier -> soldier.getAttack() * soldier.getLevel() * soldier.getHp() / soldier.getMaxHp()*soldier.getCount())
                 .sum();
     }
 
@@ -329,19 +329,19 @@ public class BattleService {
             // 玩家勝利，士兵損失較少
             for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(10, 30); // 10-30% 傷害
-                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
+                soldier.setHp(Math.max(1, soldier.getHp() - damage));
             }
         } else if ("LOSE".equals(result)) {
             // 玩家失敗，士兵損失較大
             for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(40, 70); // 40-70% 傷害
-                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
+                soldier.setHp(Math.max(1, soldier.getHp() - damage));
             }
         } else {
             // 平手，中等損失
             for (PlayerSoldier soldier : playerSoldiers) {
                 int damage = ThreadLocalRandom.current().nextInt(20, 40); // 20-40% 傷害
-                soldier.setHealth(Math.max(1, soldier.getHealth() - damage));
+                soldier.setHp(Math.max(1, soldier.getHp() - damage));
             }
         }
     }
@@ -358,7 +358,7 @@ public class BattleService {
                                           Battle battle, boolean isTest) throws IOException {
         // 更新士兵狀態
         for (PlayerSoldier soldier : playerSoldiers) {
-            if (soldier.getHealth() <= 0) {
+            if (soldier.getHp() <= 0) {
                 soldier.setStatus("INJURED");
             }
         }
