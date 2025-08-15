@@ -174,18 +174,15 @@ public class SoldierService {
         playerSoldier.setId(soldier.getId());
         playerSoldier.setType(soldier.getType());
         playerSoldier.setName(soldier.getName());
-        playerSoldier.setCount(
-            gameState.getSoldiers().containsKey(soldier.getId())
-                ? (gameState.getSoldiers().get(soldier.getId()).getCount() + count)
-                : count
-        );
+        playerSoldier.setCount(gameState.getSoldiers().keySet().contains(soldier.getId()) ? (gameState.getSoldiers().get(soldier.getId()).getCount() + count) : count);
         playerSoldier.setLevel(1);
         playerSoldier.setAttack(soldier.getStats().getAttack());
         playerSoldier.setDefense(soldier.getStats().getDefense());
         playerSoldier.setSpeed(soldier.getStats().getSpeed());
-        playerSoldier.setHp(soldier.getStats().getHp());
+        playerSoldier.setHealth(soldier.getStats().getHealth());
+        playerSoldier.setMaxHealth(soldier.getStats().getHealth());
+        playerSoldier.setAttack(soldier.getStats().getAttack());
         playerSoldier.setStatus("ACTIVE");
-        playerSoldier.setFormationPosition(soldier.getFormationPosition());        
         // 添加到遊戲狀態
         gameState.getSoldiers().put(soldier.getId(), playerSoldier);
         

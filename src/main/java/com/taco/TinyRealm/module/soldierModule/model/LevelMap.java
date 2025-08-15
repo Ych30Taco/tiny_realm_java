@@ -18,7 +18,7 @@ public class LevelMap {
     /** 士兵基礎防禦力 */
     private int defense;
     /** 士兵基礎生命值 */
-    private int hp;
+    private int health;
     /** 士兵移動速度 */
     private int speed;
     /** 士兵攻擊範圍 */

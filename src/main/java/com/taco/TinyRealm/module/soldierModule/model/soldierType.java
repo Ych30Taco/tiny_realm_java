@@ -14,11 +14,9 @@ public class SoldierType {
     /** 士兵類型ID */
     private String id;
     /** 士兵類型 */
-    private UnitType type;
+    private String type;
     /** 士兵名稱 */
     private String name;
-    /** 士兵站位 */
-    private FormationPosition formationPosition;    
     /** 士兵描述 */
     private String description;
     /** 等級數據列表*/

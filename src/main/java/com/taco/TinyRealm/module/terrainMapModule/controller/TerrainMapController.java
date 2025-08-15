@@ -128,7 +128,7 @@ public class TerrainMapController {
                 "buildingId", tile.getBuildingId(),
                 "isOccupied", terrainMapService.isPositionOccupied(x, y),
                 "hasBuilding", terrainMapService.hasBuilding(x, y),
-                "canBuild", tile.getTerrain().isBuildable()
+                "canBuild", tile.getTerrain().getBuildable()
             );
             
             return ResponseEntity.ok(Map.of("success", true, "message", "獲取位置狀態成功", "data", status));
