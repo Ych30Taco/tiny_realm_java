@@ -19,7 +19,7 @@
       "wood":100
     },
     "difficulty": "EASY",
-    "minPlayerLevel": 3,
+    "minPlayerLevel": 1,
     "battleDuration": 300,
     "skills": {
       "stealth": 0.3,
