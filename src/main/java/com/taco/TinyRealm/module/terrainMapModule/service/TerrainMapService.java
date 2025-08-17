@@ -23,12 +23,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class TerrainMapService {
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
     private List<Terrain> terrainsList = Collections.emptyList();
     private GameMap gameMap = new GameMap(); // 讓 gameMap 預設存在記憶體
+    private Map<String, Object> enemyTypes = new HashMap<>(); // 野怪類型
     @Autowired
     private StorageService storageService;
 
@@ -39,7 +42,10 @@ public class TerrainMapService {
     private org.springframework.core.io.Resource terrainPath;
     @Value("${app.data.map-path}")
     private org.springframework.core.io.Resource mapPath;
-    private static final String MAP_FILE_PATH = "src/main/resources/config/map/"; // 假設地圖存儲在這個路徑
+    @Value("${app.data.enemies-path}")
+    private org.springframework.core.io.Resource enemiesPath;
+    private static final String MAP_FILE_PATH = "src/main/resources/config/map/"; // 地圖存儲路徑
+    private static final String MAP_FILE_NAME = "maps.json"; // 地圖文件名
 
     /**
      * 建構子注入依賴。
@@ -62,6 +68,15 @@ public class TerrainMapService {
             throw new RuntimeException("Failed to load terrain.json: " + e.getMessage(), e);
         }
         System.out.println("---- 應用程式啟動中，載入地形完成 ----");
+
+        System.out.println("---- 應用程式啟動中，載入野怪類型... ----");
+        try {
+            loadEnemyTypes(enemiesPath);
+            System.out.println("---- 應用程式啟動中，已載入野怪類型 ----");
+        } catch (Exception e) {
+            System.out.println("---- 應用程式啟動中，載入野怪類型失敗 ----");
+            e.printStackTrace();
+        }
 
         System.out.println("---- 應用程式啟動中，載入地圖... ----");
         try {
@@ -86,6 +101,12 @@ public class TerrainMapService {
     private void loadMap(org.springframework.core.io.Resource resource) throws IOException {
         try (InputStream is = resource.getInputStream()) {
             gameMap = objectMapper.readValue(is, new TypeReference<GameMap>() {});
+        }
+    }
+
+    private void loadEnemyTypes(org.springframework.core.io.Resource resource) throws IOException {
+        try (InputStream is = resource.getInputStream()) {
+            enemyTypes = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {});
         }
     }
 
@@ -155,8 +176,85 @@ public class TerrainMapService {
         map.setId(UUID.randomUUID().toString()); // Changed from id() to setId()
         File dir = new File(MAP_FILE_PATH);
         if (!dir.exists()) dir.mkdirs();
-        objectMapper.writeValue(new File(MAP_FILE_PATH+"map.json"), gameMap);
+        objectMapper.writeValue(new File(MAP_FILE_PATH + MAP_FILE_NAME), gameMap);
         System.out.println("---- 應用程式啟動中，創建新地圖成功 ----");
+    }
+
+    /**
+     * 生成隨機地圖預覽（不保存到文件）
+     * @param width 地圖寬度
+     * @param height 地圖高度
+     * @return 生成的隨機地圖
+     */
+    public GameMap generateRandomMapPreview(int width, int height) {
+        System.out.println("---- 生成隨機地圖預覽 " + width + "x" + height + " ----");
+        Random random = new Random();
+        GameMap previewMap = new GameMap(width, height);
+        previewMap.setId(UUID.randomUUID().toString());
+        
+        // 獲取所有可用地形
+        List<Terrain> terrainList = getAllterrain();
+        List<MapTile> tiles = new java.util.ArrayList<>();
+        
+        // 為每個格子分配隨機地形
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                MapTile tile = new MapTile();
+                tile.setX(x);
+                tile.setY(y);
+                tile.setTerrain(terrainList.get(random.nextInt(terrainList.size())));
+                tile.setOwnerId(null);
+                tile.setBuildingId(null);
+                tile.setUnitIds(new java.util.ArrayList<>());
+                
+                // 添加野怪生成邏輯
+                if (random.nextDouble() < 0.15) { // 15% 機率生成野怪
+                    String enemyType = generateRandomEnemyType(random);
+                    if (enemyType != null) {
+                        tile.setEnemyType(enemyType);
+                        tile.setHasEnemy(true);
+                        tile.setEnemyLevel(random.nextInt(10) + 1); // 1-10級
+                    }
+                }
+                
+                tiles.add(tile);
+            }
+        }
+        
+        previewMap.setTiles(tiles);
+        System.out.println("---- 隨機地圖預覽生成完成 ----");
+        return previewMap;
+    }
+
+    /**
+     * 生成隨機野怪類型
+     * @param random Random實例
+     * @return 野怪類型
+     */
+    private String generateRandomEnemyType(Random random) {
+        if (enemyTypes.isEmpty()) {
+            return null;
+        }
+        
+        // 獲取所有可用的野怪類型
+        String[] enemyTypeKeys = enemyTypes.keySet().toArray(new String[0]);
+        return enemyTypeKeys[random.nextInt(enemyTypeKeys.length)];
+    }
+
+    /**
+     * 保存預覽地圖到記憶體和文件
+     * @param previewMap 要保存的預覽地圖
+     */
+    public void savePreviewMap(GameMap previewMap) throws IOException {
+        System.out.println("---- 保存預覽地圖到記憶體和文件 ----");
+        // 更新記憶體中的地圖
+        this.gameMap = previewMap;
+        
+        // 保存到文件
+        File dir = new File(MAP_FILE_PATH);
+        if (!dir.exists()) dir.mkdirs();
+        objectMapper.writeValue(new File(MAP_FILE_PATH + MAP_FILE_NAME), gameMap);
+        System.out.println("---- 預覽地圖已保存 ----");
     }
 
     /**
@@ -349,6 +447,44 @@ public class TerrainMapService {
         File dir = new File(MAP_FILE_PATH);
         if (!dir.exists()) dir.mkdirs();
         objectMapper.writeValue(new File(MAP_FILE_PATH + "map.json"), gameMap);
+    }
+    
+    /**
+     * 覆蓋當前地圖為配置地圖
+     */
+    public void overrideWithConfigMap() throws IOException {
+        System.out.println("---- 覆蓋地圖為配置地圖 ----");
+        try {
+            System.out.println("嘗試從路徑載入地圖: " + mapPath);
+            loadMap(mapPath);
+            System.out.println("---- 地圖已覆蓋為配置地圖 ----");
+        } catch (Exception e) {
+            System.out.println("---- 覆蓋地圖失敗，錯誤: " + e.getMessage() + " ----");
+            e.printStackTrace();
+            throw new IOException("覆蓋地圖失敗: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 獲取地形配置資訊
+     */
+    public List<Map<String, Object>> getTerrainConfigInfo() {
+        return terrainsList.stream()
+                .map(terrain -> {
+                    Map<String, Object> config = new java.util.HashMap<>();
+                    config.put("id", terrain.getId());
+                    config.put("name", terrain.getName());
+                    config.put("description", terrain.getDescription() != null ? terrain.getDescription() : "");
+                    config.put("buildable", terrain.isBuildable());
+                    config.put("passable", terrain.isPassable());
+                    config.put("terrainType", terrain.getTerrainType() != null ? terrain.getTerrainType().getDisplayName() : "");
+                    config.put("speedModifier", terrain.getSpeedModifier());
+                    config.put("defenseModifier", terrain.getDefenseModifier());
+                    config.put("rangeBonus", terrain.getRangeBonus());
+                    config.put("combatEffect", terrain.getCombatEffectDescription());
+                    return config;
+                })
+                .collect(java.util.stream.Collectors.toList());
     }
 
 }

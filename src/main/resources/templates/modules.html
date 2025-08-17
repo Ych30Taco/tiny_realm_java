@@ -311,12 +311,15 @@
                                                 oninput="generateRandomMap()" onchange="generateRandomMap()">
                                         </div>
                                         <button class="btn btn-module btn-info" onclick="generateRandomMap()">
-                                            <i class="fas fa-random me-2"></i>生成隨機地圖
+                                            <i class="fas fa-random me-2"></i>生成隨機地圖預覽
                                         </button>
                                         <button class="btn btn-module btn-secondary ms-2" onclick="loadMapFromConfig()">
-                                            <i class="fas fa-file-import me-2"></i>從配置載入
+                                            <i class="fas fa-file-import me-2"></i>載入配置地圖
                                         </button>
-                                        <button class="btn btn-module btn-warning ms-2" onclick="clearMapSelection()">
+                                        <button class="btn btn-module btn-warning ms-2" onclick="overrideWithConfigMap()">
+                                            <i class="fas fa-save me-2"></i>覆蓋地圖
+                                        </button>
+                                        <button class="btn btn-module btn-danger ms-2" onclick="clearMapSelection()">
                                             <i class="fas fa-times me-2"></i>清除選擇
                                         </button>
                                     </div>
@@ -324,6 +327,39 @@
                             </div>
                         </div>
                         <div class="col-md-4">
+                            <!-- 選中格子資訊 -->
+                            <div class="module-card mb-3" id="selectedTileInfo" style="display: none;">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-info-circle me-2"></i>選中格子資訊</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div id="tileInfoContent">
+                                        <!-- 格子資訊將在這裡顯示 -->
+                                    </div>
+                                    <div class="mt-3" id="tileActions">
+                                        <!-- 操作按鈕將在這裡顯示 -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 玩家選擇 -->
+                            <div class="module-card mb-3">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-users me-2"></i>玩家選擇</h5>
+                                </div>
+                                <div class="module-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">選擇玩家</label>
+                                        <select class="form-select" id="playerSelect">
+                                            <option value="">請選擇玩家</option>
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-module btn-primary w-100" onclick="loadPlayerList()">
+                                        <i class="fas fa-sync me-2"></i>重新載入玩家列表
+                                    </button>
+                                </div>
+                            </div>
+                            
                             <!-- 地形管理 -->
                             <div class="module-card mb-3">
                                 <div class="module-header">
@@ -412,18 +448,18 @@
                         </div>
                     </div>
                     
-                    <!-- 選中的格子資訊 -->
-                    <div class="module-card mt-3" id="selectedTileInfo" style="display: none;">
+                    <!-- 地形配置資訊 -->
+                    <div class="module-card mt-3">
                         <div class="module-header">
-                            <h5><i class="fas fa-info-circle me-2"></i>選中格子資訊</h5>
+                            <h5><i class="fas fa-cogs me-2"></i>地形配置資訊</h5>
                         </div>
                         <div class="module-body">
-                            <div id="tileInfoContent">
-                                <!-- 格子資訊將在這裡顯示 -->
+                            <div id="terrainConfigInfo">
+                                <p class="text-muted">點擊按鈕載入地形配置資訊</p>
                             </div>
-                            <div class="mt-3" id="tileActions">
-                                <!-- 操作按鈕將在這裡顯示 -->
-                            </div>
+                            <button type="button" class="btn btn-module btn-info" onclick="loadTerrainConfig()">
+                                <i class="fas fa-sync me-2"></i>載入地形配置
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -799,55 +835,152 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 預設地圖大小
             document.getElementById('mapSizeInput').value = 10;
-            generateRandomMap();
-            // 新增：監聽地圖大小輸入框，動態生成地圖
-            document.getElementById('mapSizeInput').addEventListener('input', generateRandomMap);
-            document.getElementById('mapSizeInput').addEventListener('change', generateRandomMap);
+            // 一開始載入後端配置的地圖
+            loadMapFromConfig();
+            // 新增：監聽地圖大小輸入框，動態生成地圖預覽
+            document.getElementById('mapSizeInput').addEventListener('input', function() {
+                // 當輸入框改變時，不清除預覽地圖數據，讓用戶可以繼續編輯
+            });
+            document.getElementById('mapSizeInput').addEventListener('change', function() {
+                // 當輸入框改變時，不清除預覽地圖數據，讓用戶可以繼續編輯
+            });
             loadAllData();
             checkModuleStatus(); // 檢查模組狀態
+            loadPlayerList();
         });
 
-        // 生成隨機地圖
+        // 生成隨機地圖預覽
         function generateRandomMap() {
+            const mapSize = parseInt(document.getElementById('mapSizeInput').value) || 10;
+            
+            showLoading('正在生成隨機地圖預覽...');
+            
+            fetch('/api/terrain/generatePreview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    width: mapSize,
+                    height: mapSize
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    // 保存預覽地圖數據到全局變量
+                    window.previewMapData = data.data;
+                    
+                    // 在畫面上顯示預覽地圖
+                    displayPreviewMap(data.data);
+                    showResult('隨機地圖預覽生成成功！點擊「覆蓋地圖」按鈕來保存此地圖。');
+                } else {
+                    showResult(`生成預覽失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`生成預覽失敗：${error.message}`);
+            });
+        }
+        
+        // 顯示預覽地圖
+        function displayPreviewMap(mapData) {
             const grid = document.getElementById('terrainGrid');
             grid.innerHTML = '';
             currentMap = [];
-            // 取得地圖大小參數
-            let mapSize = parseInt(document.getElementById('mapSizeInput').value) || 10;
+            
+            const width = mapData.width;
+            const height = mapData.height;
+            
             // 設定 grid 的 CSS
-            grid.style.gridTemplateColumns = `repeat(${mapSize}, 30px)`;
-            grid.style.gridTemplateRows = `repeat(${mapSize}, 30px)`;
-            for (let i = 0; i < mapSize; i++) {
+            grid.style.gridTemplateColumns = `repeat(${width}, 30px)`;
+            grid.style.gridTemplateRows = `repeat(${height}, 30px)`;
+            
+            // 建立二維陣列方便查找
+            let mapArr = Array.from({length: height}, () => Array(width).fill(null));
+            mapData.tiles.forEach(tile => {
+                if (tile.x < width && tile.y < height) {
+                    mapArr[tile.y][tile.x] = tile;
+                }
+            });
+            
+            for (let i = 0; i < height; i++) {
                 currentMap[i] = [];
-                for (let j = 0; j < mapSize; j++) {
-                    const terrainType = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-                    const cell = createTerrainCell(i, j, terrainType);
+                for (let j = 0; j < width; j++) {
+                    const tile = mapArr[i][j];
+                    let terrainType = 'plain'; // 默認地形
+                    
+                    if (tile && tile.terrain) {
+                        terrainType = tile.terrain.id || 'plain';
+                    }
+                    
+                    const isOccupied = tile ? (tile.ownerId !== null) : false;
+                    const hasEnemy = tile ? tile.hasEnemy : false;
+                    const enemyType = tile ? tile.enemyType : null;
+                    const enemyLevel = tile ? tile.enemyLevel : 0;
+                    
+                    const cell = createTerrainCell(i, j, terrainType, tile ? tile.ownerId : null, isOccupied, hasEnemy, enemyType, enemyLevel);
                     grid.appendChild(cell);
                     currentMap[i][j] = {
                         x: j,
                         y: i,
                         terrainType: terrainType,
-                        owner: null,
-                        building: null,
-                        occupied: false
+                        owner: tile ? tile.ownerId : null,
+                        building: tile ? tile.buildingId : null,
+                        occupied: isOccupied,
+                        hasEnemy: hasEnemy,
+                        enemyType: enemyType,
+                        enemyLevel: enemyLevel
                     };
                 }
             }
-            updateTerrainStats(mapSize);
+            updateTerrainStats(width);
         }
         
         // 創建地形格子
-        function createTerrainCell(y, x, terrainType) {
+        function createTerrainCell(y, x, terrainType, ownerId = null, isOccupied = false, hasEnemy = false, enemyType = null, enemyLevel = 0) {
             const cell = document.createElement('div');
             cell.className = `terrain-cell terrain-${terrainType}`;
-            cell.textContent = terrainType.charAt(0).toUpperCase();
+            
+            // 設置格子內容
+            if (hasEnemy && enemyType) {
+                cell.textContent = '👹'; // 野怪圖標
+                cell.style.backgroundColor = '#8B0000'; // 深紅色表示有野怪
+                cell.style.color = 'white';
+            } else {
+                cell.textContent = terrainType.charAt(0).toUpperCase();
+            }
+            
             cell.dataset.x = x;
             cell.dataset.y = y;
+            
+            // 根據佔領狀態設置顏色
+            if (isOccupied && ownerId && !hasEnemy) {
+                const currentPlayerId = document.getElementById('playerSelect').value;
+                if (ownerId === currentPlayerId) {
+                    // 自己的地盤 - 綠色
+                    cell.style.backgroundColor = '#32CD32';
+                    cell.style.color = 'white';
+                } else {
+                    // 別人的地盤 - 紅色
+                    cell.style.backgroundColor = '#FF6347';
+                    cell.style.color = 'white';
+                }
+            }
             
             // 添加工具提示
             const tooltip = document.createElement('div');
             tooltip.className = 'tile-tooltip';
-            tooltip.textContent = `${terrainInfo[terrainType].name} (${x},${y})`;
+            let tooltipText = `${terrainInfo[terrainType].name} (${x},${y})`;
+            if (isOccupied && ownerId) {
+                tooltipText += ` - ${ownerId === currentPlayerId ? '我的地盤' : '敵方地盤'}`;
+            }
+            if (hasEnemy && enemyType) {
+                tooltipText += ` - 野怪: ${enemyType} (等級${enemyLevel})`;
+            }
+            tooltip.textContent = tooltipText;
             cell.appendChild(tooltip);
             
             // 添加點擊事件
@@ -900,6 +1033,7 @@
                         <p><strong>擁有者:</strong> ${tile.owner || '無'}</p>
                         <p><strong>建築:</strong> ${tile.building || '無'}</p>
                         <p><strong>佔領狀態:</strong> ${tile.occupied ? '已佔領' : '未佔領'}</p>
+                        <p><strong>野怪:</strong> ${tile.hasEnemy ? `${tile.enemyType} (等級${tile.enemyLevel})` : '無'}</p>
                     </div>
                 </div>
             `;
@@ -931,6 +1065,14 @@
                 `;
             }
             
+            if (tile.hasEnemy && tile.enemyType) {
+                actionsHtml += `
+                    <button class="btn btn-module btn-danger mb-2" onclick="battleEnemy(${tile.x}, ${tile.y})">
+                        <i class="fas fa-sword me-2"></i>與野怪戰鬥
+                    </button>
+                `;
+            }
+            
             actionsHtml += '</div>';
             actionsDiv.innerHTML = actionsHtml;
             
@@ -951,17 +1093,50 @@
         
         // 佔領格子
         function occupyTile(x, y) {
-            const tile = currentMap[y][x];
-            tile.occupied = true;
-            tile.owner = 'player1'; // 這裡可以設置為當前玩家ID
-            
-            const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
-            if (cell) {
-                cell.classList.add('owned');
+            const selectedPlayer = document.getElementById('playerSelect').value;
+            if (!selectedPlayer) {
+                showResult('請先選擇玩家');
+                return;
             }
             
-            showResult(`成功佔領座標 (${x}, ${y}) 的 ${terrainInfo[tile.terrainType].name}`);
-            showTileInfo(tile);
+            showLoading('正在佔領地圖...');
+            
+            fetch('/api/terrain/occupy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    x: x,
+                    y: y,
+                    playerId: selectedPlayer
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    const tile = currentMap[y][x];
+                    tile.occupied = true;
+                    tile.owner = selectedPlayer;
+                    
+                    // 更新地圖顯示
+                    const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                    if (cell) {
+                        cell.style.backgroundColor = '#32CD32'; // 綠色表示自己的地盤
+                        cell.style.color = 'white';
+                    }
+                    
+                    showResult(`玩家 ${selectedPlayer} 成功佔領座標 (${x}, ${y}) 的 ${terrainInfo[tile.terrainType].name}`);
+                    showTileInfo(tile);
+                } else {
+                    showResult(`佔領失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`佔領失敗：${error.message}`);
+            });
         }
         
         // 在格子上建造
@@ -987,6 +1162,67 @@
             
             showResult(`放棄了座標 (${x}, ${y}) 的 ${terrainInfo[tile.terrainType].name}`);
             showTileInfo(tile);
+        }
+        
+        // 與野怪戰鬥
+        function battleEnemy(x, y) {
+            const tile = currentMap[y][x];
+            const selectedPlayer = document.getElementById('playerSelect').value;
+            
+            if (!selectedPlayer) {
+                showResult('請先選擇玩家');
+                return;
+            }
+            
+            if (!tile.hasEnemy || !tile.enemyType) {
+                showResult('此地沒有野怪');
+                return;
+            }
+            
+            showLoading('正在與野怪戰鬥...');
+            
+            // 這裡可以調用戰鬥API
+            fetch('/api/battle/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    playerId: selectedPlayer,
+                    soldierIds: {}, // 這裡需要玩家的士兵信息
+                    enemyType: tile.enemyType,
+                    locationX: x,
+                    locationY: y,
+                    isTest: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showResult(`戰鬥勝利！擊敗了 ${tile.enemyType} (等級${tile.enemyLevel})`);
+                    // 清除野怪
+                    tile.hasEnemy = false;
+                    tile.enemyType = null;
+                    tile.enemyLevel = 0;
+                    
+                    // 更新地圖顯示
+                    const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                    if (cell) {
+                        cell.textContent = tile.terrainType.charAt(0).toUpperCase();
+                        cell.style.backgroundColor = '';
+                        cell.style.color = '';
+                    }
+                    
+                    showTileInfo(tile);
+                } else {
+                    showResult(`戰鬥失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showResult(`戰鬥失敗：${error.message}`);
+            });
         }
         
         // 更新地形統計
@@ -1015,12 +1251,13 @@
 
         // 載入地圖配置
         function loadMapFromConfig() {
-            showResult('正在從配置檔案載入地圖...');
+            showLoading('正在從配置檔案載入地圖...');
             fetch('/api/terrain/gameMap')
                 .then(response => response.json())
                 .then(data => {
+                    hideLoading();
                     if (data.success) {
-                        showResult('地圖載入成功：\n' + JSON.stringify(data.data, null, 2));
+                        showResult('後端配置地圖載入成功！');
                         // 根據 data 更新地圖預覽
                         const grid = document.getElementById('terrainGrid');
                         grid.innerHTML = '';
@@ -1034,19 +1271,43 @@
                                     mapArr[tile.y][tile.x] = tile;
                                 }
                             });
+                            // 設定 grid 的 CSS
+                            grid.style.gridTemplateColumns = `repeat(${width}, 30px)`;
+                            grid.style.gridTemplateRows = `repeat(${height}, 30px)`;
+                            
+                            currentMap = [];
                             for (let i = 0; i < height; i++) {
+                                currentMap[i] = [];
                                 for (let j = 0; j < width; j++) {
-                                    const cell = document.createElement('div');
+                                    const tile = mapArr[i][j];
                                     let terrainType = 'plain'; // 預設地形
-                                    if (mapArr[i][j] && mapArr[i][j].terrain && mapArr[i][j].terrain.id) {
-                                        terrainType = mapArr[i][j].terrain.id.toLowerCase();
+                                    
+                                    if (tile && tile.terrain && tile.terrain.id) {
+                                        terrainType = tile.terrain.id.toLowerCase();
                                     }
-                                    cell.className = `terrain-cell terrain-${terrainType}`;
-                                    cell.textContent = terrainType.charAt(0).toUpperCase();
-                                    cell.title = `${terrainType} (${j},${i})`;
+                                    
+                                    const isOccupied = tile ? (tile.ownerId !== null) : false;
+                                    const hasEnemy = tile ? tile.hasEnemy : false;
+                                    const enemyType = tile ? tile.enemyType : null;
+                                    const enemyLevel = tile ? tile.enemyLevel : 0;
+                                    
+                                    const cell = createTerrainCell(i, j, terrainType, tile ? tile.ownerId : null, isOccupied, hasEnemy, enemyType, enemyLevel);
                                     grid.appendChild(cell);
+                                    
+                                    currentMap[i][j] = {
+                                        x: j,
+                                        y: i,
+                                        terrainType: terrainType,
+                                        owner: tile ? tile.ownerId : null,
+                                        building: tile ? tile.buildingId : null,
+                                        occupied: isOccupied,
+                                        hasEnemy: hasEnemy,
+                                        enemyType: enemyType,
+                                        enemyLevel: enemyLevel
+                                    };
                                 }
                             }
+                            updateTerrainStats(width);
                         }
                     } else {
                         showResult('載入地圖失敗：' + data.message);
@@ -1844,6 +2105,158 @@
                     area.innerHTML = '<p class="text-muted">無士兵資料</p>';
                 }
             });
+        }
+        
+        // 覆蓋地圖功能
+        function overrideWithConfigMap() {
+            // 檢查是否有預覽地圖數據
+            if (window.previewMapData) {
+                // 如果有預覽地圖，則保存預覽地圖
+                savePreviewMap();
+            } else {
+                // 如果沒有預覽地圖，則覆蓋為配置地圖
+                overrideWithConfigMapOnly();
+            }
+        }
+        
+        // 保存預覽地圖
+        function savePreviewMap() {
+            console.log('保存預覽地圖函數被調用');
+            showLoading('正在保存預覽地圖...');
+            
+            fetch('/api/terrain/savePreview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(window.previewMapData)
+            })
+            .then(response => {
+                console.log('收到響應:', response);
+                console.log('響應狀態:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('響應數據:', data);
+                hideLoading();
+                if (data.success) {
+                    showResult('預覽地圖已成功保存到記憶體和map.json文件');
+                    // 清除預覽地圖數據
+                    window.previewMapData = null;
+                    // 重新載入地圖
+                    loadMapFromConfig();
+                } else {
+                    showResult(`保存失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('請求錯誤:', error);
+                hideLoading();
+                showResult(`保存失敗：${error.message}`);
+            });
+        }
+        
+        // 覆蓋為配置地圖（僅當沒有預覽地圖時）
+        function overrideWithConfigMapOnly() {
+            console.log('覆蓋為配置地圖函數被調用');
+            showLoading('正在覆蓋為配置地圖...');
+            
+            const url = '/api/terrain/overrideWithConfig';
+            console.log('發送請求到:', url);
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                console.log('收到響應:', response);
+                console.log('響應狀態:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('響應數據:', data);
+                hideLoading();
+                if (data.success) {
+                    showResult('地圖已成功覆蓋為配置地圖');
+                    // 重新載入地圖
+                    loadMapFromConfig();
+                } else {
+                    showResult(`覆蓋失敗：${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('請求錯誤:', error);
+                hideLoading();
+                showResult(`覆蓋失敗：${error.message}`);
+            });
+        }
+        
+        // 清除地圖選擇
+        function clearMapSelection() {
+            // 清除預覽地圖數據
+            window.previewMapData = null;
+            // 重新載入配置地圖
+            loadMapFromConfig();
+            showResult('已清除預覽地圖，重新載入配置地圖');
+        }
+        
+        // 載入玩家列表
+        function loadPlayerList() {
+            fetch('/api/storage/playerList')
+                .then(r => r.json())
+                .then(data => {
+                    const select = document.getElementById('playerSelect');
+                    select.innerHTML = '<option value="">請選擇玩家</option>';
+                    if (data.success && Array.isArray(data.data)) {
+                        data.data.forEach(pid => {
+                            select.innerHTML += `<option value="${pid}">${pid}</option>`;
+                        });
+                    }
+                })
+                .catch(error => {
+                    showResult(`載入玩家列表失敗：${error.message}`);
+                });
+        }
+        
+        // 載入地形配置資訊
+        function loadTerrainConfig() {
+            showLoading('正在載入地形配置...');
+            fetch('/api/terrain/terrainConfig')
+                .then(r => r.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success && Array.isArray(data.data)) {
+                        displayTerrainConfig(data.data);
+                    } else {
+                        showResult(`載入地形配置失敗：${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`載入地形配置失敗：${error.message}`);
+                });
+        }
+        
+        // 顯示地形配置資訊
+        function displayTerrainConfig(terrainConfig) {
+            const container = document.getElementById('terrainConfigInfo');
+            let html = '<div class="table-responsive"><table class="table table-sm">';
+            html += '<thead><tr><th>地形</th><th>類型</th><th>可建造</th><th>可通行</th><th>戰鬥效果</th></tr></thead><tbody>';
+            
+            terrainConfig.forEach(terrain => {
+                html += `<tr>
+                    <td><strong>${terrain.name}</strong></td>
+                    <td>${terrain.terrainType}</td>
+                    <td>${terrain.buildable ? '✓' : '✗'}</td>
+                    <td>${terrain.passable ? '✓' : '✗'}</td>
+                    <td>${terrain.combatEffect}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
         }
     </script>
 </body>
