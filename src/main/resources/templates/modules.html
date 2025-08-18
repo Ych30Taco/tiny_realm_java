@@ -236,6 +236,11 @@
                         <i class="fas fa-fist-raised me-2"></i>戰鬥模組
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="data-admin-tab" data-bs-toggle="tab" data-bs-target="#dataAdmin" type="button" role="tab">
+                        <i class="fas fa-database me-2"></i>資料管理
+                    </button>
+                </li>
             </ul>
 
             <!-- 標籤內容 -->
@@ -758,6 +763,111 @@
                                     <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadMarketItems()">
                                         <i class="fas fa-sync me-2"></i>重新載入
                                     </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 資料管理標籤 -->
+                <div class="tab-pane fade" id="dataAdmin" role="tabpanel">
+                    <div class="row">
+                        <!-- 資源管理 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-coins me-2"></i>資源類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <button class="btn btn-module btn-info mb-2" onclick="loadResourceTypeList()">載入資源類型</button>
+                                    <ul class="list-group mb-2" id="resourceTypeList"></ul>
+                                    <form id="resourceTypeForm">
+                                        <input type="hidden" id="resourceTypeEditId">
+                                        <div class="mb-2">
+                                            <label>資源ID</label>
+                                            <input type="text" class="form-control" id="resourceTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="resourceTypeName">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveResourceType()">儲存</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearResourceTypeForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 建築管理 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-building me-2"></i>建築類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <button class="btn btn-module btn-info mb-2" onclick="loadBuildingTypeList()">載入建築類型</button>
+                                    <ul class="list-group mb-2" id="buildingTypeList"></ul>
+                                    <form id="buildingTypeForm">
+                                        <input type="hidden" id="buildingTypeEditId">
+                                        <div class="mb-2">
+                                            <label>建築ID</label>
+                                            <input type="text" class="form-control" id="buildingTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="buildingTypeName">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveBuildingType()">儲存</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearBuildingTypeForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 地形管理 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-map me-2"></i>地形類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <button class="btn btn-module btn-info mb-2" onclick="loadTerrainTypeList()">載入地形類型</button>
+                                    <ul class="list-group mb-2" id="terrainTypeList"></ul>
+                                    <form id="terrainTypeForm">
+                                        <input type="hidden" id="terrainTypeEditId">
+                                        <div class="mb-2">
+                                            <label>地形ID</label>
+                                            <input type="text" class="form-control" id="terrainTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="terrainTypeName">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveTerrainType()">儲存</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearTerrainTypeForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 士兵管理 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-user-shield me-2"></i>士兵類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <button class="btn btn-module btn-info mb-2" onclick="loadSoldierTypeList()">載入士兵類型</button>
+                                    <ul class="list-group mb-2" id="soldierTypeList"></ul>
+                                    <form id="soldierTypeForm">
+                                        <input type="hidden" id="soldierTypeEditId">
+                                        <div class="mb-2">
+                                            <label>士兵ID</label>
+                                            <input type="text" class="form-control" id="soldierTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="soldierTypeName">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveSoldierType()">儲存</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearSoldierTypeForm()">清除</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
