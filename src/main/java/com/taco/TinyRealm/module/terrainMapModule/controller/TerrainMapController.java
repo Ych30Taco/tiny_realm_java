@@ -172,74 +172,14 @@ public class TerrainMapController {
     /**
      * 保存預覽地圖
      */
-    @PostMapping("/savePreview")
-    public ResponseEntity<?> savePreviewMap(@RequestBody Map<String, Object> body) {
+    @GetMapping("/savePreview")
+    public ResponseEntity<?> savePreviewMap() {
         try {
-            System.out.println("收到保存預覽地圖請求，數據: " + body);
-            
-            // 從請求體中重建GameMap對象
-            GameMap previewMap = new GameMap();
-            previewMap.setId((String) body.get("id"));
-            previewMap.setWidth((int) body.get("width"));
-            previewMap.setHeight((int) body.get("height"));
-            
-            List<Map<String, Object>> tilesData = (List<Map<String, Object>>) body.get("tiles");
-            List<MapTile> tiles = new java.util.ArrayList<>();
-            
-            if (tilesData != null) {
-                for (Map<String, Object> tileData : tilesData) {
-                    MapTile tile = new MapTile();
-                    tile.setX((int) tileData.get("x"));
-                    tile.setY((int) tileData.get("y"));
-                    tile.setOwnerId((String) tileData.get("ownerId"));
-                    tile.setBuildingId((String) tileData.get("buildingId"));
-                    
-                    // 處理unitIds，可能是null或空列表
-                    Object unitIdsObj = tileData.get("unitIds");
-                    if (unitIdsObj instanceof List) {
-                        tile.setUnitIds((List<String>) unitIdsObj);
-                    } else {
-                        tile.setUnitIds(new java.util.ArrayList<>());
-                    }
-                    
-                    // 重建Terrain對象
-                    Map<String, Object> terrainData = (Map<String, Object>) tileData.get("terrain");
-                    if (terrainData != null) {
-                        Terrain terrain = new Terrain();
-                        terrain.setId((String) terrainData.get("id"));
-                        terrain.setName((String) terrainData.get("name"));
-                        terrain.setDescription((String) terrainData.get("description"));
-                        terrain.setBuildable((Boolean) terrainData.get("buildable"));
-                        terrain.setPassable((Boolean) terrainData.get("passable"));
-                        
-                        // 設置TerrainType
-                        String terrainTypeStr = (String) terrainData.get("terrainType");
-                        if (terrainTypeStr != null) {
-                            try {
-                                TerrainType terrainType = TerrainType.valueOf(terrainTypeStr);
-                                terrain.setTerrainType(terrainType);
-                            } catch (IllegalArgumentException e) {
-                                // 如果找不到對應的TerrainType，使用默認值
-                                terrain.setTerrainType(TerrainType.PLAIN);
-                            }
-                        } else {
-                            terrain.setTerrainType(TerrainType.PLAIN);
-                        }
-                        
-                        tile.setTerrain(terrain);
-                    }
-                    
-                    tiles.add(tile);
-                }
-            }
-            
-            previewMap.setTiles(tiles);
-            
-            terrainMapService.savePreviewMap(previewMap);
-            return ResponseEntity.ok(Map.of("success", true, "message", "預覽地圖已保存", "data", null));
+            terrainMapService.savePreviewMap();
+            return ResponseEntity.ok(Map.of("success", true, "message", "預覽地圖已保存", "data", "成功"));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("success", false, "message", "保存失敗: " + e.getMessage(), "data", null));
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "保存失敗: " + e.getMessage(), "data","失敗"));
         }
     }
     

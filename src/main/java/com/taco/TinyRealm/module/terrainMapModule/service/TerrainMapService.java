@@ -31,6 +31,7 @@ public class TerrainMapService {
     private final ObjectMapper objectMapper;      // Jackson JSON 處理器
     private List<Terrain> terrainsList = Collections.emptyList();
     private GameMap gameMap = new GameMap(); // 讓 gameMap 預設存在記憶體
+    private GameMap newgameMap = new GameMap(); // 讓 gameMap 預設存在記憶體
     private Map<String, Object> enemyTypes = new HashMap<>(); // 野怪類型
     @Autowired
     private StorageService storageService;
@@ -189,8 +190,8 @@ public class TerrainMapService {
     public GameMap generateRandomMapPreview(int width, int height) {
         System.out.println("---- 生成隨機地圖預覽 " + width + "x" + height + " ----");
         Random random = new Random();
-        GameMap previewMap = new GameMap(width, height);
-        previewMap.setId(UUID.randomUUID().toString());
+        newgameMap = new GameMap(width, height);
+        newgameMap.setId(UUID.randomUUID().toString());
         
         // 獲取所有可用地形
         List<Terrain> terrainList = getAllterrain();
@@ -221,9 +222,9 @@ public class TerrainMapService {
             }
         }
         
-        previewMap.setTiles(tiles);
+        newgameMap.setTiles(tiles);
         System.out.println("---- 隨機地圖預覽生成完成 ----");
-        return previewMap;
+        return newgameMap;
     }
 
     /**
@@ -245,10 +246,10 @@ public class TerrainMapService {
      * 保存預覽地圖到記憶體和文件
      * @param previewMap 要保存的預覽地圖
      */
-    public void savePreviewMap(GameMap previewMap) throws IOException {
+    public void savePreviewMap() throws IOException {
         System.out.println("---- 保存預覽地圖到記憶體和文件 ----");
         // 更新記憶體中的地圖
-        this.gameMap = previewMap;
+        this.gameMap = newgameMap;
         
         // 保存到文件
         File dir = new File(MAP_FILE_PATH);
