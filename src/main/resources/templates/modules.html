@@ -227,6 +227,11 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="soldier-tab" data-bs-toggle="tab" data-bs-target="#soldier" type="button" role="tab">
+                        <i class="fas fa-user-shield me-2"></i>士兵模組
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="terrainMap-tab" data-bs-toggle="tab" data-bs-target="#terrain" type="button" role="tab">
                         <i class="fas fa-map me-2"></i>地形地圖模組
                     </button>
@@ -510,6 +515,203 @@
                             </div>
                         </div>
                     </div>
+                    <!-- 建築類型管理（CRUD 對應 buildings.json） -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-cubes me-2"></i>建築類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="buildingTypeFullForm">
+                                        <input type="hidden" id="buildingTypeEditId">
+                                        <div class="mb-2">
+                                            <label>建築ID</label>
+                                            <input type="text" class="form-control" id="buildingTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="buildingTypeName">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>類型</label>
+                                            <select class="form-select" id="buildingTypeType">
+                                                <option value="function">function</option>
+                                                <option value="resource">resource</option>
+                                                <option value="military">military</option>
+                                                <option value="defense">defense</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>資源類型（如需：FOOD / WOOD / IRON / STONE）</label>
+                                            <input type="text" class="form-control" id="buildingTypeResourceType" placeholder="可留空">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>最大數量</label>
+                                            <input type="number" class="form-control" id="buildingTypeMaxCount" min="1" value="1">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>允許地形（以逗號分隔）</label>
+                                            <input type="text" class="form-control" id="buildingTypeAllowedTerrains" placeholder="plain,grassland,forest,...">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>等級資料（levels，JSON 陣列）</label>
+                                            <textarea class="form-control" id="buildingTypeLevels" rows="8" placeholder='[
+  {
+    "level": 1,
+    "buildTime": 60000,
+    "cost": { "FOOD": 0, "WOOD": 0, "IRON": 0, "STONE": 0 },
+    "output": {},
+    "prerequisites": {},
+    "productionRate": 0
+  }
+]'></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveBuildingTypeFull()">儲存/新增</button>
+                                        <button type="button" class="btn btn-module btn-danger ms-2" onclick="deleteBuildingTypeFull()">刪除</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearBuildingTypeFullForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-list me-2"></i>建築類型列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <ul class="list-group mb-2" id="buildingTypeFullList"></ul>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadBuildingTypeFullList()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    function loadBuildingTypeFullList() {
+                        fetch('/api/building/types')
+                            .then(r => r.json())
+                            .then(data => {
+                                const list = document.getElementById('buildingTypeFullList');
+                                list.innerHTML = '';
+                                if (data.success && Array.isArray(data.data)) {
+                                    data.data.forEach(type => {
+                                        const safe = {
+                                            id: type.id || '',
+                                            name: type.name || '',
+                                            type: type.type || '',
+                                            resourceType: type.resourceType || '',
+                                            maxCount: type.maxCount || 1,
+                                            allowedTerrains: Array.isArray(type.allowedTerrains) ? type.allowedTerrains : [],
+                                            levels: Array.isArray(type.levels) ? type.levels : []
+                                        };
+                                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>${safe.id} - ${safe.name}</span>
+                                            <button class="btn btn-sm btn-secondary" onclick='editBuildingTypeFull(${JSON.stringify(safe)})'>編輯</button>
+                                        </li>`;
+                                    });
+                                }
+                            });
+                    }
+                    function editBuildingTypeFull(type) {
+                        document.getElementById('buildingTypeEditId').value = type.id;
+                        document.getElementById('buildingTypeId').value = type.id;
+                        document.getElementById('buildingTypeName').value = type.name || '';
+                        document.getElementById('buildingTypeType').value = type.type || 'function';
+                        document.getElementById('buildingTypeResourceType').value = type.resourceType || '';
+                        document.getElementById('buildingTypeMaxCount').value = type.maxCount || 1;
+                        document.getElementById('buildingTypeAllowedTerrains').value = (type.allowedTerrains || []).join(',');
+                        try {
+                            document.getElementById('buildingTypeLevels').value = JSON.stringify(type.levels || [], null, 2);
+                        } catch(e) {
+                            document.getElementById('buildingTypeLevels').value = '[]';
+                        }
+                    }
+                    function clearBuildingTypeFullForm() {
+                        document.getElementById('buildingTypeEditId').value = '';
+                        document.getElementById('buildingTypeId').value = '';
+                        document.getElementById('buildingTypeName').value = '';
+                        document.getElementById('buildingTypeType').value = 'function';
+                        document.getElementById('buildingTypeResourceType').value = '';
+                        document.getElementById('buildingTypeMaxCount').value = 1;
+                        document.getElementById('buildingTypeAllowedTerrains').value = '';
+                        document.getElementById('buildingTypeLevels').value = '';
+                    }
+                    function saveBuildingTypeFull() {
+                        const id = document.getElementById('buildingTypeId').value.trim();
+                        const name = document.getElementById('buildingTypeName').value.trim();
+                        const type = document.getElementById('buildingTypeType').value;
+                        const resourceType = document.getElementById('buildingTypeResourceType').value.trim() || null;
+                        const maxCount = parseInt(document.getElementById('buildingTypeMaxCount').value) || 1;
+                        const allowedTerrainsStr = document.getElementById('buildingTypeAllowedTerrains').value;
+                        const levelsStr = document.getElementById('buildingTypeLevels').value;
+
+                        if (!id) { showResult('請輸入建築ID'); return; }
+                        if (!name) { showResult('請輸入名稱'); return; }
+
+                        let allowedTerrains = [];
+                        if (allowedTerrainsStr && allowedTerrainsStr.trim().length > 0) {
+                            allowedTerrains = allowedTerrainsStr.split(',').map(s => s.trim()).filter(Boolean);
+                        }
+
+                        let levels = [];
+                        try {
+                            levels = JSON.parse(levelsStr || '[]');
+                            if (!Array.isArray(levels)) throw new Error('levels 必須為陣列');
+                        } catch (e) {
+                            showResult('等級資料格式錯誤：' + e.message);
+                            return;
+                        }
+
+                        const building = {
+                            id,
+                            name,
+                            type,
+                            resourceType,
+                            maxCount,
+                            allowedTerrains,
+                            levels
+                        };
+
+                        const editId = document.getElementById('buildingTypeEditId').value;
+                        const url = editId ? '/api/building/type/update' : '/api/building/type/create';
+                        fetch(url, {
+                            method: editId ? 'PUT' : 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(building)
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                showResult('儲存成功');
+                                loadBuildingTypeFullList();
+                                clearBuildingTypeFullForm();
+                                // 重新載入下拉可選建築
+                                loadBuildingTypes();
+                            } else {
+                                showResult('儲存失敗：' + data.message);
+                            }
+                        });
+                    }
+                    function deleteBuildingTypeFull() {
+                        const id = document.getElementById('buildingTypeId').value;
+                        if (!id) { showResult('請先選擇要刪除的建築'); return; }
+                        fetch(`/api/building/type/delete/${id}`, { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                showResult('刪除成功');
+                                loadBuildingTypeFullList();
+                                clearBuildingTypeFullForm();
+                                loadBuildingTypes();
+                            } else {
+                                showResult('刪除失敗：' + data.message);
+                            }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', loadBuildingTypeFullList);
+                    </script>
                 </div>
 
                 <!-- 資源模組標籤 -->
@@ -781,6 +983,174 @@
                     </div>
                 </div>
 
+                <!-- 士兵模組標籤（CRUD 對應 soldiers.json） -->
+                <div class="tab-pane fade" id="soldier" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-user-shield me-2"></i>士兵類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="soldierTypeFullForm">
+                                        <input type="hidden" id="soldierTypeFullEditId">
+                                        <div class="mb-2">
+                                            <label>士兵ID</label>
+                                            <input type="text" class="form-control" id="soldierTypeFullId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="soldierTypeFullName">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>類型</label>
+                                            <select class="form-select" id="soldierTypeFullType">
+                                                <option value="INFANTRY">INFANTRY</option>
+                                                <option value="ARCHER">ARCHER</option>
+                                                <option value="CAVALRY">CAVALRY</option>
+                                                <option value="SIEGE">SIEGE</option>
+                                                <option value="MAGE">MAGE</option>
+                                                <option value="DEFENDER">DEFENDER</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>描述</label>
+                                            <input type="text" class="form-control" id="soldierTypeFullDesc">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>站位</label>
+                                            <select class="form-select" id="soldierTypeFullFormation">
+                                                <option value="FRONT">FRONT</option>
+                                                <option value="MIDDLE">MIDDLE</option>
+                                                <option value="BACK">BACK</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>需求建築（requirements，JSON 物件）</label>
+                                            <textarea class="form-control" id="soldierTypeFullReq" rows="3" placeholder='{"mainHall":1}'></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>需求科技（requiredTech，JSON 物件）</label>
+                                            <textarea class="form-control" id="soldierTypeFullTech" rows="3" placeholder='{}'></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>技能（skills，JSON 物件）</label>
+                                            <textarea class="form-control" id="soldierTypeFullSkills" rows="3" placeholder='{}'></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>屬性（stats，JSON 物件）</label>
+                                            <textarea class="form-control" id="soldierTypeFullStats" rows="8" placeholder='{"cost":{"food":100,"wood":100},"attack":10,"defense":8,"hp":50,"speed":3,"range":1,"trainingTime":120}'></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveSoldierTypeFull()">儲存/新增</button>
+                                        <button type="button" class="btn btn-module btn-danger ms-2" onclick="deleteSoldierTypeFull()">刪除</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearSoldierTypeFullForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-list me-2"></i>士兵類型列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <ul class="list-group mb-2" id="soldierTypeFullList"></ul>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadSoldierTypeFullList()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    function loadSoldierTypeFullList() {
+                        fetch('/api/soldier/types')
+                            .then(r => r.json())
+                            .then(res => {
+                                const list = document.getElementById('soldierTypeFullList');
+                                list.innerHTML = '';
+                                if (res.success && Array.isArray(res.data)) {
+                                    res.data.forEach(s => {
+                                        const safe = {
+                                            id: s.id || '',
+                                            name: s.name || '',
+                                            type: s.type || 'INFANTRY',
+                                            description: s.description || '',
+                                            formationPosition: s.formationPosition || 'FRONT',
+                                            requirements: s.requirements || {},
+                                            requiredTech: s.requiredTech || {},
+                                            skills: s.skills || {},
+                                            stats: s.stats || {}
+                                        };
+                                        list.innerHTML += `<li class=\"list-group-item d-flex justify-content-between align-items-center\">`
+                                            + `<span>${safe.id} - ${safe.name}</span>`
+                                            + `<button class=\"btn btn-sm btn-secondary\" onclick='editSoldierTypeFull(${JSON.stringify(safe)})'>編輯</button>`
+                                            + `</li>`;
+                                    });
+                                }
+                            });
+                    }
+                    function editSoldierTypeFull(s) {
+                        document.getElementById('soldierTypeFullEditId').value = s.id;
+                        document.getElementById('soldierTypeFullId').value = s.id;
+                        document.getElementById('soldierTypeFullName').value = s.name || '';
+                        document.getElementById('soldierTypeFullType').value = s.type || 'INFANTRY';
+                        document.getElementById('soldierTypeFullDesc').value = s.description || '';
+                        document.getElementById('soldierTypeFullFormation').value = s.formationPosition || 'FRONT';
+                        document.getElementById('soldierTypeFullReq').value = JSON.stringify(s.requirements || {}, null, 2);
+                        document.getElementById('soldierTypeFullTech').value = JSON.stringify(s.requiredTech || {}, null, 2);
+                        document.getElementById('soldierTypeFullSkills').value = JSON.stringify(s.skills || {}, null, 2);
+                        document.getElementById('soldierTypeFullStats').value = JSON.stringify(s.stats || {}, null, 2);
+                    }
+                    function clearSoldierTypeFullForm() {
+                        document.getElementById('soldierTypeFullEditId').value = '';
+                        document.getElementById('soldierTypeFullId').value = '';
+                        document.getElementById('soldierTypeFullName').value = '';
+                        document.getElementById('soldierTypeFullType').value = 'INFANTRY';
+                        document.getElementById('soldierTypeFullDesc').value = '';
+                        document.getElementById('soldierTypeFullFormation').value = 'FRONT';
+                        document.getElementById('soldierTypeFullReq').value = '';
+                        document.getElementById('soldierTypeFullTech').value = '';
+                        document.getElementById('soldierTypeFullSkills').value = '';
+                        document.getElementById('soldierTypeFullStats').value = '';
+                    }
+                    function saveSoldierTypeFull() {
+                        const id = document.getElementById('soldierTypeFullId').value.trim();
+                        const name = document.getElementById('soldierTypeFullName').value.trim();
+                        const type = document.getElementById('soldierTypeFullType').value;
+                        const description = document.getElementById('soldierTypeFullDesc').value.trim();
+                        const formationPosition = document.getElementById('soldierTypeFullFormation').value;
+                        if (!id) { showResult('請輸入士兵ID'); return; }
+                        if (!name) { showResult('請輸入名稱'); return; }
+                        let requirements = {}; let requiredTech = {}; let skills = {}; let stats = {};
+                        try { requirements = JSON.parse(document.getElementById('soldierTypeFullReq').value || '{}'); } catch (e) { showResult('需求建築 JSON 格式錯誤'); return; }
+                        try { requiredTech = JSON.parse(document.getElementById('soldierTypeFullTech').value || '{}'); } catch (e) { showResult('需求科技 JSON 格式錯誤'); return; }
+                        try { skills = JSON.parse(document.getElementById('soldierTypeFullSkills').value || '{}'); } catch (e) { showResult('技能 JSON 格式錯誤'); return; }
+                        try { stats = JSON.parse(document.getElementById('soldierTypeFullStats').value || '{}'); } catch (e) { showResult('屬性 stats JSON 格式錯誤'); return; }
+                        const payload = { id, name, type, description, formationPosition, requirements, requiredTech, skills, stats };
+                        const editId = document.getElementById('soldierTypeFullEditId').value;
+                        const url = editId ? '/api/soldier/updateType' : '/api/soldier/createType';
+                        fetch(url, { method: editId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) { showResult('儲存成功'); loadSoldierTypeFullList(); clearSoldierTypeFullForm(); }
+                            else { showResult('儲存失敗：' + res.message); }
+                        });
+                    }
+                    function deleteSoldierTypeFull() {
+                        const id = document.getElementById('soldierTypeFullId').value;
+                        if (!id) { showResult('請先選擇要刪除的士兵'); return; }
+                        fetch(`/api/soldier/deleteType/${id}`, { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) { showResult('刪除成功'); loadSoldierTypeFullList(); clearSoldierTypeFullForm(); }
+                            else { showResult('刪除失敗：' + res.message); }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', loadSoldierTypeFullList);
+                    </script>
+                </div>
+
                 <!-- 戰鬥模組標籤 -->
                 <div class="tab-pane fade" id="battle" role="tabpanel">
                     <div class="row">
@@ -869,6 +1239,203 @@
                             </div>
                         </div>
                     </div>
+                    <!-- 敵人類型管理（CRUD 對應 enemies.json） -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-ghost me-2"></i>敵人類型管理</h5>
+                                </div>
+                                <div class="module-body">
+                                    <form id="enemyTypeForm">
+                                        <input type="hidden" id="enemyTypeEditId">
+                                        <div class="mb-2">
+                                            <label>敵人Type</label>
+                                            <input type="text" class="form-control" id="enemyTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱</label>
+                                            <input type="text" class="form-control" id="enemyTypeName">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>描述</label>
+                                            <input type="text" class="form-control" id="enemyTypeDesc">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>等級</label>
+                                            <input type="number" class="form-control" id="enemyTypeLevel" value="1">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>難度</label>
+                                            <select class="form-select" id="enemyTypeDifficulty">
+                                                <option value="EASY">EASY</option>
+                                                <option value="MEDIUM">MEDIUM</option>
+                                                <option value="HARD">HARD</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>最小玩家等級</label>
+                                            <input type="number" class="form-control" id="enemyTypeMinPlayerLevel" value="1">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>戰鬥時長（秒）</label>
+                                            <input type="number" class="form-control" id="enemyTypeBattleDuration" value="300">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>技能（JSON）</label>
+                                            <textarea class="form-control" id="enemyTypeSkills" rows="3" placeholder='{"stealth":0.3}'></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>出現機率</label>
+                                            <input type="number" step="0.01" class="form-control" id="enemyTypeSpawnChance" value="1">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>是否Boss</label>
+                                            <select class="form-select" id="enemyTypeIsBoss">
+                                                <option value="false">否</option>
+                                                <option value="true">是</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>戰鬥描述</label>
+                                            <textarea class="form-control" id="enemyTypeBattleDesc" rows="2"></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>單位（units，JSON 陣列）</label>
+                                            <textarea class="form-control" id="enemyTypeUnits" rows="6" placeholder='[
+  {"type":"bandit_warrior","count":3,"level":5,"attack":25,"defense":15,"health":80}
+]'></textarea>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>獎勵（rewards，JSON 物件）</label>
+                                            <textarea class="form-control" id="enemyTypeRewards" rows="3" placeholder='{"food":100,"wood":100}'></textarea>
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveEnemyTypeFull()">儲存/新增</button>
+                                        <button type="button" class="btn btn-module btn-danger ms-2" onclick="deleteEnemyTypeFull()">刪除</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearEnemyTypeForm()">清除</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="module-card">
+                                <div class="module-header">
+                                    <h5><i class="fas fa-list me-2"></i>敵人類型列表</h5>
+                                </div>
+                                <div class="module-body">
+                                    <ul class="list-group mb-2" id="enemyTypeList"></ul>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadEnemyTypeList()">
+                                        <i class="fas fa-sync me-2"></i>重新載入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    function loadEnemyTypeList() {
+                        fetch('/api/battle/types')
+                            .then(r => r.json())
+                            .then(res => {
+                                const list = document.getElementById('enemyTypeList');
+                                list.innerHTML = '';
+                                if (res.success && res.data) {
+                                    Object.keys(res.data).forEach(key => {
+                                        const e = res.data[key];
+                                        const safe = {
+                                            type: e.type || key,
+                                            name: e.name || '',
+                                            description: e.description || '',
+                                            level: e.level || 1,
+                                            difficulty: e.difficulty || 'EASY',
+                                            minPlayerLevel: e.minPlayerLevel || 1,
+                                            battleDuration: e.battleDuration || 300,
+                                            skills: e.skills || {},
+                                            spawnChance: e.spawnChance || 1,
+                                            isBoss: !!e.isBoss,
+                                            battleDescription: e.battleDescription || '',
+                                            units: e.units || [],
+                                            rewards: e.rewards || {}
+                                        };
+                                        list.innerHTML += `<li class=\"list-group-item d-flex justify-content-between align-items-center\">`
+                                            + `<span>${safe.type} - ${safe.name}</span>`
+                                            + `<button class=\"btn btn-sm btn-secondary\" onclick='editEnemyTypeFull(${JSON.stringify(safe)})'>編輯</button>`
+                                            + `</li>`;
+                                    });
+                                }
+                            });
+                    }
+                    function editEnemyTypeFull(e) {
+                        document.getElementById('enemyTypeEditId').value = e.type;
+                        document.getElementById('enemyTypeId').value = e.type;
+                        document.getElementById('enemyTypeName').value = e.name || '';
+                        document.getElementById('enemyTypeDesc').value = e.description || '';
+                        document.getElementById('enemyTypeLevel').value = e.level || 1;
+                        document.getElementById('enemyTypeDifficulty').value = e.difficulty || 'EASY';
+                        document.getElementById('enemyTypeMinPlayerLevel').value = e.minPlayerLevel || 1;
+                        document.getElementById('enemyTypeBattleDuration').value = e.battleDuration || 300;
+                        document.getElementById('enemyTypeSkills').value = JSON.stringify(e.skills || {}, null, 2);
+                        document.getElementById('enemyTypeSpawnChance').value = e.spawnChance || 1;
+                        document.getElementById('enemyTypeIsBoss').value = e.isBoss ? 'true' : 'false';
+                        document.getElementById('enemyTypeBattleDesc').value = e.battleDescription || '';
+                        document.getElementById('enemyTypeUnits').value = JSON.stringify(e.units || [], null, 2);
+                        document.getElementById('enemyTypeRewards').value = JSON.stringify(e.rewards || {}, null, 2);
+                    }
+                    function clearEnemyTypeForm() {
+                        document.getElementById('enemyTypeEditId').value = '';
+                        document.getElementById('enemyTypeId').value = '';
+                        document.getElementById('enemyTypeName').value = '';
+                        document.getElementById('enemyTypeDesc').value = '';
+                        document.getElementById('enemyTypeLevel').value = 1;
+                        document.getElementById('enemyTypeDifficulty').value = 'EASY';
+                        document.getElementById('enemyTypeMinPlayerLevel').value = 1;
+                        document.getElementById('enemyTypeBattleDuration').value = 300;
+                        document.getElementById('enemyTypeSkills').value = '';
+                        document.getElementById('enemyTypeSpawnChance').value = 1;
+                        document.getElementById('enemyTypeIsBoss').value = 'false';
+                        document.getElementById('enemyTypeBattleDesc').value = '';
+                        document.getElementById('enemyTypeUnits').value = '';
+                        document.getElementById('enemyTypeRewards').value = '';
+                    }
+                    function saveEnemyTypeFull() {
+                        const type = document.getElementById('enemyTypeId').value.trim();
+                        const name = document.getElementById('enemyTypeName').value.trim();
+                        const description = document.getElementById('enemyTypeDesc').value.trim();
+                        const level = parseInt(document.getElementById('enemyTypeLevel').value) || 1;
+                        const difficulty = document.getElementById('enemyTypeDifficulty').value;
+                        const minPlayerLevel = parseInt(document.getElementById('enemyTypeMinPlayerLevel').value) || 1;
+                        const battleDuration = parseInt(document.getElementById('enemyTypeBattleDuration').value) || 300;
+                        let skills = {};
+                        let units = [];
+                        let rewards = {};
+                        try { skills = JSON.parse(document.getElementById('enemyTypeSkills').value || '{}'); } catch (e) { showResult('技能 JSON 格式錯誤'); return; }
+                        try { units = JSON.parse(document.getElementById('enemyTypeUnits').value || '[]'); if(!Array.isArray(units)) throw new Error('units 必須為陣列'); } catch (e) { showResult('單位 JSON 格式錯誤'); return; }
+                        try { rewards = JSON.parse(document.getElementById('enemyTypeRewards').value || '{}'); } catch (e) { showResult('獎勵 JSON 格式錯誤'); return; }
+                        const spawnChance = parseFloat(document.getElementById('enemyTypeSpawnChance').value) || 1;
+                        const isBoss = document.getElementById('enemyTypeIsBoss').value === 'true';
+                        const battleDescription = document.getElementById('enemyTypeBattleDesc').value || '';
+                        if (!type) { showResult('請輸入敵人Type'); return; }
+                        const enemy = { type, name, description, level, difficulty, minPlayerLevel, battleDuration, skills, spawnChance, isBoss, battleDescription, units, rewards };
+                        const editId = document.getElementById('enemyTypeEditId').value;
+                        const url = editId ? '/api/battle/update' : '/api/battle/create';
+                        fetch(url, { method: editId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(enemy) })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) { showResult('儲存成功'); loadEnemyTypeList(); clearEnemyTypeForm(); }
+                            else { showResult('儲存失敗：' + res.message); }
+                        });
+                    }
+                    function deleteEnemyTypeFull() {
+                        const id = document.getElementById('enemyTypeId').value;
+                        if (!id) { showResult('請先選擇要刪除的敵人'); return; }
+                        fetch(`/api/battle/delete/${id}`, { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.success) { showResult('刪除成功'); loadEnemyTypeList(); clearEnemyTypeForm(); }
+                            else { showResult('刪除失敗：' + res.message); }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', loadEnemyTypeList);
+                    </script>
                 </div>
 
                 <!-- 市場模組標籤 -->

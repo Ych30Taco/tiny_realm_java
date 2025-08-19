@@ -1,6 +1,7 @@
 package com.taco.TinyRealm.module.buildingModule.controller;
 
 import com.taco.TinyRealm.module.buildingModule.service.BuildingService;
+import com.taco.TinyRealm.module.buildingModule.model.Building;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +89,36 @@ public class BuildingController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }*/
+
+    // ===== 建築類型定義 CRUD（對應 buildings.json） =====
+    @PostMapping("/type/create")
+    public ResponseEntity<?> createBuildingType(@RequestBody Building building) {
+        try {
+            buildingService.createBuildingType(building);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築類型新增成功", "data", building));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "建築類型新增失敗: " + e.getMessage(), "data", null));
+        }
+    }
+
+    @PutMapping("/type/update")
+    public ResponseEntity<?> updateBuildingType(@RequestBody Building building) {
+        try {
+            buildingService.updateBuildingType(building);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築類型修改成功", "data", building));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "建築類型修改失敗: " + e.getMessage(), "data", null));
+        }
+    }
+
+    @DeleteMapping("/type/delete/{buildingId}")
+    public ResponseEntity<?> deleteBuildingType(@PathVariable String buildingId) {
+        try {
+            buildingService.deleteBuildingType(buildingId);
+            return ResponseEntity.ok(Map.of("success", true, "message", "建築類型刪除成功", "data", buildingId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "建築類型刪除失敗: " + e.getMessage(), "data", null));
+        }
+    }
 }
  

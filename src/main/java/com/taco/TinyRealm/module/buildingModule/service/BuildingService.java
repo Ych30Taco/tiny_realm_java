@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 public class BuildingService {
@@ -46,6 +49,9 @@ public class BuildingService {
     // 從 application.yaml 中讀取靜態資源定義檔案的路徑
     @Value("${app.data.building-path}")
     private org.springframework.core.io.Resource buildingPath;
+    
+    // 可寫入之建築 JSON 目標路徑（對齊資源模組做法）
+    private final String buildingJsonPath = "src/main/resources/config/building/buildings.json";
          /**
      * 建構子注入依賴。
      * Spring 會自動提供這些依賴的實例。
@@ -336,5 +342,45 @@ public class BuildingService {
         storageService.saveGameState(playerId, gameState,"拆除建築並釋放地形", isTest);
         
         return gameState;
+    }
+
+    /**
+     * 以下為建築「類型定義」之 CRUD，並回寫至 buildings.json
+     */
+    public synchronized void createBuildingType(Building building) throws IOException {
+        // 如果已存在相同 id，則拋出例外
+        if (getBuildingById(building.getId()) != null) {
+            throw new IllegalArgumentException("Building type already exists: " + building.getId());
+        }
+        buildingsList.add(building);
+        saveBuildingsToFile();
+    }
+
+    public synchronized void updateBuildingType(Building building) throws IOException {
+        boolean updated = false;
+        for (int i = 0; i < buildingsList.size(); i++) {
+            if (buildingsList.get(i).getId().equals(building.getId())) {
+                buildingsList.set(i, building);
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            throw new IllegalArgumentException("Building type not found: " + building.getId());
+        }
+        saveBuildingsToFile();
+    }
+
+    public synchronized void deleteBuildingType(String buildingId) throws IOException {
+        boolean removed = buildingsList.removeIf(b -> b.getId().equals(buildingId));
+        if (!removed) {
+            throw new IllegalArgumentException("Building type not found: " + buildingId);
+        }
+        saveBuildingsToFile();
+    }
+
+    private void saveBuildingsToFile() throws IOException {
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(buildingsList);
+        Files.write(Paths.get(buildingJsonPath), json.getBytes(StandardCharsets.UTF_8));
     }
 }
