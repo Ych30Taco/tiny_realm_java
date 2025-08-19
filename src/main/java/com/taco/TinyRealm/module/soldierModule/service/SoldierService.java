@@ -108,6 +108,58 @@ public class SoldierService {
                 .orElse(null);
     }
     /**
+     * 新增士兵類型
+     */
+    public void addSoldierType(SoldierType soldierType) throws IOException {
+        if (soldierType == null || soldierType.getId() == null || soldierType.getId().isBlank()) {
+            throw new IllegalArgumentException("士兵類型ID不能為空");
+        }
+        if (getSoldierTypeById(soldierType.getId()) != null) {
+            throw new IllegalArgumentException("士兵類型ID已存在");
+        }
+        List<SoldierType> list = new ArrayList<>(soldierTypeList);
+        list.add(soldierType);
+        soldierTypeList = list;
+        saveSoldierTypes();
+    }
+    /**
+     * 修改士兵類型
+     */
+    public void updateSoldierType(SoldierType soldierType) throws IOException {
+        if (soldierType == null || soldierType.getId() == null || soldierType.getId().isBlank()) {
+            throw new IllegalArgumentException("士兵類型ID不能為空");
+        }
+        List<SoldierType> list = new ArrayList<>(soldierTypeList);
+        boolean found = false;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId().equals(soldierType.getId())) {
+                list.set(i, soldierType);
+                found = true;
+                break;
+            }
+        }
+        if (!found) throw new IllegalArgumentException("士兵類型ID不存在");
+        soldierTypeList = list;
+        saveSoldierTypes();
+    }
+    /**
+     * 刪除士兵類型
+     */
+    public void deleteSoldierType(String id) throws IOException {
+        if (id == null || id.isBlank()) throw new IllegalArgumentException("士兵類型ID不能為空");
+        List<SoldierType> list = new ArrayList<>(soldierTypeList);
+        boolean removed = list.removeIf(s -> s.getId().equals(id));
+        if (!removed) throw new IllegalArgumentException("士兵類型ID不存在");
+        soldierTypeList = list;
+        saveSoldierTypes();
+    }
+    /**
+     * 儲存士兵類型到 JSON 檔案
+     */
+    private void saveSoldierTypes() throws IOException {
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(soldierPath.getFile(), soldierTypeList);
+    }
+    /**
      * 創建士兵
      */
     public GameState createSoldier(String playerId, String soldierID, int count, boolean isTest) throws IOException {

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.taco.TinyRealm.module.resourceModule.service.ResourceService;
+import com.taco.TinyRealm.module.resourceModule.model.Resource;
 import com.taco.TinyRealm.module.storageModule.model.GameState;
 
 import java.io.IOException;
@@ -63,6 +64,36 @@ public class ResourceController {
             return ResponseEntity.ok(Map.of("success", true, "message", "資源扣除成功", "data", resources));
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("success", false, "message", "內部錯誤", "data", null));
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createResource(@RequestBody Resource resource) {
+        try {
+            resourceService.createResource(resource);
+            return ResponseEntity.ok(Map.of("success", true, "message", "資源新增成功", "data", resource));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "資源新增失敗: " + e.getMessage(), "data", null));
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateResource(@RequestBody Resource resource) {
+        try {
+            resourceService.updateResource(resource);
+            return ResponseEntity.ok(Map.of("success", true, "message", "資源修改成功", "data", resource));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "資源修改失敗: " + e.getMessage(), "data", null));
+        }
+    }
+
+    @DeleteMapping("/delete/{resourceId}")
+    public ResponseEntity<?> deleteResource(@PathVariable String resourceId) {
+        try {
+            resourceService.deleteResource(resourceId);
+            return ResponseEntity.ok(Map.of("success", true, "message", "資源刪除成功", "data", resourceId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "資源刪除失敗: " + e.getMessage(), "data", null));
         }
     }
     

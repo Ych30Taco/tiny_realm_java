@@ -127,6 +127,53 @@ public class BattleService {
     public EnemyType getEnemyType(String enemyType) {
         return enemyTypes.get(enemyType);
     }
+
+    /**
+     * 新增敵人類型
+     */
+    public void addEnemyType(EnemyType enemyType) throws IOException {
+        if (enemyType == null || enemyType.getType() == null || enemyType.getType().isBlank()) {
+            throw new IllegalArgumentException("敵人類型ID不能為空");
+        }
+        if (enemyTypes.containsKey(enemyType.getType())) {
+            throw new IllegalArgumentException("敵人類型ID已存在");
+        }
+        enemyTypes.put(enemyType.getType(), enemyType);
+        saveEnemyTypes();
+    }
+
+    /**
+     * 修改敵人類型
+     */
+    public void updateEnemyType(EnemyType enemyType) throws IOException {
+        if (enemyType == null || enemyType.getType() == null || enemyType.getType().isBlank()) {
+            throw new IllegalArgumentException("敵人類型ID不能為空");
+        }
+        if (!enemyTypes.containsKey(enemyType.getType())) {
+            throw new IllegalArgumentException("敵人類型ID不存在");
+        }
+        enemyTypes.put(enemyType.getType(), enemyType);
+        saveEnemyTypes();
+    }
+
+    /**
+     * 刪除敵人類型
+     */
+    public void deleteEnemyType(String type) throws IOException {
+        if (type == null || type.isBlank()) throw new IllegalArgumentException("敵人類型ID不能為空");
+        if (!enemyTypes.containsKey(type)) throw new IllegalArgumentException("敵人類型ID不存在");
+        enemyTypes.remove(type);
+        saveEnemyTypes();
+    }
+
+    /**
+     * 儲存敵人類型到 JSON 檔案
+     */
+    private void saveEnemyTypes() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writerWithDefaultPrettyPrinter().writeValue(enemiesPath.getFile(), enemyTypes);
+    }
+
     /**
      * 開始戰鬥
      * @param playerId 玩家ID

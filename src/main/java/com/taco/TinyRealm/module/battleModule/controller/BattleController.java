@@ -88,6 +88,43 @@ public class BattleController {
     }
 
     /**
+     * 新增敵人類型
+     */
+    @PostMapping("/create")
+    public ResponseEntity<?> createEnemyType(@RequestBody EnemyType enemyType) {
+        try {
+            battleService.addEnemyType(enemyType);
+            return ResponseEntity.ok(Map.of("success", true, "message", "新增敵人類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "新增敵人類型失敗: " + e.getMessage()));
+        }
+    }
+    /**
+     * 修改敵人類型
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateEnemyType(@RequestBody EnemyType enemyType) {
+        try {
+            battleService.updateEnemyType(enemyType);
+            return ResponseEntity.ok(Map.of("success", true, "message", "修改敵人類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "修改敵人類型失敗: " + e.getMessage()));
+        }
+    }
+    /**
+     * 刪除敵人類型
+     */
+    @DeleteMapping("/delete/{type}")
+    public ResponseEntity<?> deleteEnemyType(@PathVariable String type) {
+        try {
+            battleService.deleteEnemyType(type);
+            return ResponseEntity.ok(Map.of("success", true, "message", "刪除敵人類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "刪除敵人類型失敗: " + e.getMessage()));
+        }
+    }
+
+    /**
      * 獲取玩家戰鬥記錄
      * GET /api/battle/player/{playerId}
      * 

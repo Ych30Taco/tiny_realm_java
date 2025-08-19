@@ -518,27 +518,84 @@
                         <div class="col-md-6">
                             <div class="module-card">
                                 <div class="module-header">
-                                    <h5><i class="fas fa-coins me-2"></i>資源管理</h5>
+                                    <h5><i class="fas fa-coins me-2"></i>資源類型管理</h5>
                                 </div>
                                 <div class="module-body">
-                                    <form id="resourceForm">
-                                        <div class="mb-3">
-                                            <label class="form-label">資源類型</label>
-                                            <select class="form-select" id="resourceType">
-                                                <!-- 資源類型由JS載入 -->
+                                    <form id="resourceTypeFullForm">
+                                        <input type="hidden" id="resourceTypeEditId">
+                                        <div class="mb-2">
+                                            <label>資源ID</label>
+                                            <input type="text" class="form-control" id="resourceTypeId">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱 (中文)</label>
+                                            <input type="text" class="form-control" id="resourceTypeNameZh">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>名稱 (英文)</label>
+                                            <input type="text" class="form-control" id="resourceTypeNameEn">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>描述 (中文)</label>
+                                            <input type="text" class="form-control" id="resourceTypeDescZh">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>描述 (英文)</label>
+                                            <input type="text" class="form-control" id="resourceTypeDescEn">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>圖示URL</label>
+                                            <input type="text" class="form-control" id="resourceTypeIconURL">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Premium</label>
+                                            <select class="form-select" id="resourceTypePremium">
+                                                <option value="false">否</option>
+                                                <option value="true">是</option>
                                             </select>
                                         </div>
-                                        <!-- 移除玩家ID欄位 -->
-                                        <div class="mb-3">
-                                            <label class="form-label">數量</label>
-                                            <input type="number" class="form-control" id="resourceAmount" min="1" value="100">
+                                        <div class="mb-2">
+                                            <label>Stackable</label>
+                                            <select class="form-select" id="resourceTypeStackable">
+                                                <option value="true">可堆疊</option>
+                                                <option value="false">不可堆疊</option>
+                                            </select>
                                         </div>
-                                        <button type="button" class="btn btn-module btn-primary" onclick="addResource()">
-                                            <i class="fas fa-plus me-2"></i>增加資源
-                                        </button>
-                                        <button type="button" class="btn btn-module btn-warning ms-2" onclick="consumeResource()">
-                                            <i class="fas fa-minus me-2"></i>消耗資源
-                                        </button>
+                                        <div class="mb-2">
+                                            <label>分類</label>
+                                            <input type="text" class="form-control" id="resourceTypeCategory">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>排序</label>
+                                            <input type="number" class="form-control" id="resourceTypeSortOrder">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>基礎產量</label>
+                                            <input type="number" class="form-control" id="resourceTypeBaseProductionRate">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>初始數量</label>
+                                            <input type="number" class="form-control" id="resourceTypeNowAmount">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>最大數量</label>
+                                            <input type="number" class="form-control" id="resourceTypeMaxAmount">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>保護倉庫百分比</label>
+                                            <input type="number" step="0.01" class="form-control" id="resourceTypeProtectedStoragePercentage">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>保護倉庫最大量</label>
+                                            <input type="number" class="form-control" id="resourceTypeProtectedStorageMaxAmount">
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>取得方式 (逗號分隔)</label>
+                                            <input type="text" class="form-control" id="resourceTypeAcquisitionMethods">
+                                        </div>
+                                        <button type="button" class="btn btn-module btn-primary" onclick="saveResourceTypeFull()">儲存/新增</button>
+                                        <button type="button" class="btn btn-module btn-danger ms-2" onclick="deleteResourceTypeFull()">刪除</button>
+                                        <button type="button" class="btn btn-module btn-secondary ms-2" onclick="clearResourceTypeFullForm()">清除</button>
                                     </form>
                                 </div>
                             </div>
@@ -546,38 +603,143 @@
                         <div class="col-md-6">
                             <div class="module-card">
                                 <div class="module-header">
-                                    <h5><i class="fas fa-chart-pie me-2"></i>資源概覽</h5>
+                                    <h5><i class="fas fa-list me-2"></i>資源類型列表</h5>
                                 </div>
                                 <div class="module-body">
-                                    <div id="resourceOverview">
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>金幣:</span>
-                                            <span id="goldAmount">0</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>食物:</span>
-                                            <span id="foodAmount">0</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>木材:</span>
-                                            <span id="woodAmount">0</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-2">
-                                            <span>石頭:</span>
-                                            <span id="stoneAmount">0</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>鐵礦:</span>
-                                            <span id="ironAmount">0</span>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadResources()">
+                                    <ul class="list-group mb-2" id="resourceTypeFullList"></ul>
+                                    <button type="button" class="btn btn-module btn-info w-100 mt-3" onclick="loadResourceTypeFullList()">
                                         <i class="fas fa-sync me-2"></i>重新載入
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <script>
+                    function loadResourceTypeFullList() {
+                        fetch('/api/resource/types')
+                            .then(r => r.json())
+                            .then(data => {
+                                const list = document.getElementById('resourceTypeFullList');
+                                list.innerHTML = '';
+                                if (data.success && Array.isArray(data.data)) {
+                                    data.data.forEach(type => {
+                                        list.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>${type.id} - ${type.name['zh-TW']}</span>
+                                            <button class="btn btn-sm btn-secondary" onclick='editResourceTypeFull(${JSON.stringify(type)})'>編輯</button>
+                                        </li>`;
+                                    });
+                                }
+                            });
+                    }
+                    function editResourceTypeFull(type) {
+                        document.getElementById('resourceTypeEditId').value = type.id;
+                        document.getElementById('resourceTypeId').value = type.id;
+                        document.getElementById('resourceTypeNameZh').value = type.name['zh-TW'] || '';
+                        document.getElementById('resourceTypeNameEn').value = type.name['en'] || '';
+                        document.getElementById('resourceTypeDescZh').value = type.resourceDescription['zh-TW'] || '';
+                        document.getElementById('resourceTypeDescEn').value = type.resourceDescription['en'] || '';
+                        document.getElementById('resourceTypeIconURL').value = type.resourceIconURL || '';
+                        document.getElementById('resourceTypePremium').value = type.premium ? 'true' : 'false';
+                        document.getElementById('resourceTypeStackable').value = type.stackable ? 'true' : 'false';
+                        document.getElementById('resourceTypeCategory').value = type.category || '';
+                        document.getElementById('resourceTypeSortOrder').value = type.sortOrder || 0;
+                        document.getElementById('resourceTypeBaseProductionRate').value = type.baseProductionRate || 0;
+                        document.getElementById('resourceTypeNowAmount').value = type.nowAmount || 0;
+                        document.getElementById('resourceTypeMaxAmount').value = type.maxAmount || 0;
+                        document.getElementById('resourceTypeProtectedStoragePercentage').value = type.protectedStoragePercentage || 0;
+                        document.getElementById('resourceTypeProtectedStorageMaxAmount').value = type.protectedStorageMaxAmount || 0;
+                        document.getElementById('resourceTypeAcquisitionMethods').value = (type.acquisitionMethods || []).join(',');
+                    }
+                    function clearResourceTypeFullForm() {
+                        document.getElementById('resourceTypeEditId').value = '';
+                        document.getElementById('resourceTypeId').value = '';
+                        document.getElementById('resourceTypeNameZh').value = '';
+                        document.getElementById('resourceTypeNameEn').value = '';
+                        document.getElementById('resourceTypeDescZh').value = '';
+                        document.getElementById('resourceTypeDescEn').value = '';
+                        document.getElementById('resourceTypeIconURL').value = '';
+                        document.getElementById('resourceTypePremium').value = 'false';
+                        document.getElementById('resourceTypeStackable').value = 'true';
+                        document.getElementById('resourceTypeCategory').value = '';
+                        document.getElementById('resourceTypeSortOrder').value = 0;
+                        document.getElementById('resourceTypeBaseProductionRate').value = 0;
+                        document.getElementById('resourceTypeNowAmount').value = 0;
+                        document.getElementById('resourceTypeMaxAmount').value = 0;
+                        document.getElementById('resourceTypeProtectedStoragePercentage').value = 0;
+                        document.getElementById('resourceTypeProtectedStorageMaxAmount').value = 0;
+                        document.getElementById('resourceTypeAcquisitionMethods').value = '';
+                    }
+                    function saveResourceTypeFull() {
+                        const id = document.getElementById('resourceTypeId').value;
+                        const nameZh = document.getElementById('resourceTypeNameZh').value;
+                        const nameEn = document.getElementById('resourceTypeNameEn').value;
+                        const descZh = document.getElementById('resourceTypeDescZh').value;
+                        const descEn = document.getElementById('resourceTypeDescEn').value;
+                        const iconURL = document.getElementById('resourceTypeIconURL').value;
+                        const premium = document.getElementById('resourceTypePremium').value === 'true';
+                        const stackable = document.getElementById('resourceTypeStackable').value === 'true';
+                        const category = document.getElementById('resourceTypeCategory').value;
+                        const sortOrder = parseInt(document.getElementById('resourceTypeSortOrder').value) || 0;
+                        const baseProductionRate = parseInt(document.getElementById('resourceTypeBaseProductionRate').value) || 0;
+                        const nowAmount = parseInt(document.getElementById('resourceTypeNowAmount').value) || 0;
+                        const maxAmount = parseInt(document.getElementById('resourceTypeMaxAmount').value) || 0;
+                        const protectedStoragePercentage = parseFloat(document.getElementById('resourceTypeProtectedStoragePercentage').value) || 0;
+                        const protectedStorageMaxAmount = parseInt(document.getElementById('resourceTypeProtectedStorageMaxAmount').value) || 0;
+                        const acquisitionMethods = document.getElementById('resourceTypeAcquisitionMethods').value.split(',').map(s => s.trim()).filter(s => s);
+                        const resource = {
+                            id,
+                            name: { 'zh-TW': nameZh, 'en': nameEn },
+                            resourceDescription: { 'zh-TW': descZh, 'en': descEn },
+                            resourceIconURL: iconURL,
+                            premium,
+                            stackable,
+                            category,
+                            sortOrder,
+                            baseProductionRate,
+                            nowAmount,
+                            maxAmount,
+                            protectedStoragePercentage,
+                            protectedStorageMaxAmount,
+                            acquisitionMethods
+                        };
+                        // 判斷是新增還是修改
+                        const editId = document.getElementById('resourceTypeEditId').value;
+                        const url = editId ? '/api/resource/update' : '/api/resource/create';
+                        fetch(url, {
+                            method: editId ? 'PUT' : 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(resource)
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                showResult('儲存成功');
+                                loadResourceTypeFullList();
+                                clearResourceTypeFullForm();
+                            } else {
+                                showResult('儲存失敗：' + data.message);
+                            }
+                        });
+                    }
+                    function deleteResourceTypeFull() {
+                        const id = document.getElementById('resourceTypeId').value;
+                        if (!id) { showResult('請先選擇要刪除的資源'); return; }
+                        fetch(`/api/resource/delete/${id}`, {
+                            method: 'DELETE'
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                showResult('刪除成功');
+                                loadResourceTypeFullList();
+                                clearResourceTypeFullForm();
+                            } else {
+                                showResult('刪除失敗：' + data.message);
+                            }
+                        });
+                    }
+                    document.addEventListener('DOMContentLoaded', loadResourceTypeFullList);
+                    </script>
                 </div>
 
                 <!-- 玩家模組標籤 -->

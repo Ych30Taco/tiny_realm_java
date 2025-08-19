@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,8 @@ public class ResourceService {
 
     @Autowired
     private StorageService storageService;
+
+    private final String resourceJsonPath = "src/main/resources/config/resource/resources.json";
 
      /**
      * 建構子注入依賴。
@@ -166,5 +171,31 @@ public class ResourceService {
             }
         }
         return true;
+    }
+
+    public synchronized void createResource(Resource resource) throws IOException {
+        resourcesList.add(resource);
+        saveResourcesToFile();
+    }
+
+    public synchronized void updateResource(Resource resource) throws IOException {
+        for (int i = 0; i < resourcesList.size(); i++) {
+            if (resourcesList.get(i).getId().equals(resource.getId())) {
+                resourcesList.set(i, resource);
+                saveResourcesToFile();
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Resource not found: " + resource.getId());
+    }
+
+    public synchronized void deleteResource(String resourceId) throws IOException {
+        resourcesList.removeIf(r -> r.getId().equals(resourceId));
+        saveResourcesToFile();
+    }
+
+    private void saveResourcesToFile() throws IOException {
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(resourcesList);
+        Files.write(Paths.get(resourceJsonPath), json.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -119,4 +119,52 @@ public class SoldierController {
         }
     }
 
+    /**
+     * 新增士兵類型
+     */
+    @PostMapping("/createType")
+    public ResponseEntity<?> createSoldierType(@RequestBody SoldierType soldierType) {
+        try {
+            soldierService.addSoldierType(soldierType);
+            return ResponseEntity.ok(Map.of("success", true, "message", "新增士兵類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "新增士兵類型失敗: " + e.getMessage()));
+        }
+    }
+    /**
+     * 修改士兵類型
+     */
+    @PutMapping("/updateType")
+    public ResponseEntity<?> updateSoldierType(@RequestBody SoldierType soldierType) {
+        try {
+            soldierService.updateSoldierType(soldierType);
+            return ResponseEntity.ok(Map.of("success", true, "message", "修改士兵類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "修改士兵類型失敗: " + e.getMessage()));
+        }
+    }
+    /**
+     * 刪除士兵類型
+     */
+    @DeleteMapping("/deleteType/{id}")
+    public ResponseEntity<?> deleteSoldierType(@PathVariable String id) {
+        try {
+            soldierService.deleteSoldierType(id);
+            return ResponseEntity.ok(Map.of("success", true, "message", "刪除士兵類型成功"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "刪除士兵類型失敗: " + e.getMessage()));
+        }
+    }
+    /**
+     * 顯示所有士兵資訊
+     */
+    @GetMapping("/allSoldiers")
+    public ResponseEntity<?> getAllSoldiersInfo() {
+        try {
+            return ResponseEntity.ok(Map.of("success", true, "message", "獲取所有士兵資訊成功", "data", soldierService.getAllsoldierType()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "獲取所有士兵資訊失敗: " + e.getMessage()));
+        }
+    }
+
 }
