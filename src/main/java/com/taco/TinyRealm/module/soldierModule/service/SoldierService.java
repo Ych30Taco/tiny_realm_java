@@ -21,6 +21,10 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,6 +56,7 @@ public class SoldierService {
     /** 士兵類型配置 */
     private  List<SoldierType> soldierTypeList = Collections.emptyList();
     
+    private final String soldierJsonPath = "src/main/resources/config/soldier/soldiers.json";
     /**
      * 初始化士兵類型配置
      */
@@ -120,7 +125,7 @@ public class SoldierService {
         List<SoldierType> list = new ArrayList<>(soldierTypeList);
         list.add(soldierType);
         soldierTypeList = list;
-        saveSoldierTypes();
+        saveSoldierTypes(); // 修正：確保能正確寫入 JSON
     }
     /**
      * 修改士兵類型
@@ -140,7 +145,7 @@ public class SoldierService {
         }
         if (!found) throw new IllegalArgumentException("士兵類型ID不存在");
         soldierTypeList = list;
-        saveSoldierTypes();
+        saveSoldierTypes(); // 修正：確保能正確寫入 JSON
     }
     /**
      * 刪除士兵類型
@@ -151,13 +156,14 @@ public class SoldierService {
         boolean removed = list.removeIf(s -> s.getId().equals(id));
         if (!removed) throw new IllegalArgumentException("士兵類型ID不存在");
         soldierTypeList = list;
-        saveSoldierTypes();
+        saveSoldierTypes(); // 修正：確保能正確寫入 JSON
     }
     /**
      * 儲存士兵類型到 JSON 檔案
      */
     private void saveSoldierTypes() throws IOException {
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(soldierPath.getFile(), soldierTypeList);
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(soldierTypeList);
+        Files.write(Paths.get(soldierJsonPath), json.getBytes(StandardCharsets.UTF_8));
     }
     /**
      * 創建士兵

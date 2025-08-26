@@ -675,9 +675,11 @@
                         };
 
                         const editId = document.getElementById('buildingTypeEditId').value;
-                        const url = editId ? '/api/building/type/update' : '/api/building/type/create';
+                        // 修正判斷：只有 editId 有值且等於目前 id 才視為修改
+                        const isUpdate = editId && editId === id;
+                        const url = isUpdate ? '/api/building/type/update' : '/api/building/type/create';
                         fetch(url, {
-                            method: editId ? 'PUT' : 'POST',
+                            method: isUpdate ? 'PUT' : 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(building)
                         })
@@ -1129,8 +1131,10 @@
                         try { stats = JSON.parse(document.getElementById('soldierTypeFullStats').value || '{}'); } catch (e) { showResult('屬性 stats JSON 格式錯誤'); return; }
                         const payload = { id, name, type, description, formationPosition, requirements, requiredTech, skills, stats };
                         const editId = document.getElementById('soldierTypeFullEditId').value;
-                        const url = editId ? '/api/soldier/updateType' : '/api/soldier/createType';
-                        fetch(url, { method: editId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+                        // 修正判斷：只有 editId 有值且等於目前 id 才視為修改
+                        const isUpdate = editId && editId === id;
+                        const url = isUpdate ? '/api/soldier/updateType' : '/api/soldier/createType';
+                        fetch(url, { method: isUpdate ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
                         .then(r => r.json())
                         .then(res => {
                             if (res.success) { showResult('儲存成功'); loadSoldierTypeFullList(); clearSoldierTypeFullForm(); }
@@ -1164,7 +1168,10 @@
                                         <!-- 玩家選擇 -->
                                         <div class="mb-3">
                                             <label class="form-label">戰鬥模組-選擇玩家</label>
-                                            <select class="form-select" id="battlePlayerSelect"></select>
+                                            <!-- 直接顯示目前全域選擇的玩家 -->
+                                            <select class="form-select" id="battlePlayerSelect" disabled>
+                                                <option id="battlePlayerOption" value="">請選擇玩家</option>
+                                            </select>
                                         </div>
                                         <!-- 士兵選擇區 -->
                                         <div class="mb-3">
@@ -1332,6 +1339,67 @@
                         </div>
                     </div>
                     <script>
+                    function startBattle() {
+                        // 取得玩家ID
+                        const playerId = document.getElementById('battlePlayerOption').value;
+                        if (!playerId) {
+                            showResult('請先選擇玩家');
+                            return;
+                        }
+                        // 取得士兵派遣數量
+                        const soldierInputs = document.querySelectorAll('.soldier-send-count');
+                        const soldierIds = {};
+                        soldierInputs.forEach(input => {
+                            const count = parseInt(input.value) || 0;
+                            if (count > 0) {
+                                soldierIds[input.dataset.sid] = count;
+                            }
+                        });
+                        if (Object.keys(soldierIds).length === 0) {
+                            showResult('請選擇要派出的士兵');
+                            return;
+                        }
+                        // 取得敵人類型
+                        const enemyType = document.getElementById('enemyType').value;
+                        if (!enemyType) {
+                            showResult('請選擇敵人類型');
+                            return;
+                        }
+                        // 取得座標
+                        const locationX = parseInt(document.getElementById('battleLocationX').value) || 0;
+                        const locationY = parseInt(document.getElementById('battleLocationY').value) || 0;
+                        // 是否測試模式
+                        const isTest = document.getElementById('battleIsTest').checked;
+
+                        showLoading('正在開始戰鬥...');
+                        fetch('/api/battle/start', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                playerId,
+                                soldierIds,
+                                enemyType,
+                                locationX,
+                                locationY,
+                                isTest
+                            })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            hideLoading();
+                            if (data.success) {
+                                showResult('戰鬥完成！\n' + (data.message || ''));
+                                loadBattleHistory();
+                                loadBattleStats();
+                            } else {
+                                showResult('戰鬥失敗：' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            hideLoading();
+                            showResult('戰鬥失敗：' + error.message);
+                        });
+                    }
                     function loadEnemyTypeList() {
                         fetch('/api/battle/types')
                             .then(r => r.json())
@@ -1416,8 +1484,10 @@
                         if (!type) { showResult('請輸入敵人Type'); return; }
                         const enemy = { type, name, description, level, difficulty, minPlayerLevel, battleDuration, skills, spawnChance, isBoss, battleDescription, units, rewards };
                         const editId = document.getElementById('enemyTypeEditId').value;
-                        const url = editId ? '/api/battle/update' : '/api/battle/create';
-                        fetch(url, { method: editId ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(enemy) })
+                        // 修正判斷：只有 editId 有值且等於目前 type 才視為修改
+                        const isUpdate = editId && editId === type;
+                        const url = isUpdate ? '/api/battle/update' : '/api/battle/create';
+                        fetch(url, { method: isUpdate ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(enemy) })
                         .then(r => r.json())
                         .then(res => {
                             if (res.success) { showResult('儲存成功'); loadEnemyTypeList(); clearEnemyTypeForm(); }
@@ -1434,7 +1504,10 @@
                             else { showResult('刪除失敗：' + res.message); }
                         });
                     }
-                    document.addEventListener('DOMContentLoaded', loadEnemyTypeList);
+                    document.addEventListener('DOMContentLoaded', function() {
+                        loadEnemyTypeList();
+                        loadEnemyTypes();
+                    });
                     </script>
                 </div>
 
@@ -2560,43 +2633,6 @@
             });
         }
         
-        // 覆蓋為配置地圖（僅當沒有預覽地圖時）
-        /*function overrideWithConfigMapOnly() {
-            console.log('覆蓋為配置地圖函數被調用');
-            showLoading('正在覆蓋為配置地圖...');
-            
-            const url = '/api/terrain/overrideWithConfig';
-            console.log('發送請求到:', url);
-            
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                console.log('收到響應:', response);
-                console.log('響應狀態:', response.status);
-                return response.json();
-            })
-            .then(data => {
-                console.log('響應數據:', data);
-                hideLoading();
-                if (data.success) {
-                    showResult('地圖已成功覆蓋為配置地圖');
-                    // 重新載入地圖
-                    loadMapFromConfig();
-                } else {
-                    showResult(`覆蓋失敗：${data.message}`);
-                }
-            })
-            .catch(error => {
-                console.error('請求錯誤:', error);
-                hideLoading();
-                showResult(`覆蓋失敗：${error.message}`);
-            });
-        }*/
-        
         // 清除地圖選擇
         function clearMapSelection() {
             // 清除預覽地圖數據
@@ -2605,6 +2641,27 @@
             loadMapFromConfig();
             showResult('已清除預覽地圖，重新載入配置地圖');
         }
+
+        // 監聽全域玩家選擇，更新戰鬥模組玩家選擇與士兵列表
+        document.getElementById('globalPlayerSelect').addEventListener('change', function() {
+            const playerId = this.value;
+            // 更新戰鬥模組玩家選擇顯示
+            const battlePlayerSelect = document.getElementById('battlePlayerSelect');
+            const battlePlayerOption = document.getElementById('battlePlayerOption');
+            battlePlayerOption.value = playerId;
+            battlePlayerOption.textContent = playerId ? playerId : '請選擇玩家';
+            // 載入該玩家的士兵
+            if (playerId) {
+                loadPlayerSoldiers(playerId);
+            } else {
+                document.getElementById('soldierSelectArea').innerHTML = '<p class="text-muted">請先選擇玩家</p>';
+            }
+        });
+
+        // 頁面載入時自動載入敵人類型
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEnemyTypes();
+        });
     </script>
 </body>
 </html>

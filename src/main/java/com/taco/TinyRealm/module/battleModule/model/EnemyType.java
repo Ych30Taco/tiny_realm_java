@@ -64,6 +64,9 @@ public class EnemyType {
     @JsonProperty("battleDescription")
     private String battleDescription;
 
+    /** 敵方總戰力 */
+    private int totalStrength;
+
     /**
      * 預設建構函數
      */
@@ -71,6 +74,7 @@ public class EnemyType {
         this.skills = new HashMap<>();
         this.isBoss = false;
         this.spawnChance = 1.0;
+        this.totalStrength = 0;
     }
 
     /**
@@ -282,6 +286,22 @@ public class EnemyType {
     }
 
     /**
+     * 取得敵方總戰力
+     * @return 敵方總戰力
+     */
+    public int getTotalStrength() {
+        return totalStrength;
+    }
+
+    /**
+     * 設定敵方總戰力
+     * @param totalStrength 敵方總戰力
+     */
+    public void setTotalStrength(int totalStrength) {
+        this.totalStrength = totalStrength;
+    }
+
+    /**
      * 檢查是否有特定技能
      * @param skillName 技能名稱
      * @return 是否有該技能
@@ -303,7 +323,7 @@ public class EnemyType {
      * 計算敵方總戰力
      * @return 敵方總戰力
      */
-    public int getTotalStrength() {
+    public int calculateTotalStrength() {
         if (units == null) return 0;
         return units.stream()
                 .mapToInt(unit -> unit.getAttack() * unit.getCount())

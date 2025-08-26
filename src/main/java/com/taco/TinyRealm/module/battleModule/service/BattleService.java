@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -53,6 +56,10 @@ public class BattleService {
     
     /** 戰鬥統計 */
     private Map<String, Object> battleStatistics = new HashMap<>();
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final String enemieJsonPath = "src/main/resources/config/battle/enemies.json";
 
     /**
      * 初始化服務，載入敵人類型配置
@@ -170,8 +177,8 @@ public class BattleService {
      * 儲存敵人類型到 JSON 檔案
      */
     private void saveEnemyTypes() throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writerWithDefaultPrettyPrinter().writeValue(enemiesPath.getFile(), enemyTypes);
+        String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(enemyTypes);
+        Files.write(Paths.get(enemieJsonPath), json.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

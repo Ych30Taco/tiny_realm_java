@@ -106,22 +106,4 @@
   "protectedStorageMaxAmount" : 999999999,
   "acquisitionMethods" : [ "ShopPurchase", "EventReward", "AchievementReward" ],
   "baseProductionRate" : 0
-}, {
-  "id" : "xx",
-  "name" : {
-    "zh-TW" : "xx",
-    "en" : "xx"
-  },
-  "description" : null,
-  "resourceIconURL" : "YY",
-  "premium" : false,
-  "stackable" : true,
-  "category" : "YY",
-  "sortOrder" : 0,
-  "nowAmount" : 200,
-  "maxAmount" : 200,
-  "protectedStoragePercentage" : 100.0,
-  "protectedStorageMaxAmount" : 200,
-  "acquisitionMethods" : [ "123", "1999", "888" ],
-  "baseProductionRate" : 200
 } ]
