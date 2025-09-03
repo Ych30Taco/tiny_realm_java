@@ -3,6 +3,7 @@ package com.taco.TinyRealm.module.AIModule.controller;
 import com.taco.TinyRealm.module.AIModule.model.AiModel;
 import com.taco.TinyRealm.module.AIModule.service.AiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,16 @@ public class AiController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error processing input: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/models")
+    public ResponseEntity<String> listAvailableModels() {
+        try {
+            String models = aiService.listModels();
+            return ResponseEntity.ok(models);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching models: " + e.getMessage());
         }
     }
 }
