@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AiService {
 
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro-002:generateContent";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent";
     private static final String GEMINI_API_KEY = "AIzaSyBqsQg_scpAbqeO42koyk6gI6mHZBSI2sQ";
 
     public AiModel processInput(String input) {
