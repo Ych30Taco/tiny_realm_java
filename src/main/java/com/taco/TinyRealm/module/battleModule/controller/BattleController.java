@@ -55,8 +55,11 @@ public class BattleController {
             if (playerId == null || playerId.trim().isEmpty()) {
                 throw new IllegalArgumentException("Player ID is required");
             }
-            if (soldierIds == null || soldierIds.isEmpty()) {
+            if (!Boolean.TRUE.equals(isTest) && (soldierIds == null || soldierIds.isEmpty())) {
                 throw new IllegalArgumentException("Soldier IDs are required");
+            }
+            if (soldierIds == null) {
+                soldierIds = new HashMap<>();
             }
             if (enemyType == null || enemyType.trim().isEmpty()) {
                 throw new IllegalArgumentException("Enemy type is required");

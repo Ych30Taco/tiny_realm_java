@@ -198,7 +198,7 @@ public class BattleService {
         if (playerId == null || playerId.trim().isEmpty()) {
             throw new IllegalArgumentException("Player ID cannot be null or empty");
         }
-        if (soldierIds == null || soldierIds.isEmpty()) {
+        if (!isTest && (soldierIds == null || soldierIds.isEmpty())) {
             throw new IllegalArgumentException("Soldier IDs cannot be null or empty");
         }
         if (enemyType == null || enemyType.trim().isEmpty()) {
@@ -223,10 +223,15 @@ public class BattleService {
         }
         
         // 獲取玩家士兵
-        List<PlayerSoldier> playerSoldiers = getPlayerSoldiers(gameState, soldierIds);
-        if (playerSoldiers.isEmpty()) {
-            throw new IllegalArgumentException("No valid soldiers found for battle");
-        };
+        List<PlayerSoldier> playerSoldiers;
+        if (isTest && (soldierIds == null || soldierIds.isEmpty())) {
+            playerSoldiers = createDefaultTestSoldiers();
+        } else {
+            playerSoldiers = getPlayerSoldiers(gameState, soldierIds);
+            if (playerSoldiers.isEmpty()) {
+                throw new IllegalArgumentException("No valid soldiers found for battle");
+            }
+        }
 
         // 創建敵方單位
         List<PlayerSoldier> enemySoldiers = createEnemySoldiers(enemyConfig);
@@ -247,6 +252,20 @@ public class BattleService {
         //recordBattleEvent(playerId, battle, isTest);
         
         return battle;
+    }
+
+    private List<PlayerSoldier> createDefaultTestSoldiers() {
+        PlayerSoldier testSoldier = new PlayerSoldier();
+        testSoldier.setId("test_soldier");
+        testSoldier.setName("測試士兵");
+        testSoldier.setLevel(1);
+        testSoldier.setAttack(50);
+        testSoldier.setDefense(30);
+        testSoldier.setHp(100);
+        testSoldier.setMaxHp(100);
+        testSoldier.setStatus("ACTIVE");
+        testSoldier.setCount(10);
+        return new ArrayList<>(List.of(testSoldier));
     }
 
     /**
